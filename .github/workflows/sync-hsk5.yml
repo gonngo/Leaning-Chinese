@@ -41,7 +41,8 @@ jobs:
       - name: Install browser dependency
         run: npm install --ignore-scripts --no-package-lock
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        # Use the runner's existing system libraries; the source step verifies launch.
+        run: npx playwright install chromium
       - name: Read shared lessons without a PC session
         run: node scripts/cloud-source.mjs
       - name: Keep source check result
