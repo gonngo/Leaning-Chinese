@@ -523,6 +523,158 @@
             "ja": "低空経済の未来は、ドローンがどれだけ遠くまで飛べるかだけでなく、社会がそれに対する信頼を築けるかにも左右される。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "低空经济",
+          "pinyin": "dīkōng jīngjì",
+          "ja": "低空経済"
+        },
+        {
+          "zh": "空域",
+          "pinyin": "kōngyù",
+          "ja": "空域"
+        },
+        {
+          "zh": "开展",
+          "pinyin": "kāizhǎn",
+          "ja": "展開する、実施する"
+        },
+        {
+          "zh": "无人机",
+          "pinyin": "wúrénjī",
+          "ja": "ドローン、無人航空機"
+        },
+        {
+          "zh": "领域",
+          "pinyin": "lǐngyù",
+          "ja": "分野、領域"
+        },
+        {
+          "zh": "紧急",
+          "pinyin": "jǐnjí",
+          "ja": "緊急の"
+        },
+        {
+          "zh": "救援",
+          "pinyin": "jiùyuán",
+          "ja": "救助、救援"
+        },
+        {
+          "zh": "拥堵",
+          "pinyin": "yōngdǔ",
+          "ja": "渋滞する、混雑する"
+        },
+        {
+          "zh": "运送",
+          "pinyin": "yùnsòng",
+          "ja": "輸送する"
+        },
+        {
+          "zh": "物资",
+          "pinyin": "wùzī",
+          "ja": "物資"
+        },
+        {
+          "zh": "角度",
+          "pinyin": "jiǎodù",
+          "ja": "角度、観点"
+        },
+        {
+          "zh": "缩短",
+          "pinyin": "suōduǎn",
+          "ja": "短縮する"
+        },
+        {
+          "zh": "效率",
+          "pinyin": "xiàolǜ",
+          "ja": "効率"
+        },
+        {
+          "zh": "维护",
+          "pinyin": "wéihù",
+          "ja": "維持する、保守する"
+        },
+        {
+          "zh": "更换",
+          "pinyin": "gēnghuàn",
+          "ja": "交換する"
+        },
+        {
+          "zh": "忽略",
+          "pinyin": "hūlüè",
+          "ja": "無視する、見落とす"
+        },
+        {
+          "zh": "被迫",
+          "pinyin": "bèipò",
+          "ja": "やむを得ず〜させられる"
+        },
+        {
+          "zh": "碰撞",
+          "pinyin": "pèngzhuàng",
+          "ja": "衝突する"
+        },
+        {
+          "zh": "避免",
+          "pinyin": "bìmiǎn",
+          "ja": "避ける"
+        },
+        {
+          "zh": "可靠",
+          "pinyin": "kěkào",
+          "ja": "信頼できる"
+        },
+        {
+          "zh": "规定",
+          "pinyin": "guīdìng",
+          "ja": "規定する、規定"
+        },
+        {
+          "zh": "提交",
+          "pinyin": "tíjiāo",
+          "ja": "提出する"
+        },
+        {
+          "zh": "噪音",
+          "pinyin": "zàoyīn",
+          "ja": "騒音"
+        },
+        {
+          "zh": "隐私",
+          "pinyin": "yǐnsī",
+          "ja": "プライバシー"
+        },
+        {
+          "zh": "创造",
+          "pinyin": "chuàngzào",
+          "ja": "創造する"
+        },
+        {
+          "zh": "岗位",
+          "pinyin": "gǎngwèi",
+          "ja": "職務、職位"
+        },
+        {
+          "zh": "消费者",
+          "pinyin": "xiāofèizhě",
+          "ja": "消費者"
+        },
+        {
+          "zh": "受益",
+          "pinyin": "shòuyì",
+          "ja": "利益を得る、恩恵を受ける"
+        },
+        {
+          "zh": "可持续",
+          "pinyin": "kě chíxù",
+          "ja": "持続可能な"
+        },
+        {
+          "zh": "取决于",
+          "pinyin": "qǔjué yú",
+          "ja": "〜によって決まる"
+        }
       ]
     },
     {
@@ -902,6 +1054,158 @@
             "pinyin": "Zhè tíxǐng wǒmen, jiénéng bù zhǐ shì shèbèi xiàolǜ de wèntí, yě shì shāngyè hézuò hé chángqī guīhuà de wèntí.",
             "ja": "これは省エネが設備効率だけの問題ではなく、企業間協力や長期計画の問題でもあることを教えてくれる。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "能源",
+          "pinyin": "néngyuán",
+          "ja": "エネルギー"
+        },
+        {
+          "zh": "浪费",
+          "pinyin": "làngfèi",
+          "ja": "無駄にする、浪費"
+        },
+        {
+          "zh": "共同",
+          "pinyin": "gòngtóng",
+          "ja": "共同の、共通の"
+        },
+        {
+          "zh": "过程",
+          "pinyin": "guòchéng",
+          "ja": "過程、プロセス"
+        },
+        {
+          "zh": "排放",
+          "pinyin": "páifàng",
+          "ja": "排出する"
+        },
+        {
+          "zh": "冷却水",
+          "pinyin": "lěngquèshuǐ",
+          "ja": "冷却水"
+        },
+        {
+          "zh": "充分",
+          "pinyin": "chōngfèn",
+          "ja": "十分に"
+        },
+        {
+          "zh": "余热",
+          "pinyin": "yúrè",
+          "ja": "排熱、余剰熱"
+        },
+        {
+          "zh": "价值",
+          "pinyin": "jiàzhí",
+          "ja": "価値"
+        },
+        {
+          "zh": "换热器",
+          "pinyin": "huànrèqì",
+          "ja": "熱交換器"
+        },
+        {
+          "zh": "传递",
+          "pinyin": "chuándì",
+          "ja": "伝える、伝達する"
+        },
+        {
+          "zh": "供暖",
+          "pinyin": "gōngnuǎn",
+          "ja": "暖房を供給する"
+        },
+        {
+          "zh": "热泵",
+          "pinyin": "rèbèng",
+          "ja": "ヒートポンプ"
+        },
+        {
+          "zh": "满足",
+          "pinyin": "mǎnzú",
+          "ja": "満たす"
+        },
+        {
+          "zh": "消耗",
+          "pinyin": "xiāohào",
+          "ja": "消費する"
+        },
+        {
+          "zh": "管道",
+          "pinyin": "guǎndào",
+          "ja": "配管、パイプライン"
+        },
+        {
+          "zh": "确认",
+          "pinyin": "quèrèn",
+          "ja": "確認する"
+        },
+        {
+          "zh": "热源",
+          "pinyin": "rèyuán",
+          "ja": "熱源"
+        },
+        {
+          "zh": "停产",
+          "pinyin": "tíngchǎn",
+          "ja": "生産停止する"
+        },
+        {
+          "zh": "备用",
+          "pinyin": "bèiyòng",
+          "ja": "予備の、バックアップ"
+        },
+        {
+          "zh": "损失",
+          "pinyin": "sǔnshī",
+          "ja": "損失、ロス"
+        },
+        {
+          "zh": "划算",
+          "pinyin": "huásuàn",
+          "ja": "割に合う、採算が取れる"
+        },
+        {
+          "zh": "取决于",
+          "pinyin": "qǔjué yú",
+          "ja": "～によって決まる"
+        },
+        {
+          "zh": "维护",
+          "pinyin": "wéihù",
+          "ja": "保守する、維持する"
+        },
+        {
+          "zh": "运行",
+          "pinyin": "yùnxíng",
+          "ja": "運転する、稼働する"
+        },
+        {
+          "zh": "前提",
+          "pinyin": "qiántí",
+          "ja": "前提"
+        },
+        {
+          "zh": "协调",
+          "pinyin": "xiétiáo",
+          "ja": "調整する、協調する"
+        },
+        {
+          "zh": "期限",
+          "pinyin": "qīxiàn",
+          "ja": "期限、期間"
+        },
+        {
+          "zh": "可行",
+          "pinyin": "kěxíng",
+          "ja": "実行可能な"
+        },
+        {
+          "zh": "规划",
+          "pinyin": "guīhuà",
+          "ja": "計画する、長期計画"
         }
       ]
     },
@@ -1293,6 +1597,158 @@
             "ja": "良い質問をする力を身につけることが、この時代に適応するための重要な一歩なのかもしれない。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "普及",
+          "pinyin": "pǔjí",
+          "ja": "普及する"
+        },
+        {
+          "zh": "搜索",
+          "pinyin": "sōusuǒ",
+          "ja": "検索する"
+        },
+        {
+          "zh": "整理",
+          "pinyin": "zhěnglǐ",
+          "ja": "整理する"
+        },
+        {
+          "zh": "详细",
+          "pinyin": "xiángxì",
+          "ja": "詳細な"
+        },
+        {
+          "zh": "意味着",
+          "pinyin": "yìwèizhe",
+          "ja": "～を意味する"
+        },
+        {
+          "zh": "理解",
+          "pinyin": "lǐjiě",
+          "ja": "理解する"
+        },
+        {
+          "zh": "合理",
+          "pinyin": "hélǐ",
+          "ja": "合理的な"
+        },
+        {
+          "zh": "包含",
+          "pinyin": "bāohán",
+          "ja": "含む"
+        },
+        {
+          "zh": "判断",
+          "pinyin": "pànduàn",
+          "ja": "判断する"
+        },
+        {
+          "zh": "提出",
+          "pinyin": "tíchū",
+          "ja": "提起する、提出する"
+        },
+        {
+          "zh": "降低",
+          "pinyin": "jiàngdī",
+          "ja": "引き下げる"
+        },
+        {
+          "zh": "消耗",
+          "pinyin": "xiāohào",
+          "ja": "消費する"
+        },
+        {
+          "zh": "针对性",
+          "pinyin": "zhēnduìxìng",
+          "ja": "対象を絞った性質"
+        },
+        {
+          "zh": "具体",
+          "pinyin": "jùtǐ",
+          "ja": "具体的な"
+        },
+        {
+          "zh": "参考",
+          "pinyin": "cānkǎo",
+          "ja": "参考にする"
+        },
+        {
+          "zh": "相反",
+          "pinyin": "xiāngfǎn",
+          "ja": "逆に、反対に"
+        },
+        {
+          "zh": "区分",
+          "pinyin": "qūfēn",
+          "ja": "区別する"
+        },
+        {
+          "zh": "事实",
+          "pinyin": "shìshí",
+          "ja": "事実"
+        },
+        {
+          "zh": "假设",
+          "pinyin": "jiǎshè",
+          "ja": "仮説、仮定"
+        },
+        {
+          "zh": "不确定",
+          "pinyin": "bú quèdìng",
+          "ja": "不確かな"
+        },
+        {
+          "zh": "与其",
+          "pinyin": "yǔqí",
+          "ja": "～するよりも"
+        },
+        {
+          "zh": "不如",
+          "pinyin": "bùrú",
+          "ja": "～した方がよい"
+        },
+        {
+          "zh": "依赖",
+          "pinyin": "yīlài",
+          "ja": "依存する、頼る"
+        },
+        {
+          "zh": "涉及",
+          "pinyin": "shèjí",
+          "ja": "関わる、及ぶ"
+        },
+        {
+          "zh": "来源",
+          "pinyin": "láiyuán",
+          "ja": "出所、情報源"
+        },
+        {
+          "zh": "验证",
+          "pinyin": "yànzhèng",
+          "ja": "検証する"
+        },
+        {
+          "zh": "关键",
+          "pinyin": "guānjiàn",
+          "ja": "重要な、鍵となる"
+        },
+        {
+          "zh": "代替",
+          "pinyin": "dàitì",
+          "ja": "代わりをする"
+        },
+        {
+          "zh": "掌握",
+          "pinyin": "zhǎngwò",
+          "ja": "習得する、把握する"
+        },
+        {
+          "zh": "适应",
+          "pinyin": "shìyìng",
+          "ja": "適応する"
+        }
       ]
     },
     {
@@ -1668,6 +2124,158 @@
             "ja": "技術、ビジネス、社会のニーズが結びついて初めて、人口構造の変化を持続可能な発展の原動力に変えられる。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "老龄化",
+          "pinyin": "lǎolínghuà",
+          "ja": "高齢化"
+        },
+        {
+          "zh": "程度",
+          "pinyin": "chéngdù",
+          "ja": "程度"
+        },
+        {
+          "zh": "关注",
+          "pinyin": "guānzhù",
+          "ja": "注目する"
+        },
+        {
+          "zh": "所谓",
+          "pinyin": "suǒwèi",
+          "ja": "いわゆる"
+        },
+        {
+          "zh": "围绕",
+          "pinyin": "wéirào",
+          "ja": "～を中心に"
+        },
+        {
+          "zh": "需求",
+          "pinyin": "xūqiú",
+          "ja": "需要、ニーズ"
+        },
+        {
+          "zh": "养老金",
+          "pinyin": "yǎnglǎojīn",
+          "ja": "年金"
+        },
+        {
+          "zh": "角度",
+          "pinyin": "jiǎodù",
+          "ja": "観点、角度"
+        },
+        {
+          "zh": "增长",
+          "pinyin": "zēngzhǎng",
+          "ja": "増加、成長"
+        },
+        {
+          "zh": "创造",
+          "pinyin": "chuàngzào",
+          "ja": "創造する"
+        },
+        {
+          "zh": "操作",
+          "pinyin": "cāozuò",
+          "ja": "操作する"
+        },
+        {
+          "zh": "智能家电",
+          "pinyin": "zhìnéng jiādiàn",
+          "ja": "スマート家電"
+        },
+        {
+          "zh": "咨询",
+          "pinyin": "zīxún",
+          "ja": "相談する"
+        },
+        {
+          "zh": "陪同",
+          "pinyin": "péitóng",
+          "ja": "同行する、付き添う"
+        },
+        {
+          "zh": "字体",
+          "pinyin": "zìtǐ",
+          "ja": "文字の書体"
+        },
+        {
+          "zh": "按钮",
+          "pinyin": "ànniǔ",
+          "ja": "ボタン"
+        },
+        {
+          "zh": "习惯",
+          "pinyin": "xíguàn",
+          "ja": "習慣"
+        },
+        {
+          "zh": "复杂",
+          "pinyin": "fùzá",
+          "ja": "複雑な"
+        },
+        {
+          "zh": "步骤",
+          "pinyin": "bùzhòu",
+          "ja": "手順"
+        },
+        {
+          "zh": "目标",
+          "pinyin": "mùbiāo",
+          "ja": "目標、対象"
+        },
+        {
+          "zh": "参与",
+          "pinyin": "cānyù",
+          "ja": "参加する"
+        },
+        {
+          "zh": "改进",
+          "pinyin": "gǎijìn",
+          "ja": "改善する"
+        },
+        {
+          "zh": "就业",
+          "pinyin": "jiùyè",
+          "ja": "就職、雇用"
+        },
+        {
+          "zh": "规模",
+          "pinyin": "guīmó",
+          "ja": "規模"
+        },
+        {
+          "zh": "忽略",
+          "pinyin": "hūlüè",
+          "ja": "見落とす、無視する"
+        },
+        {
+          "zh": "追求",
+          "pinyin": "zhuīqiú",
+          "ja": "追求する"
+        },
+        {
+          "zh": "昂贵",
+          "pinyin": "ángguì",
+          "ja": "高価な"
+        },
+        {
+          "zh": "完善",
+          "pinyin": "wánshàn",
+          "ja": "完備する、改善する"
+        },
+        {
+          "zh": "权利",
+          "pinyin": "quánlì",
+          "ja": "権利"
+        },
+        {
+          "zh": "转化",
+          "pinyin": "zhuǎnhuà",
+          "ja": "転換する、変化させる"
+        }
       ]
     },
     {
@@ -2022,6 +2630,158 @@
             "pinyin": "Hǎo de gǎigé bù yīnggāi jiǎndān de bǎ gōngzuò shíjiān yāsuō, ér yīnggāi chóngxīn sīkǎo nǎxiē gōngzuò zhēnzhèng yǒu jiàzhí, nǎxiē liúchéng kěyǐ gǎishàn.",
             "ja": "良い改革とは単に労働時間を圧縮するのではなく、価値のある仕事と改善できる業務プロセスを見直すことだ。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "制度",
+          "pinyin": "zhìdù",
+          "ja": "制度"
+        },
+        {
+          "zh": "尝试",
+          "pinyin": "chángshì",
+          "ja": "試みる"
+        },
+        {
+          "zh": "保持",
+          "pinyin": "bǎochí",
+          "ja": "維持する"
+        },
+        {
+          "zh": "收入",
+          "pinyin": "shōurù",
+          "ja": "収入"
+        },
+        {
+          "zh": "缩短",
+          "pinyin": "suōduǎn",
+          "ja": "短縮する"
+        },
+        {
+          "zh": "集中",
+          "pinyin": "jízhōng",
+          "ja": "集中する"
+        },
+        {
+          "zh": "注意力",
+          "pinyin": "zhùyìlì",
+          "ja": "注意力"
+        },
+        {
+          "zh": "从而",
+          "pinyin": "cóng'ér",
+          "ja": "それによって"
+        },
+        {
+          "zh": "效率",
+          "pinyin": "xiàolǜ",
+          "ja": "効率"
+        },
+        {
+          "zh": "反而",
+          "pinyin": "fǎn'ér",
+          "ja": "かえって"
+        },
+        {
+          "zh": "任务",
+          "pinyin": "rènwu",
+          "ja": "任務、仕事"
+        },
+        {
+          "zh": "压力",
+          "pinyin": "yālì",
+          "ja": "プレッシャー、負担"
+        },
+        {
+          "zh": "有效",
+          "pinyin": "yǒuxiào",
+          "ja": "有効な"
+        },
+        {
+          "zh": "复杂",
+          "pinyin": "fùzá",
+          "ja": "複雑な"
+        },
+        {
+          "zh": "全天候",
+          "pinyin": "quántiānhòu",
+          "ja": "全天候、24時間体制の"
+        },
+        {
+          "zh": "随意",
+          "pinyin": "suíyì",
+          "ja": "勝手に、自由に"
+        },
+        {
+          "zh": "替班",
+          "pinyin": "tìbān",
+          "ja": "交代勤務の代行"
+        },
+        {
+          "zh": "负担",
+          "pinyin": "fùdān",
+          "ja": "負担"
+        },
+        {
+          "zh": "制定",
+          "pinyin": "zhìdìng",
+          "ja": "制定する"
+        },
+        {
+          "zh": "轮班",
+          "pinyin": "lúnbān",
+          "ja": "交代勤務"
+        },
+        {
+          "zh": "陪伴",
+          "pinyin": "péibàn",
+          "ja": "付き添う、一緒に過ごす"
+        },
+        {
+          "zh": "锻炼",
+          "pinyin": "duànliàn",
+          "ja": "運動する、鍛える"
+        },
+        {
+          "zh": "心理",
+          "pinyin": "xīnlǐ",
+          "ja": "心理、精神面"
+        },
+        {
+          "zh": "流失",
+          "pinyin": "liúshī",
+          "ja": "流出、離職"
+        },
+        {
+          "zh": "招聘",
+          "pinyin": "zhāopìn",
+          "ja": "採用、募集"
+        },
+        {
+          "zh": "明确",
+          "pinyin": "míngquè",
+          "ja": "明確にする"
+        },
+        {
+          "zh": "改革",
+          "pinyin": "gǎigé",
+          "ja": "改革"
+        },
+        {
+          "zh": "忽略",
+          "pinyin": "hūlüè",
+          "ja": "無視する、見落とす"
+        },
+        {
+          "zh": "压缩",
+          "pinyin": "yāsuō",
+          "ja": "圧縮する"
+        },
+        {
+          "zh": "调整",
+          "pinyin": "tiáozhěng",
+          "ja": "調整する"
         }
       ]
     },
@@ -2378,6 +3138,158 @@
             "ja": "製品の環境性能は、製造時のエネルギーだけでなく、使用寿命や廃棄後のリサイクル可能性も含めて考えるべきだ。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "更换",
+          "pinyin": "gēnghuàn",
+          "ja": "交換する"
+        },
+        {
+          "zh": "老化",
+          "pinyin": "lǎohuà",
+          "ja": "老朽化、劣化"
+        },
+        {
+          "zh": "零件",
+          "pinyin": "língjiàn",
+          "ja": "部品"
+        },
+        {
+          "zh": "损坏",
+          "pinyin": "sǔnhuài",
+          "ja": "破損する"
+        },
+        {
+          "zh": "维修",
+          "pinyin": "wéixiū",
+          "ja": "修理、保守"
+        },
+        {
+          "zh": "合适",
+          "pinyin": "héshì",
+          "ja": "適切な、合っている"
+        },
+        {
+          "zh": "消费者",
+          "pinyin": "xiāofèizhě",
+          "ja": "消費者"
+        },
+        {
+          "zh": "逐渐",
+          "pinyin": "zhújiàn",
+          "ja": "徐々に"
+        },
+        {
+          "zh": "独立",
+          "pinyin": "dúlì",
+          "ja": "独立した"
+        },
+        {
+          "zh": "获得",
+          "pinyin": "huòdé",
+          "ja": "獲得する"
+        },
+        {
+          "zh": "从而",
+          "pinyin": "cóng'ér",
+          "ja": "それによって"
+        },
+        {
+          "zh": "延长",
+          "pinyin": "yáncháng",
+          "ja": "延長する"
+        },
+        {
+          "zh": "寿命",
+          "pinyin": "shòumìng",
+          "ja": "寿命"
+        },
+        {
+          "zh": "性能",
+          "pinyin": "xìngnéng",
+          "ja": "性能"
+        },
+        {
+          "zh": "放弃",
+          "pinyin": "fàngqì",
+          "ja": "諦める、手放す"
+        },
+        {
+          "zh": "开支",
+          "pinyin": "kāizhī",
+          "ja": "支出"
+        },
+        {
+          "zh": "制造商",
+          "pinyin": "zhìzàoshāng",
+          "ja": "メーカー"
+        },
+        {
+          "zh": "担忧",
+          "pinyin": "dānyōu",
+          "ja": "懸念する"
+        },
+        {
+          "zh": "缺乏",
+          "pinyin": "quēfá",
+          "ja": "不足する、欠く"
+        },
+        {
+          "zh": "造成",
+          "pinyin": "zàochéng",
+          "ja": "引き起こす"
+        },
+        {
+          "zh": "权益",
+          "pinyin": "quányì",
+          "ja": "権益"
+        },
+        {
+          "zh": "取消",
+          "pinyin": "qǔxiāo",
+          "ja": "取り消す、撤廃する"
+        },
+        {
+          "zh": "限制",
+          "pinyin": "xiànzhì",
+          "ja": "制限する"
+        },
+        {
+          "zh": "平衡",
+          "pinyin": "pínghéng",
+          "ja": "バランス"
+        },
+        {
+          "zh": "制定",
+          "pinyin": "zhìdìng",
+          "ja": "制定する"
+        },
+        {
+          "zh": "标准",
+          "pinyin": "biāozhǔn",
+          "ja": "基準、標準"
+        },
+        {
+          "zh": "持续",
+          "pinyin": "chíxù",
+          "ja": "持続する"
+        },
+        {
+          "zh": "鼓励",
+          "pinyin": "gǔlì",
+          "ja": "奨励する"
+        },
+        {
+          "zh": "报废",
+          "pinyin": "bàofèi",
+          "ja": "廃棄する、使用不能になる"
+        },
+        {
+          "zh": "回收",
+          "pinyin": "huíshōu",
+          "ja": "回収する、リサイクルする"
+        }
       ]
     },
     {
@@ -2722,6 +3634,158 @@
             "pinyin": "Wèilái, shùzì rénmínbì néng fǒu dédào gèng guǎngfàn de yìngyòng, bùjǐn qǔjué yú jìshù shìfǒu chéngshú, hái qǔjué yú gōngzhòng shìfǒu zhēnzhèng xìnrèn tā.",
             "ja": "将来デジタル人民元が広く利用されるかどうかは、技術の成熟度だけでなく、人々が本当に信頼するかにも左右される。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "移动支付",
+          "pinyin": "yídòng zhīfù",
+          "ja": "モバイル決済"
+        },
+        {
+          "zh": "普及",
+          "pinyin": "pǔjí",
+          "ja": "普及する"
+        },
+        {
+          "zh": "付款",
+          "pinyin": "fùkuǎn",
+          "ja": "支払う"
+        },
+        {
+          "zh": "背景",
+          "pinyin": "bèijǐng",
+          "ja": "背景"
+        },
+        {
+          "zh": "逐渐",
+          "pinyin": "zhújiàn",
+          "ja": "徐々に"
+        },
+        {
+          "zh": "公众",
+          "pinyin": "gōngzhòng",
+          "ja": "一般大衆"
+        },
+        {
+          "zh": "视野",
+          "pinyin": "shìyě",
+          "ja": "視野"
+        },
+        {
+          "zh": "发行",
+          "pinyin": "fāxíng",
+          "ja": "発行する"
+        },
+        {
+          "zh": "存款",
+          "pinyin": "cúnkuǎn",
+          "ja": "預金"
+        },
+        {
+          "zh": "第三方",
+          "pinyin": "dì sānfāng",
+          "ja": "第三者"
+        },
+        {
+          "zh": "既然",
+          "pinyin": "jìrán",
+          "ja": "～である以上"
+        },
+        {
+          "zh": "法定",
+          "pinyin": "fǎdìng",
+          "ja": "法定の"
+        },
+        {
+          "zh": "货币",
+          "pinyin": "huòbì",
+          "ja": "通貨"
+        },
+        {
+          "zh": "前者",
+          "pinyin": "qiánzhě",
+          "ja": "前者"
+        },
+        {
+          "zh": "后者",
+          "pinyin": "hòuzhě",
+          "ja": "後者"
+        },
+        {
+          "zh": "场景",
+          "pinyin": "chǎngjǐng",
+          "ja": "場面、シーン"
+        },
+        {
+          "zh": "特定",
+          "pinyin": "tèdìng",
+          "ja": "特定の"
+        },
+        {
+          "zh": "依赖",
+          "pinyin": "yīlài",
+          "ja": "依存する"
+        },
+        {
+          "zh": "实时",
+          "pinyin": "shíshí",
+          "ja": "リアルタイム"
+        },
+        {
+          "zh": "连接",
+          "pinyin": "liánjiē",
+          "ja": "接続する"
+        },
+        {
+          "zh": "推广",
+          "pinyin": "tuīguǎng",
+          "ja": "普及させる"
+        },
+        {
+          "zh": "安装",
+          "pinyin": "ānzhuāng",
+          "ja": "設置する"
+        },
+        {
+          "zh": "交易",
+          "pinyin": "jiāoyì",
+          "ja": "取引"
+        },
+        {
+          "zh": "记录",
+          "pinyin": "jìlù",
+          "ja": "記録"
+        },
+        {
+          "zh": "充分",
+          "pinyin": "chōngfèn",
+          "ja": "十分に"
+        },
+        {
+          "zh": "隐私",
+          "pinyin": "yǐnsī",
+          "ja": "プライバシー"
+        },
+        {
+          "zh": "平衡",
+          "pinyin": "pínghéng",
+          "ja": "バランス"
+        },
+        {
+          "zh": "纸币",
+          "pinyin": "zhǐbì",
+          "ja": "紙幣"
+        },
+        {
+          "zh": "成熟",
+          "pinyin": "chéngshú",
+          "ja": "成熟する"
+        },
+        {
+          "zh": "信任",
+          "pinyin": "xìnrèn",
+          "ja": "信頼する"
         }
       ]
     },
@@ -3068,6 +4132,158 @@
             "ja": "今後の企業競争は生産効率だけでなく、変化に直面した際に素早く調整できるかにも左右される。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "供应链",
+          "pinyin": "gōngyìngliàn",
+          "ja": "サプライチェーン"
+        },
+        {
+          "zh": "原材料",
+          "pinyin": "yuáncáiliào",
+          "ja": "原材料"
+        },
+        {
+          "zh": "利润",
+          "pinyin": "lìrùn",
+          "ja": "利益"
+        },
+        {
+          "zh": "过度",
+          "pinyin": "guòdù",
+          "ja": "過度の"
+        },
+        {
+          "zh": "依赖",
+          "pinyin": "yīlài",
+          "ja": "依存する"
+        },
+        {
+          "zh": "供应商",
+          "pinyin": "gōngyìngshāng",
+          "ja": "サプライヤー"
+        },
+        {
+          "zh": "贸易",
+          "pinyin": "màoyì",
+          "ja": "貿易"
+        },
+        {
+          "zh": "重新",
+          "pinyin": "chóngxīn",
+          "ja": "改めて、再び"
+        },
+        {
+          "zh": "采购",
+          "pinyin": "cǎigòu",
+          "ja": "調達する、購買"
+        },
+        {
+          "zh": "环节",
+          "pinyin": "huánjié",
+          "ja": "段階、工程"
+        },
+        {
+          "zh": "关键",
+          "pinyin": "guānjiàn",
+          "ja": "重要な、鍵となる"
+        },
+        {
+          "zh": "稳定",
+          "pinyin": "wěndìng",
+          "ja": "安定した"
+        },
+        {
+          "zh": "一旦",
+          "pinyin": "yídàn",
+          "ja": "ひとたび〜すると"
+        },
+        {
+          "zh": "中断",
+          "pinyin": "zhōngduàn",
+          "ja": "中断する、途絶える"
+        },
+        {
+          "zh": "政策",
+          "pinyin": "zhèngcè",
+          "ja": "政策"
+        },
+        {
+          "zh": "面临",
+          "pinyin": "miànlín",
+          "ja": "直面する"
+        },
+        {
+          "zh": "连续",
+          "pinyin": "liánxù",
+          "ja": "連続した"
+        },
+        {
+          "zh": "多元化",
+          "pinyin": "duōyuánhuà",
+          "ja": "多様化"
+        },
+        {
+          "zh": "风险",
+          "pinyin": "fēngxiǎn",
+          "ja": "リスク"
+        },
+        {
+          "zh": "平衡",
+          "pinyin": "pínghéng",
+          "ja": "バランス"
+        },
+        {
+          "zh": "意味着",
+          "pinyin": "yìwèizhe",
+          "ja": "〜を意味する"
+        },
+        {
+          "zh": "具有",
+          "pinyin": "jùyǒu",
+          "ja": "備えている、有する"
+        },
+        {
+          "zh": "符合",
+          "pinyin": "fúhé",
+          "ja": "適合する"
+        },
+        {
+          "zh": "单价",
+          "pinyin": "dānjià",
+          "ja": "単価"
+        },
+        {
+          "zh": "库存",
+          "pinyin": "kùcún",
+          "ja": "在庫"
+        },
+        {
+          "zh": "损失",
+          "pinyin": "sǔnshī",
+          "ja": "損失"
+        },
+        {
+          "zh": "交货",
+          "pinyin": "jiāohuò",
+          "ja": "納品する"
+        },
+        {
+          "zh": "反而",
+          "pinyin": "fǎn'ér",
+          "ja": "かえって"
+        },
+        {
+          "zh": "投入",
+          "pinyin": "tóurù",
+          "ja": "投入する"
+        },
+        {
+          "zh": "迅速",
+          "pinyin": "xùnsù",
+          "ja": "迅速な、素早く"
+        }
       ]
     },
     {
@@ -3412,6 +4628,158 @@
             "pinyin": "Wèilái, rúhé zài mǎnzú shùzì fúwù xūqiú de tóngshí hélǐ lìyòng shuǐ hé néngyuán, jiāng chéngwéi gōngchéngshī miànlín de zhòngyào kètí.",
             "ja": "今後、デジタルサービスの需要を満たしながら水とエネルギーを合理的に利用することが、エンジニアの重要課題となるだろう。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "云计算",
+          "pinyin": "yún jìsuàn",
+          "ja": "クラウドコンピューティング"
+        },
+        {
+          "zh": "数据中心",
+          "pinyin": "shùjù zhōngxīn",
+          "ja": "データセンター"
+        },
+        {
+          "zh": "设施",
+          "pinyin": "shèshī",
+          "ja": "施設、設備"
+        },
+        {
+          "zh": "服务器",
+          "pinyin": "fúwùqì",
+          "ja": "サーバー"
+        },
+        {
+          "zh": "运行",
+          "pinyin": "yùnxíng",
+          "ja": "稼働する、運転する"
+        },
+        {
+          "zh": "产生",
+          "pinyin": "chǎnshēng",
+          "ja": "発生する"
+        },
+        {
+          "zh": "散热",
+          "pinyin": "sànrè",
+          "ja": "放熱する"
+        },
+        {
+          "zh": "性能",
+          "pinyin": "xìngnéng",
+          "ja": "性能"
+        },
+        {
+          "zh": "故障",
+          "pinyin": "gùzhàng",
+          "ja": "故障"
+        },
+        {
+          "zh": "冷却",
+          "pinyin": "lěngquè",
+          "ja": "冷却する"
+        },
+        {
+          "zh": "循环",
+          "pinyin": "xúnhuán",
+          "ja": "循環する"
+        },
+        {
+          "zh": "气候",
+          "pinyin": "qìhòu",
+          "ja": "気候"
+        },
+        {
+          "zh": "炎热",
+          "pinyin": "yánrè",
+          "ja": "暑い、酷暑の"
+        },
+        {
+          "zh": "效率",
+          "pinyin": "xiàolǜ",
+          "ja": "効率"
+        },
+        {
+          "zh": "分配",
+          "pinyin": "fēnpèi",
+          "ja": "配分する、割り当てる"
+        },
+        {
+          "zh": "评价",
+          "pinyin": "píngjià",
+          "ja": "評価する"
+        },
+        {
+          "zh": "消耗",
+          "pinyin": "xiāohào",
+          "ja": "消費する"
+        },
+        {
+          "zh": "蒸发",
+          "pinyin": "zhēngfā",
+          "ja": "蒸発する"
+        },
+        {
+          "zh": "可靠性",
+          "pinyin": "kěkàoxìng",
+          "ja": "信頼性"
+        },
+        {
+          "zh": "差别",
+          "pinyin": "chābié",
+          "ja": "違い、差"
+        },
+        {
+          "zh": "再生水",
+          "pinyin": "zàishēngshuǐ",
+          "ja": "再生水"
+        },
+        {
+          "zh": "依赖",
+          "pinyin": "yīlài",
+          "ja": "依存する"
+        },
+        {
+          "zh": "适当",
+          "pinyin": "shìdàng",
+          "ja": "適切な"
+        },
+        {
+          "zh": "矿物质",
+          "pinyin": "kuàngwùzhì",
+          "ja": "鉱物質"
+        },
+        {
+          "zh": "结垢",
+          "pinyin": "jiégòu",
+          "ja": "スケール付着"
+        },
+        {
+          "zh": "腐蚀",
+          "pinyin": "fǔshí",
+          "ja": "腐食する"
+        },
+        {
+          "zh": "维护",
+          "pinyin": "wéihù",
+          "ja": "保守する"
+        },
+        {
+          "zh": "停机",
+          "pinyin": "tíngjī",
+          "ja": "設備停止"
+        },
+        {
+          "zh": "周期",
+          "pinyin": "zhōuqī",
+          "ja": "周期、サイクル"
+        },
+        {
+          "zh": "课题",
+          "pinyin": "kètí",
+          "ja": "課題、研究テーマ"
         }
       ]
     },
@@ -3762,6 +5130,158 @@
             "pinyin": "Xuéhuì zài jízhōng sīkǎo hé shìdàng fàngsōng zhījiān qiēhuàn, yěxǔ shì tígāo chángqī gōngzuò xiàolǜ de yí xiàng zhòngyào nénglì.",
             "ja": "集中して考えることと適度にリラックスすることを切り替える能力は、長期的な仕事の効率を高める重要な力かもしれない。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "经历",
+          "pinyin": "jīnglì",
+          "ja": "経験、経験する"
+        },
+        {
+          "zh": "始终",
+          "pinyin": "shǐzhōng",
+          "ja": "終始、ずっと"
+        },
+        {
+          "zh": "暂时",
+          "pinyin": "zànshí",
+          "ja": "一時的に"
+        },
+        {
+          "zh": "散步",
+          "pinyin": "sànbù",
+          "ja": "散歩する"
+        },
+        {
+          "zh": "反而",
+          "pinyin": "fǎn'ér",
+          "ja": "かえって"
+        },
+        {
+          "zh": "脑海",
+          "pinyin": "nǎohǎi",
+          "ja": "頭の中、脳裏"
+        },
+        {
+          "zh": "现象",
+          "pinyin": "xiànxiàng",
+          "ja": "現象"
+        },
+        {
+          "zh": "罕见",
+          "pinyin": "hǎnjiàn",
+          "ja": "珍しい"
+        },
+        {
+          "zh": "心理学",
+          "pinyin": "xīnlǐxué",
+          "ja": "心理学"
+        },
+        {
+          "zh": "专心",
+          "pinyin": "zhuānxīn",
+          "ja": "集中する"
+        },
+        {
+          "zh": "逻辑",
+          "pinyin": "luójí",
+          "ja": "論理、ロジック"
+        },
+        {
+          "zh": "忽略",
+          "pinyin": "hūlüè",
+          "ja": "見落とす、無視する"
+        },
+        {
+          "zh": "摆脱",
+          "pinyin": "bǎituō",
+          "ja": "抜け出す"
+        },
+        {
+          "zh": "思路",
+          "pinyin": "sīlù",
+          "ja": "考え方、思考の筋道"
+        },
+        {
+          "zh": "主动",
+          "pinyin": "zhǔdòng",
+          "ja": "自発的に、積極的に"
+        },
+        {
+          "zh": "处理",
+          "pinyin": "chǔlǐ",
+          "ja": "処理する"
+        },
+        {
+          "zh": "转移",
+          "pinyin": "zhuǎnyí",
+          "ja": "移す、移転する"
+        },
+        {
+          "zh": "联系",
+          "pinyin": "liánxì",
+          "ja": "関係、つながり"
+        },
+        {
+          "zh": "概念",
+          "pinyin": "gàiniàn",
+          "ja": "概念"
+        },
+        {
+          "zh": "酝酿",
+          "pinyin": "yùnniàng",
+          "ja": "構想を練る、醸成する"
+        },
+        {
+          "zh": "效应",
+          "pinyin": "xiàoyìng",
+          "ja": "効果、作用"
+        },
+        {
+          "zh": "改善",
+          "pinyin": "gǎishàn",
+          "ja": "改善する"
+        },
+        {
+          "zh": "充分",
+          "pinyin": "chōngfèn",
+          "ja": "十分に"
+        },
+        {
+          "zh": "缺乏",
+          "pinyin": "quēfá",
+          "ja": "欠ける、不足する"
+        },
+        {
+          "zh": "灵感",
+          "pinyin": "línggǎn",
+          "ja": "ひらめき"
+        },
+        {
+          "zh": "创造力",
+          "pinyin": "chuàngzàolì",
+          "ja": "創造力"
+        },
+        {
+          "zh": "假设",
+          "pinyin": "jiǎshè",
+          "ja": "仮説"
+        },
+        {
+          "zh": "阻碍",
+          "pinyin": "zǔ'ài",
+          "ja": "妨げる、障害"
+        },
+        {
+          "zh": "验证",
+          "pinyin": "yànzhèng",
+          "ja": "検証する"
+        },
+        {
+          "zh": "切换",
+          "pinyin": "qiēhuàn",
+          "ja": "切り替える"
         }
       ]
     },
@@ -4143,6 +5663,158 @@
             "ja": "デジタル技術は生活を便利にする一方で、財産、プライバシー、責任の関係を改めて考えることも求めている。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "深入",
+          "pinyin": "shēnrù",
+          "ja": "深く入り込む"
+        },
+        {
+          "zh": "保存",
+          "pinyin": "bǎocún",
+          "ja": "保存する"
+        },
+        {
+          "zh": "账户",
+          "pinyin": "zhànghù",
+          "ja": "アカウント、口座"
+        },
+        {
+          "zh": "资产",
+          "pinyin": "zīchǎn",
+          "ja": "資産"
+        },
+        {
+          "zh": "去世",
+          "pinyin": "qùshì",
+          "ja": "亡くなる"
+        },
+        {
+          "zh": "遗产",
+          "pinyin": "yíchǎn",
+          "ja": "遺産"
+        },
+        {
+          "zh": "财产",
+          "pinyin": "cáichǎn",
+          "ja": "財産"
+        },
+        {
+          "zh": "密码",
+          "pinyin": "mìmǎ",
+          "ja": "パスワード"
+        },
+        {
+          "zh": "规则",
+          "pinyin": "guīzé",
+          "ja": "規則"
+        },
+        {
+          "zh": "限制",
+          "pinyin": "xiànzhì",
+          "ja": "制限"
+        },
+        {
+          "zh": "云端",
+          "pinyin": "yúnduān",
+          "ja": "クラウド上"
+        },
+        {
+          "zh": "珍贵",
+          "pinyin": "zhēnguì",
+          "ja": "貴重な、大切な"
+        },
+        {
+          "zh": "回忆",
+          "pinyin": "huíyì",
+          "ja": "思い出"
+        },
+        {
+          "zh": "登录",
+          "pinyin": "dēnglù",
+          "ja": "ログインする"
+        },
+        {
+          "zh": "亲属",
+          "pinyin": "qīnshǔ",
+          "ja": "親族"
+        },
+        {
+          "zh": "侵犯",
+          "pinyin": "qīnfàn",
+          "ja": "侵害する"
+        },
+        {
+          "zh": "隐私",
+          "pinyin": "yǐnsī",
+          "ja": "プライバシー"
+        },
+        {
+          "zh": "意愿",
+          "pinyin": "yìyuàn",
+          "ja": "意思、意向"
+        },
+        {
+          "zh": "指定",
+          "pinyin": "zhǐdìng",
+          "ja": "指定する"
+        },
+        {
+          "zh": "一致",
+          "pinyin": "yízhì",
+          "ja": "一致する"
+        },
+        {
+          "zh": "差异",
+          "pinyin": "chāyì",
+          "ja": "差異"
+        },
+        {
+          "zh": "所有权",
+          "pinyin": "suǒyǒuquán",
+          "ja": "所有権"
+        },
+        {
+          "zh": "许可",
+          "pinyin": "xǔkě",
+          "ja": "許可、ライセンス"
+        },
+        {
+          "zh": "明显",
+          "pinyin": "míngxiǎn",
+          "ja": "明らかな"
+        },
+        {
+          "zh": "继承",
+          "pinyin": "jìchéng",
+          "ja": "相続する"
+        },
+        {
+          "zh": "范围",
+          "pinyin": "fànwéi",
+          "ja": "範囲"
+        },
+        {
+          "zh": "整理",
+          "pinyin": "zhěnglǐ",
+          "ja": "整理する"
+        },
+        {
+          "zh": "删除",
+          "pinyin": "shānchú",
+          "ja": "削除する"
+        },
+        {
+          "zh": "备份",
+          "pinyin": "bèifèn",
+          "ja": "バックアップ"
+        },
+        {
+          "zh": "责任",
+          "pinyin": "zérèn",
+          "ja": "責任"
+        }
       ]
     },
     {
@@ -4423,6 +6095,158 @@
             "ja": "将来、高齢者が暮らしやすい社会かどうかは、医療環境だけでなく、尊厳や自己決定、社会参加が保たれるかでも評価すべきだ。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "平均",
+          "pinyin": "píngjūn",
+          "ja": "平均"
+        },
+        {
+          "zh": "寿命",
+          "pinyin": "shòumìng",
+          "ja": "寿命"
+        },
+        {
+          "zh": "老龄化",
+          "pinyin": "lǎolínghuà",
+          "ja": "高齢化"
+        },
+        {
+          "zh": "面临",
+          "pinyin": "miànlín",
+          "ja": "直面する"
+        },
+        {
+          "zh": "养老",
+          "pinyin": "yǎnglǎo",
+          "ja": "高齢者の生活・介護"
+        },
+        {
+          "zh": "负担",
+          "pinyin": "fùdān",
+          "ja": "負担"
+        },
+        {
+          "zh": "角度",
+          "pinyin": "jiǎodù",
+          "ja": "観点、角度"
+        },
+        {
+          "zh": "围绕",
+          "pinyin": "wéirào",
+          "ja": "～を中心に"
+        },
+        {
+          "zh": "涉及",
+          "pinyin": "shèjí",
+          "ja": "関係する、及ぶ"
+        },
+        {
+          "zh": "开发",
+          "pinyin": "kāifā",
+          "ja": "開発する"
+        },
+        {
+          "zh": "操作",
+          "pinyin": "cāozuò",
+          "ja": "操作する"
+        },
+        {
+          "zh": "轻松",
+          "pinyin": "qīngsōng",
+          "ja": "気楽な、簡単に"
+        },
+        {
+          "zh": "远程",
+          "pinyin": "yuǎnchéng",
+          "ja": "遠隔の"
+        },
+        {
+          "zh": "控制",
+          "pinyin": "kòngzhì",
+          "ja": "制御する"
+        },
+        {
+          "zh": "咨询",
+          "pinyin": "zīxún",
+          "ja": "相談する"
+        },
+        {
+          "zh": "改善",
+          "pinyin": "gǎishàn",
+          "ja": "改善する"
+        },
+        {
+          "zh": "传感器",
+          "pinyin": "chuángǎnqì",
+          "ja": "センサー"
+        },
+        {
+          "zh": "监测",
+          "pinyin": "jiāncè",
+          "ja": "監視・測定する"
+        },
+        {
+          "zh": "异常",
+          "pinyin": "yìcháng",
+          "ja": "異常"
+        },
+        {
+          "zh": "提醒",
+          "pinyin": "tíxǐng",
+          "ja": "注意を促す、通知"
+        },
+        {
+          "zh": "代替",
+          "pinyin": "dàitì",
+          "ja": "代替する"
+        },
+        {
+          "zh": "发挥",
+          "pinyin": "fāhuī",
+          "ja": "発揮する"
+        },
+        {
+          "zh": "担忧",
+          "pinyin": "dānyōu",
+          "ja": "懸念"
+        },
+        {
+          "zh": "优先",
+          "pinyin": "yōuxiān",
+          "ja": "優先する"
+        },
+        {
+          "zh": "群体",
+          "pinyin": "qúntǐ",
+          "ja": "集団、グループ"
+        },
+        {
+          "zh": "参与",
+          "pinyin": "cānyù",
+          "ja": "参加する"
+        },
+        {
+          "zh": "经营",
+          "pinyin": "jīngyíng",
+          "ja": "経営する"
+        },
+        {
+          "zh": "优势",
+          "pinyin": "yōushì",
+          "ja": "優位性、強み"
+        },
+        {
+          "zh": "差距",
+          "pinyin": "chājù",
+          "ja": "格差、差"
+        },
+        {
+          "zh": "尊严",
+          "pinyin": "zūnyán",
+          "ja": "尊厳"
+        }
       ]
     },
     {
@@ -4672,6 +6496,158 @@
             "pinyin": "Wèilái, réngōng zhìnéng kěnéng bāngzhù gōngchéngshī gèng kuài de fāxiàn fùzá de shùjù biànhuà, dàn zuìzhōng de wéixiū juécè réngrán xūyào jiéhé xiànchǎng jīngyàn hé ānquán yāoqiú.",
             "ja": "将来AIは複雑なデータ変化の発見を支援できるだろうが、最終的な保全判断には現場経験と安全要件を組み合わせる必要がある。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "依靠",
+          "pinyin": "yīkào",
+          "ja": "頼る、依存する"
+        },
+        {
+          "zh": "定期",
+          "pinyin": "dìngqī",
+          "ja": "定期的に"
+        },
+        {
+          "zh": "维修",
+          "pinyin": "wéixiū",
+          "ja": "修理・整備する"
+        },
+        {
+          "zh": "规定",
+          "pinyin": "guīdìng",
+          "ja": "規定する"
+        },
+        {
+          "zh": "更换",
+          "pinyin": "gēnghuàn",
+          "ja": "交換する"
+        },
+        {
+          "zh": "零件",
+          "pinyin": "língjiàn",
+          "ja": "部品"
+        },
+        {
+          "zh": "不足",
+          "pinyin": "bùzú",
+          "ja": "不足、欠点"
+        },
+        {
+          "zh": "拆开",
+          "pinyin": "chāikāi",
+          "ja": "分解する、開ける"
+        },
+        {
+          "zh": "造成",
+          "pinyin": "zàochéng",
+          "ja": "引き起こす"
+        },
+        {
+          "zh": "导致",
+          "pinyin": "dǎozhì",
+          "ja": "～という結果を招く"
+        },
+        {
+          "zh": "预测",
+          "pinyin": "yùcè",
+          "ja": "予測する"
+        },
+        {
+          "zh": "维护",
+          "pinyin": "wéihù",
+          "ja": "保守する、維持する"
+        },
+        {
+          "zh": "传感器",
+          "pinyin": "chuángǎnqì",
+          "ja": "センサー"
+        },
+        {
+          "zh": "判断",
+          "pinyin": "pànduàn",
+          "ja": "判断する"
+        },
+        {
+          "zh": "连续",
+          "pinyin": "liánxù",
+          "ja": "連続した"
+        },
+        {
+          "zh": "监测",
+          "pinyin": "jiāncè",
+          "ja": "監視・測定する"
+        },
+        {
+          "zh": "振动",
+          "pinyin": "zhèndòng",
+          "ja": "振動"
+        },
+        {
+          "zh": "电流",
+          "pinyin": "diànliú",
+          "ja": "電流"
+        },
+        {
+          "zh": "偏离",
+          "pinyin": "piānlí",
+          "ja": "逸脱する、外れる"
+        },
+        {
+          "zh": "范围",
+          "pinyin": "fànwéi",
+          "ja": "範囲"
+        },
+        {
+          "zh": "警报",
+          "pinyin": "jǐngbào",
+          "ja": "警報"
+        },
+        {
+          "zh": "提醒",
+          "pinyin": "tíxǐng",
+          "ja": "注意を促す"
+        },
+        {
+          "zh": "收集",
+          "pinyin": "shōují",
+          "ja": "収集する"
+        },
+        {
+          "zh": "可靠",
+          "pinyin": "kěkào",
+          "ja": "信頼できる"
+        },
+        {
+          "zh": "区分",
+          "pinyin": "qūfēn",
+          "ja": "区別する"
+        },
+        {
+          "zh": "频繁",
+          "pinyin": "pínfán",
+          "ja": "頻繁な"
+        },
+        {
+          "zh": "概率",
+          "pinyin": "gàilǜ",
+          "ja": "確率"
+        },
+        {
+          "zh": "收益",
+          "pinyin": "shōuyì",
+          "ja": "収益、利益"
+        },
+        {
+          "zh": "决策",
+          "pinyin": "juécè",
+          "ja": "意思決定"
+        },
+        {
+          "zh": "追求",
+          "pinyin": "zhuīqiú",
+          "ja": "追求する"
         }
       ]
     },
@@ -5013,6 +6989,158 @@
             "ja": "目先の少額支払いだけでなく長期コストに注目できれば、家計をより主体的に管理できる。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "订阅",
+          "pinyin": "dìngyuè",
+          "ja": "定期購読・契約する"
+        },
+        {
+          "zh": "支付",
+          "pinyin": "zhīfù",
+          "ja": "支払う"
+        },
+        {
+          "zh": "金额",
+          "pinyin": "jīn'é",
+          "ja": "金額"
+        },
+        {
+          "zh": "似乎",
+          "pinyin": "sìhū",
+          "ja": "～のようだ"
+        },
+        {
+          "zh": "压力",
+          "pinyin": "yālì",
+          "ja": "プレッシャー、負担"
+        },
+        {
+          "zh": "开支",
+          "pinyin": "kāizhī",
+          "ja": "支出"
+        },
+        {
+          "zh": "理性",
+          "pinyin": "lǐxìng",
+          "ja": "理性、合理性"
+        },
+        {
+          "zh": "往往",
+          "pinyin": "wǎngwǎng",
+          "ja": "往々にして"
+        },
+        {
+          "zh": "忽略",
+          "pinyin": "hūlüè",
+          "ja": "見落とす"
+        },
+        {
+          "zh": "积累",
+          "pinyin": "jīlěi",
+          "ja": "蓄積する"
+        },
+        {
+          "zh": "试用",
+          "pinyin": "shìyòng",
+          "ja": "試用する"
+        },
+        {
+          "zh": "体验",
+          "pinyin": "tǐyàn",
+          "ja": "体験する"
+        },
+        {
+          "zh": "障碍",
+          "pinyin": "zhàng'ài",
+          "ja": "障害、ハードル"
+        },
+        {
+          "zh": "扣费",
+          "pinyin": "kòufèi",
+          "ja": "料金を引き落とす"
+        },
+        {
+          "zh": "手续",
+          "pinyin": "shǒuxù",
+          "ja": "手続き"
+        },
+        {
+          "zh": "退订",
+          "pinyin": "tuìdìng",
+          "ja": "契約を解除する"
+        },
+        {
+          "zh": "拥有",
+          "pinyin": "yōngyǒu",
+          "ja": "所有する"
+        },
+        {
+          "zh": "模式",
+          "pinyin": "móshì",
+          "ja": "方式、モデル"
+        },
+        {
+          "zh": "相对",
+          "pinyin": "xiāngduì",
+          "ja": "比較的、相対的に"
+        },
+        {
+          "zh": "经营",
+          "pinyin": "jīngyíng",
+          "ja": "経営する"
+        },
+        {
+          "zh": "重视",
+          "pinyin": "zhòngshì",
+          "ja": "重視する"
+        },
+        {
+          "zh": "信任",
+          "pinyin": "xìnrèn",
+          "ja": "信頼"
+        },
+        {
+          "zh": "持续",
+          "pinyin": "chíxù",
+          "ja": "持続する"
+        },
+        {
+          "zh": "账单",
+          "pinyin": "zhàngdān",
+          "ja": "請求書、利用明細"
+        },
+        {
+          "zh": "频率",
+          "pinyin": "pínlǜ",
+          "ja": "頻度"
+        },
+        {
+          "zh": "确实",
+          "pinyin": "quèshí",
+          "ja": "確かに、実際に"
+        },
+        {
+          "zh": "暂停",
+          "pinyin": "zàntíng",
+          "ja": "一時停止する"
+        },
+        {
+          "zh": "标准",
+          "pinyin": "biāozhǔn",
+          "ja": "基準"
+        },
+        {
+          "zh": "支出",
+          "pinyin": "zhīchū",
+          "ja": "支出"
+        },
+        {
+          "zh": "财务",
+          "pinyin": "cáiwù",
+          "ja": "財務、家計"
+        }
       ]
     },
     {
@@ -5343,6 +7471,158 @@
             "ja": "消費者も使用済み電池を適切な回収ルートに渡し、勝手に廃棄すべきではない。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "普及",
+          "pinyin": "pǔjí",
+          "ja": "普及する"
+        },
+        {
+          "zh": "动力电池",
+          "pinyin": "dònglì diànchí",
+          "ja": "駆動用電池"
+        },
+        {
+          "zh": "满足",
+          "pinyin": "mǎnzú",
+          "ja": "満たす"
+        },
+        {
+          "zh": "检测",
+          "pinyin": "jiǎncè",
+          "ja": "検査・測定する"
+        },
+        {
+          "zh": "储能",
+          "pinyin": "chǔnéng",
+          "ja": "エネルギー貯蔵、蓄電"
+        },
+        {
+          "zh": "用途",
+          "pinyin": "yòngtú",
+          "ja": "用途"
+        },
+        {
+          "zh": "梯次利用",
+          "pinyin": "tīcì lìyòng",
+          "ja": "カスケード利用"
+        },
+        {
+          "zh": "适合",
+          "pinyin": "shìhé",
+          "ja": "適している"
+        },
+        {
+          "zh": "严重",
+          "pinyin": "yánzhòng",
+          "ja": "深刻な、重大な"
+        },
+        {
+          "zh": "损坏",
+          "pinyin": "sǔnhuài",
+          "ja": "損傷する"
+        },
+        {
+          "zh": "状态",
+          "pinyin": "zhuàngtài",
+          "ja": "状態"
+        },
+        {
+          "zh": "回收",
+          "pinyin": "huíshōu",
+          "ja": "回収・リサイクルする"
+        },
+        {
+          "zh": "金属",
+          "pinyin": "jīnshǔ",
+          "ja": "金属"
+        },
+        {
+          "zh": "锂",
+          "pinyin": "lǐ",
+          "ja": "リチウム"
+        },
+        {
+          "zh": "镍",
+          "pinyin": "niè",
+          "ja": "ニッケル"
+        },
+        {
+          "zh": "钴",
+          "pinyin": "gǔ",
+          "ja": "コバルト"
+        },
+        {
+          "zh": "开采",
+          "pinyin": "kāicǎi",
+          "ja": "採掘する"
+        },
+        {
+          "zh": "加工",
+          "pinyin": "jiāgōng",
+          "ja": "加工する"
+        },
+        {
+          "zh": "原料",
+          "pinyin": "yuánliào",
+          "ja": "原料"
+        },
+        {
+          "zh": "依赖",
+          "pinyin": "yīlài",
+          "ja": "依存する"
+        },
+        {
+          "zh": "涉及",
+          "pinyin": "shèjí",
+          "ja": "関係する、含む"
+        },
+        {
+          "zh": "拆解",
+          "pinyin": "chāijiě",
+          "ja": "解体する"
+        },
+        {
+          "zh": "分离",
+          "pinyin": "fēnlí",
+          "ja": "分離する"
+        },
+        {
+          "zh": "提取",
+          "pinyin": "tíqǔ",
+          "ja": "抽出する"
+        },
+        {
+          "zh": "工艺",
+          "pinyin": "gōngyì",
+          "ja": "製造工程、プロセス"
+        },
+        {
+          "zh": "溶液",
+          "pinyin": "róngyè",
+          "ja": "溶液"
+        },
+        {
+          "zh": "废物",
+          "pinyin": "fèiwù",
+          "ja": "廃棄物"
+        },
+        {
+          "zh": "收益",
+          "pinyin": "shōuyì",
+          "ja": "収益、利益"
+        },
+        {
+          "zh": "制定",
+          "pinyin": "zhìdìng",
+          "ja": "制定する"
+        },
+        {
+          "zh": "渠道",
+          "pinyin": "qúdào",
+          "ja": "経路、ルート"
+        }
       ]
     },
     {
@@ -5663,6 +7943,158 @@
             "ja": "将来、AIや自動制御技術の発展によって、電力需要をより柔軟に調整できるようになるかもしれない。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "发电",
+          "pinyin": "fādiàn",
+          "ja": "発電する"
+        },
+        {
+          "zh": "电价",
+          "pinyin": "diànjià",
+          "ja": "電力価格"
+        },
+        {
+          "zh": "负数",
+          "pinyin": "fùshù",
+          "ja": "負の数"
+        },
+        {
+          "zh": "批发",
+          "pinyin": "pīfā",
+          "ja": "卸売り"
+        },
+        {
+          "zh": "时段",
+          "pinyin": "shíduàn",
+          "ja": "時間帯"
+        },
+        {
+          "zh": "供需",
+          "pinyin": "gōngxū",
+          "ja": "需給"
+        },
+        {
+          "zh": "平衡",
+          "pinyin": "pínghéng",
+          "ja": "バランス"
+        },
+        {
+          "zh": "电网",
+          "pinyin": "diànwǎng",
+          "ja": "電力網"
+        },
+        {
+          "zh": "充足",
+          "pinyin": "chōngzú",
+          "ja": "十分な、豊富な"
+        },
+        {
+          "zh": "迅速",
+          "pinyin": "xùnsù",
+          "ja": "迅速な"
+        },
+        {
+          "zh": "过剩",
+          "pinyin": "guòshèng",
+          "ja": "過剰"
+        },
+        {
+          "zh": "储存",
+          "pinyin": "chǔcún",
+          "ja": "貯蔵する"
+        },
+        {
+          "zh": "规模",
+          "pinyin": "guīmó",
+          "ja": "規模"
+        },
+        {
+          "zh": "容量",
+          "pinyin": "róngliàng",
+          "ja": "容量"
+        },
+        {
+          "zh": "限制",
+          "pinyin": "xiànzhì",
+          "ja": "制限"
+        },
+        {
+          "zh": "多余",
+          "pinyin": "duōyú",
+          "ja": "余分な"
+        },
+        {
+          "zh": "启动",
+          "pinyin": "qǐdòng",
+          "ja": "起動する"
+        },
+        {
+          "zh": "宁愿",
+          "pinyin": "nìngyuàn",
+          "ja": "むしろ～したい"
+        },
+        {
+          "zh": "出售",
+          "pinyin": "chūshòu",
+          "ja": "販売する"
+        },
+        {
+          "zh": "立即",
+          "pinyin": "lìjí",
+          "ja": "直ちに"
+        },
+        {
+          "zh": "反映",
+          "pinyin": "fǎnyìng",
+          "ja": "反映する、示す"
+        },
+        {
+          "zh": "匹配",
+          "pinyin": "pǐpèi",
+          "ja": "一致する、適合する"
+        },
+        {
+          "zh": "转移",
+          "pinyin": "zhuǎnyí",
+          "ja": "移す、移転する"
+        },
+        {
+          "zh": "浪费",
+          "pinyin": "làngfèi",
+          "ja": "無駄にする"
+        },
+        {
+          "zh": "前提",
+          "pinyin": "qiántí",
+          "ja": "前提"
+        },
+        {
+          "zh": "调整",
+          "pinyin": "tiáozhěng",
+          "ja": "調整する"
+        },
+        {
+          "zh": "释放",
+          "pinyin": "shìfàng",
+          "ja": "放出する"
+        },
+        {
+          "zh": "综合",
+          "pinyin": "zōnghé",
+          "ja": "総合する"
+        },
+        {
+          "zh": "收益",
+          "pinyin": "shōuyì",
+          "ja": "収益"
+        },
+        {
+          "zh": "灵活",
+          "pinyin": "línghuó",
+          "ja": "柔軟な"
+        }
       ]
     },
     {
@@ -5942,6 +8374,158 @@
             "pinyin": "Zhēnzhèng yǒuxiào de xuéxí, bú shì zhuīqiú yì tiān jìzhù duōshao zhīshi, ér shì ràng xué guo de zhīshi zài xūyào de shíhou nénggòu zìrán de yùnyòng chūlái.",
             "ja": "本当に効果的な学習とは、一日に覚える量を追求するのではなく、必要なときに学んだ知識を自然に使えるようにすることだ。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "经历",
+          "pinyin": "jīnglì",
+          "ja": "経験"
+        },
+        {
+          "zh": "明明",
+          "pinyin": "míngmíng",
+          "ja": "明らかに～なのに"
+        },
+        {
+          "zh": "理想",
+          "pinyin": "lǐxiǎng",
+          "ja": "理想的な"
+        },
+        {
+          "zh": "表明",
+          "pinyin": "biǎomíng",
+          "ja": "明らかにする、示す"
+        },
+        {
+          "zh": "取决于",
+          "pinyin": "qǔjué yú",
+          "ja": "～によって決まる"
+        },
+        {
+          "zh": "投入",
+          "pinyin": "tóurù",
+          "ja": "投入する"
+        },
+        {
+          "zh": "安排",
+          "pinyin": "ānpái",
+          "ja": "手配・計画する"
+        },
+        {
+          "zh": "复习",
+          "pinyin": "fùxí",
+          "ja": "復習する"
+        },
+        {
+          "zh": "间隔",
+          "pinyin": "jiàngé",
+          "ja": "間隔"
+        },
+        {
+          "zh": "分散",
+          "pinyin": "fēnsàn",
+          "ja": "分散する"
+        },
+        {
+          "zh": "反复",
+          "pinyin": "fǎnfù",
+          "ja": "繰り返し"
+        },
+        {
+          "zh": "背单词",
+          "pinyin": "bèi dāncí",
+          "ja": "単語を暗記する"
+        },
+        {
+          "zh": "记忆",
+          "pinyin": "jìyì",
+          "ja": "記憶"
+        },
+        {
+          "zh": "回忆",
+          "pinyin": "huíyì",
+          "ja": "思い出す"
+        },
+        {
+          "zh": "加强",
+          "pinyin": "jiāqiáng",
+          "ja": "強化する"
+        },
+        {
+          "zh": "意味着",
+          "pinyin": "yìwèizhe",
+          "ja": "～を意味する"
+        },
+        {
+          "zh": "次数",
+          "pinyin": "cìshù",
+          "ja": "回数"
+        },
+        {
+          "zh": "熟悉",
+          "pinyin": "shúxī",
+          "ja": "よく知っている"
+        },
+        {
+          "zh": "掌握",
+          "pinyin": "zhǎngwò",
+          "ja": "習得する、把握する"
+        },
+        {
+          "zh": "导致",
+          "pinyin": "dǎozhì",
+          "ja": "引き起こす"
+        },
+        {
+          "zh": "程度",
+          "pinyin": "chéngdù",
+          "ja": "程度"
+        },
+        {
+          "zh": "调整",
+          "pinyin": "tiáozhěng",
+          "ja": "調整する"
+        },
+        {
+          "zh": "主动",
+          "pinyin": "zhǔdòng",
+          "ja": "主体的に、自発的に"
+        },
+        {
+          "zh": "效率",
+          "pinyin": "xiàolǜ",
+          "ja": "効率"
+        },
+        {
+          "zh": "表达",
+          "pinyin": "biǎodá",
+          "ja": "表現する"
+        },
+        {
+          "zh": "独立",
+          "pinyin": "dúlì",
+          "ja": "独立して、自力で"
+        },
+        {
+          "zh": "反而",
+          "pinyin": "fǎn'ér",
+          "ja": "かえって"
+        },
+        {
+          "zh": "坚持",
+          "pinyin": "jiānchí",
+          "ja": "続ける、やり抜く"
+        },
+        {
+          "zh": "偶尔",
+          "pinyin": "ǒu'ěr",
+          "ja": "たまに"
+        },
+        {
+          "zh": "运用",
+          "pinyin": "yùnyòng",
+          "ja": "活用する"
         }
       ]
     },
@@ -6252,6 +8836,158 @@
             "pinyin": "Duìyú qǐyè lái shuō, zhòngyào de bú shì wánquán bìmiǎn fēngxiǎn, ér shì tíqián zuò hǎo zhǔnbèi, bìng zài wèntí fāshēng shí xùnsù cǎiqǔ xíngdòng.",
             "ja": "企業にとって重要なのはリスクを完全になくすことではなく、事前に備え、問題発生時に迅速に行動することだ。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "跨国",
+          "pinyin": "kuàguó",
+          "ja": "国境を越えた、多国籍の"
+        },
+        {
+          "zh": "供应商",
+          "pinyin": "gōngyìngshāng",
+          "ja": "サプライヤー、仕入先"
+        },
+        {
+          "zh": "因素",
+          "pinyin": "yīnsù",
+          "ja": "要因"
+        },
+        {
+          "zh": "集中",
+          "pinyin": "jízhōng",
+          "ja": "集中する"
+        },
+        {
+          "zh": "依靠",
+          "pinyin": "yīkào",
+          "ja": "頼る、依存する"
+        },
+        {
+          "zh": "顺利",
+          "pinyin": "shùnlì",
+          "ja": "順調な"
+        },
+        {
+          "zh": "灾害",
+          "pinyin": "zāihài",
+          "ja": "災害"
+        },
+        {
+          "zh": "冲突",
+          "pinyin": "chōngtū",
+          "ja": "衝突、紛争"
+        },
+        {
+          "zh": "中断",
+          "pinyin": "zhōngduàn",
+          "ja": "中断する"
+        },
+        {
+          "zh": "意识到",
+          "pinyin": "yìshí dào",
+          "ja": "認識する、気づく"
+        },
+        {
+          "zh": "关键",
+          "pinyin": "guānjiàn",
+          "ja": "重要な、鍵となる"
+        },
+        {
+          "zh": "被迫",
+          "pinyin": "bèipò",
+          "ja": "余儀なくされる"
+        },
+        {
+          "zh": "韧性",
+          "pinyin": "rènxìng",
+          "ja": "強靭性、回復力"
+        },
+        {
+          "zh": "冲击",
+          "pinyin": "chōngjī",
+          "ja": "衝撃"
+        },
+        {
+          "zh": "维持",
+          "pinyin": "wéichí",
+          "ja": "維持する"
+        },
+        {
+          "zh": "恢复",
+          "pinyin": "huīfù",
+          "ja": "回復する"
+        },
+        {
+          "zh": "渠道",
+          "pinyin": "qúdào",
+          "ja": "経路、ルート"
+        },
+        {
+          "zh": "上游",
+          "pinyin": "shàngyóu",
+          "ja": "上流、川上"
+        },
+        {
+          "zh": "适当",
+          "pinyin": "shìdàng",
+          "ja": "適切な、適度な"
+        },
+        {
+          "zh": "库存",
+          "pinyin": "kùcún",
+          "ja": "在庫"
+        },
+        {
+          "zh": "应对",
+          "pinyin": "yìngduì",
+          "ja": "対応する"
+        },
+        {
+          "zh": "占用",
+          "pinyin": "zhànyòng",
+          "ja": "占有する、拘束する"
+        },
+        {
+          "zh": "资金",
+          "pinyin": "zījīn",
+          "ja": "資金"
+        },
+        {
+          "zh": "仓储",
+          "pinyin": "cāngchǔ",
+          "ja": "倉庫保管"
+        },
+        {
+          "zh": "过期",
+          "pinyin": "guòqī",
+          "ja": "期限が切れる"
+        },
+        {
+          "zh": "潜在",
+          "pinyin": "qiánzài",
+          "ja": "潜在的な"
+        },
+        {
+          "zh": "拥堵",
+          "pinyin": "yōngdǔ",
+          "ja": "混雑、渋滞"
+        },
+        {
+          "zh": "路线",
+          "pinyin": "lùxiàn",
+          "ja": "ルート、経路"
+        },
+        {
+          "zh": "准确",
+          "pinyin": "zhǔnquè",
+          "ja": "正確な"
+        },
+        {
+          "zh": "采取",
+          "pinyin": "cǎiqǔ",
+          "ja": "採用する、講じる"
         }
       ]
     },
@@ -6593,6 +9329,158 @@
             "ja": "真に強靭な都市とは、洪水を絶対に起こさない都市ではなく、異常気象に直面しても被害を抑え、速やかに日常生活を回復できる都市だ。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "暴雨",
+          "pinyin": "bàoyǔ",
+          "ja": "豪雨"
+        },
+        {
+          "zh": "积水",
+          "pinyin": "jīshuǐ",
+          "ja": "水がたまること、冠水"
+        },
+        {
+          "zh": "关注",
+          "pinyin": "guānzhù",
+          "ja": "関心を寄せる"
+        },
+        {
+          "zh": "覆盖",
+          "pinyin": "fùgài",
+          "ja": "覆う"
+        },
+        {
+          "zh": "排水",
+          "pinyin": "páishuǐ",
+          "ja": "排水する"
+        },
+        {
+          "zh": "管道",
+          "pinyin": "guǎndào",
+          "ja": "配管、管路"
+        },
+        {
+          "zh": "降雨量",
+          "pinyin": "jiàngyǔliàng",
+          "ja": "降雨量"
+        },
+        {
+          "zh": "来不及",
+          "pinyin": "láibují",
+          "ja": "間に合わない"
+        },
+        {
+          "zh": "淹",
+          "pinyin": "yān",
+          "ja": "水没させる"
+        },
+        {
+          "zh": "采用",
+          "pinyin": "cǎiyòng",
+          "ja": "採用する"
+        },
+        {
+          "zh": "理念",
+          "pinyin": "lǐniàn",
+          "ja": "理念、考え方"
+        },
+        {
+          "zh": "海绵",
+          "pinyin": "hǎimián",
+          "ja": "スポンジ"
+        },
+        {
+          "zh": "吸收",
+          "pinyin": "xīshōu",
+          "ja": "吸収する"
+        },
+        {
+          "zh": "储存",
+          "pinyin": "chǔcún",
+          "ja": "貯蔵する"
+        },
+        {
+          "zh": "释放",
+          "pinyin": "shìfàng",
+          "ja": "放出する"
+        },
+        {
+          "zh": "下沉",
+          "pinyin": "xiàchén",
+          "ja": "沈下する、低くなる"
+        },
+        {
+          "zh": "透水",
+          "pinyin": "tòushuǐ",
+          "ja": "水を通す、透水性"
+        },
+        {
+          "zh": "湿地",
+          "pinyin": "shīdì",
+          "ja": "湿地"
+        },
+        {
+          "zh": "暂时",
+          "pinyin": "zànshí",
+          "ja": "一時的に"
+        },
+        {
+          "zh": "减轻",
+          "pinyin": "jiǎnqīng",
+          "ja": "軽減する"
+        },
+        {
+          "zh": "内涝",
+          "pinyin": "nèilào",
+          "ja": "内水氾濫"
+        },
+        {
+          "zh": "土壤",
+          "pinyin": "tǔrǎng",
+          "ja": "土壌"
+        },
+        {
+          "zh": "因地制宜",
+          "pinyin": "yīn dì zhì yí",
+          "ja": "地域の実情に合わせる"
+        },
+        {
+          "zh": "渗透",
+          "pinyin": "shèntòu",
+          "ja": "浸透する"
+        },
+        {
+          "zh": "防洪",
+          "pinyin": "fánghóng",
+          "ja": "洪水防止"
+        },
+        {
+          "zh": "维护",
+          "pinyin": "wéihù",
+          "ja": "維持・保守する"
+        },
+        {
+          "zh": "忽视",
+          "pinyin": "hūshì",
+          "ja": "軽視する"
+        },
+        {
+          "zh": "措施",
+          "pinyin": "cuòshī",
+          "ja": "措置、対策"
+        },
+        {
+          "zh": "韧性",
+          "pinyin": "rènxìng",
+          "ja": "強靭性、回復力"
+        },
+        {
+          "zh": "极端",
+          "pinyin": "jíduān",
+          "ja": "極端な"
+        }
       ]
     },
     {
@@ -6842,6 +9730,158 @@
             "pinyin": "Dànshì, zhè zhǒng chāyì bù yídìng shuōmíng shèbèi fāshēng le gùzhàng, yě kěnéng shì chuángǎnqì wùchā huòzhě móxíng běnshēn bú gòu zhǔnquè.",
             "ja": "しかし、この差は必ずしも設備故障を示すわけではなく、センサー誤差やモデル精度不足の可能性もある。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "数字孪生",
+          "pinyin": "shùzì luánshēng",
+          "ja": "デジタルツイン"
+        },
+        {
+          "zh": "数字化",
+          "pinyin": "shùzìhuà",
+          "ja": "デジタル化"
+        },
+        {
+          "zh": "模型",
+          "pinyin": "móxíng",
+          "ja": "モデル"
+        },
+        {
+          "zh": "对应",
+          "pinyin": "duìyìng",
+          "ja": "対応する"
+        },
+        {
+          "zh": "虚拟",
+          "pinyin": "xūnǐ",
+          "ja": "仮想の"
+        },
+        {
+          "zh": "显示",
+          "pinyin": "xiǎnshì",
+          "ja": "表示する"
+        },
+        {
+          "zh": "状态",
+          "pinyin": "zhuàngtài",
+          "ja": "状態"
+        },
+        {
+          "zh": "工程师",
+          "pinyin": "gōngchéngshī",
+          "ja": "エンジニア"
+        },
+        {
+          "zh": "流量",
+          "pinyin": "liúliàng",
+          "ja": "流量"
+        },
+        {
+          "zh": "消耗",
+          "pinyin": "xiāohào",
+          "ja": "消費する"
+        },
+        {
+          "zh": "依靠",
+          "pinyin": "yīkào",
+          "ja": "頼る"
+        },
+        {
+          "zh": "调整",
+          "pinyin": "tiáozhěng",
+          "ja": "調整する"
+        },
+        {
+          "zh": "方案",
+          "pinyin": "fāng'àn",
+          "ja": "計画、案"
+        },
+        {
+          "zh": "假设",
+          "pinyin": "jiǎshè",
+          "ja": "仮定する"
+        },
+        {
+          "zh": "蒸馏",
+          "pinyin": "zhēngliú",
+          "ja": "蒸留"
+        },
+        {
+          "zh": "蒸汽",
+          "pinyin": "zhēngqì",
+          "ja": "蒸気"
+        },
+        {
+          "zh": "纯度",
+          "pinyin": "chúndù",
+          "ja": "純度"
+        },
+        {
+          "zh": "综合",
+          "pinyin": "zōnghé",
+          "ja": "総合する"
+        },
+        {
+          "zh": "异常",
+          "pinyin": "yìcháng",
+          "ja": "異常"
+        },
+        {
+          "zh": "测量",
+          "pinyin": "cèliáng",
+          "ja": "測定する"
+        },
+        {
+          "zh": "预测",
+          "pinyin": "yùcè",
+          "ja": "予測する"
+        },
+        {
+          "zh": "差异",
+          "pinyin": "chāyì",
+          "ja": "差異"
+        },
+        {
+          "zh": "故障",
+          "pinyin": "gùzhàng",
+          "ja": "故障"
+        },
+        {
+          "zh": "误差",
+          "pinyin": "wùchā",
+          "ja": "誤差"
+        },
+        {
+          "zh": "可靠",
+          "pinyin": "kěkào",
+          "ja": "信頼できる"
+        },
+        {
+          "zh": "老化",
+          "pinyin": "lǎohuà",
+          "ja": "老朽化する"
+        },
+        {
+          "zh": "偏离",
+          "pinyin": "piānlí",
+          "ja": "逸脱する、ずれる"
+        },
+        {
+          "zh": "验证",
+          "pinyin": "yànzhèng",
+          "ja": "検証する"
+        },
+        {
+          "zh": "推广",
+          "pinyin": "tuīguǎng",
+          "ja": "普及・展開する"
+        },
+        {
+          "zh": "代替",
+          "pinyin": "dàitì",
+          "ja": "代替する"
         }
       ]
     },
@@ -7133,6 +10173,158 @@
             "ja": "将来、デジタルIDは銀行、医療、公共サービスとさらに密接に結びつく可能性があるが、制度の継続的な改善も必要だ。"
           }
         }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "办理",
+          "pinyin": "bànlǐ",
+          "ja": "手続きをする"
+        },
+        {
+          "zh": "手续",
+          "pinyin": "shǒuxù",
+          "ja": "手続き"
+        },
+        {
+          "zh": "账户",
+          "pinyin": "zhànghù",
+          "ja": "口座、アカウント"
+        },
+        {
+          "zh": "申请",
+          "pinyin": "shēnqǐng",
+          "ja": "申請する"
+        },
+        {
+          "zh": "身份",
+          "pinyin": "shēnfèn",
+          "ja": "身分、本人の身元"
+        },
+        {
+          "zh": "环节",
+          "pinyin": "huánjié",
+          "ja": "段階、工程"
+        },
+        {
+          "zh": "亲自",
+          "pinyin": "qīnzì",
+          "ja": "自ら、直接"
+        },
+        {
+          "zh": "前往",
+          "pinyin": "qiánwǎng",
+          "ja": "～へ向かう"
+        },
+        {
+          "zh": "证件",
+          "pinyin": "zhèngjiàn",
+          "ja": "証明書類"
+        },
+        {
+          "zh": "推广",
+          "pinyin": "tuīguǎng",
+          "ja": "普及・推進する"
+        },
+        {
+          "zh": "证明",
+          "pinyin": "zhèngmíng",
+          "ja": "証明する"
+        },
+        {
+          "zh": "提交",
+          "pinyin": "tíjiāo",
+          "ja": "提出する"
+        },
+        {
+          "zh": "偏远",
+          "pinyin": "piānyuǎn",
+          "ja": "遠く離れた"
+        },
+        {
+          "zh": "节省",
+          "pinyin": "jiéshěng",
+          "ja": "節約する"
+        },
+        {
+          "zh": "从而",
+          "pinyin": "cóng'ér",
+          "ja": "それによって"
+        },
+        {
+          "zh": "便利",
+          "pinyin": "biànlì",
+          "ja": "便利さ"
+        },
+        {
+          "zh": "意味着",
+          "pinyin": "yìwèizhe",
+          "ja": "～を意味する"
+        },
+        {
+          "zh": "非法",
+          "pinyin": "fēifǎ",
+          "ja": "違法な、不正な"
+        },
+        {
+          "zh": "获取",
+          "pinyin": "huòqǔ",
+          "ja": "取得する"
+        },
+        {
+          "zh": "诈骗",
+          "pinyin": "zhàpiàn",
+          "ja": "詐欺"
+        },
+        {
+          "zh": "依赖",
+          "pinyin": "yīlài",
+          "ja": "依存する"
+        },
+        {
+          "zh": "故障",
+          "pinyin": "gùzhàng",
+          "ja": "故障、障害"
+        },
+        {
+          "zh": "隐私",
+          "pinyin": "yǐnsī",
+          "ja": "プライバシー"
+        },
+        {
+          "zh": "原则",
+          "pinyin": "yuánzé",
+          "ja": "原則"
+        },
+        {
+          "zh": "必需",
+          "pinyin": "bìxū",
+          "ja": "必要不可欠な"
+        },
+        {
+          "zh": "符合",
+          "pinyin": "fúhé",
+          "ja": "条件に合う"
+        },
+        {
+          "zh": "泄露",
+          "pinyin": "xièlòu",
+          "ja": "漏えいする"
+        },
+        {
+          "zh": "排除",
+          "pinyin": "páichú",
+          "ja": "排除する"
+        },
+        {
+          "zh": "紧密",
+          "pinyin": "jǐnmì",
+          "ja": "密接な"
+        },
+        {
+          "zh": "完善",
+          "pinyin": "wánshàn",
+          "ja": "改善・整備する"
+        }
       ]
     },
     {
@@ -7402,6 +10594,158 @@
             "pinyin": "Zhēnzhèng zhídé sīkǎo de wèntí, yěxǔ bú shì zěnyàng zhuàn dào zuì duō de qián, ér shì zěnyàng lìyòng yǒuxiàn de zīyuán, guò shàng zìjǐ zhēnzhèng zhòngshì de shēnghuó.",
             "ja": "本当に考えるべきなのは、どうすれば最も多く稼げるかではなく、限られた資源を使って自分が大切にする生活をどう実現するか、ということかもしれない。"
           }
+        }
+      ],
+      "lessonVocabulary": [
+        {
+          "zh": "收入",
+          "pinyin": "shōurù",
+          "ja": "収入"
+        },
+        {
+          "zh": "改善",
+          "pinyin": "gǎishàn",
+          "ja": "改善する"
+        },
+        {
+          "zh": "享受",
+          "pinyin": "xiǎngshòu",
+          "ja": "享受する"
+        },
+        {
+          "zh": "然而",
+          "pinyin": "rán'ér",
+          "ja": "しかしながら"
+        },
+        {
+          "zh": "幸福感",
+          "pinyin": "xìngfúgǎn",
+          "ja": "幸福感"
+        },
+        {
+          "zh": "明显",
+          "pinyin": "míngxiǎn",
+          "ja": "明らかな"
+        },
+        {
+          "zh": "心理学",
+          "pinyin": "xīnlǐxué",
+          "ja": "心理学"
+        },
+        {
+          "zh": "试图",
+          "pinyin": "shìtú",
+          "ja": "～しようと試みる"
+        },
+        {
+          "zh": "现象",
+          "pinyin": "xiànxiàng",
+          "ja": "現象"
+        },
+        {
+          "zh": "适应",
+          "pinyin": "shìyìng",
+          "ja": "適応する、慣れる"
+        },
+        {
+          "zh": "兴奋",
+          "pinyin": "xīngfèn",
+          "ja": "興奮する"
+        },
+        {
+          "zh": "逐渐",
+          "pinyin": "zhújiàn",
+          "ja": "徐々に"
+        },
+        {
+          "zh": "新鲜感",
+          "pinyin": "xīnxiāngǎn",
+          "ja": "新鮮さ"
+        },
+        {
+          "zh": "消失",
+          "pinyin": "xiāoshī",
+          "ja": "消える"
+        },
+        {
+          "zh": "期望",
+          "pinyin": "qīwàng",
+          "ja": "期待"
+        },
+        {
+          "zh": "往往",
+          "pinyin": "wǎngwǎng",
+          "ja": "往々にして"
+        },
+        {
+          "zh": "理所当然",
+          "pinyin": "lǐsuǒdāngrán",
+          "ja": "当たり前である"
+        },
+        {
+          "zh": "消费",
+          "pinyin": "xiāofèi",
+          "ja": "消費"
+        },
+        {
+          "zh": "需求",
+          "pinyin": "xūqiú",
+          "ja": "需要、欲求"
+        },
+        {
+          "zh": "即使",
+          "pinyin": "jíshǐ",
+          "ja": "たとえ～でも"
+        },
+        {
+          "zh": "因素",
+          "pinyin": "yīnsù",
+          "ja": "要因"
+        },
+        {
+          "zh": "拥有",
+          "pinyin": "yōngyǒu",
+          "ja": "所有する"
+        },
+        {
+          "zh": "在意",
+          "pinyin": "zàiyì",
+          "ja": "気にする"
+        },
+        {
+          "zh": "社交媒体",
+          "pinyin": "shèjiāo méitǐ",
+          "ja": "SNS、ソーシャルメディア"
+        },
+        {
+          "zh": "展示",
+          "pinyin": "zhǎnshì",
+          "ja": "展示する、見せる"
+        },
+        {
+          "zh": "满足感",
+          "pinyin": "mǎnzúgǎn",
+          "ja": "満足感"
+        },
+        {
+          "zh": "稳定",
+          "pinyin": "wěndìng",
+          "ja": "安定した"
+        },
+        {
+          "zh": "减轻",
+          "pinyin": "jiǎnqīng",
+          "ja": "軽減する"
+        },
+        {
+          "zh": "有限",
+          "pinyin": "yǒuxiàn",
+          "ja": "限られた"
+        },
+        {
+          "zh": "重视",
+          "pinyin": "zhòngshì",
+          "ja": "重視する"
         }
       ]
     }
