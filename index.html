@@ -154,6 +154,21 @@ input[type=checkbox] { width: 18px; height: 18px; flex-shrink: 0; margin: 0; acc
 .ja { margin: 10px 0 0; color: #c0cede; font-size: 16px; line-height: 1.9; overflow-wrap: anywhere; }
 .sentence-buttons { display: flex; flex-direction: column; gap: 9px; padding-top: 3px; }
 .sentence button { font-size: 14px; padding: 9px 14px; }
+.sentence-vocabulary { grid-column: 2/-1; min-width: 0; margin: 0; padding: 0; overflow: hidden; background: #0d1a29; }
+.sentence-vocabulary > summary { min-height: 48px; padding: 12px 15px; color: var(--teal); font-size: 15px; line-height: 1.6; }
+.sentence-vocabulary > summary:hover { background: #17313e; }
+.sentence-vocabulary[open] > summary { border-bottom: 1px solid var(--line); }
+.sentence-vocabulary > summary:focus-visible { outline-offset: -4px; border-radius: 10px; }
+.vocabulary-note { margin: 14px 16px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+.sentence-word-list { margin: 0; padding: 0 16px 4px; list-style: none; }
+.sentence-word { padding: 17px 0; overflow-wrap: anywhere; }
+.sentence-word + .sentence-word { border-top: 1px solid var(--line); }
+.sentence-word-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 14px; }
+.sentence-word-heading .zh { font-size: 22px; line-height: 1.6; }
+.sentence-word .pinyin { margin-top: 7px; }
+.sentence-word-meaning { margin-top: 5px; color: var(--ink); }
+.sentence-word .word-example { margin-top: 13px; padding-top: 12px; }
+.sentence-word .word-example .zh { font-size: 20px; }
 .empty { padding: 40px; color: var(--muted); text-align: center; }
 .workspace-nav { grid-column: 1/-1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 2px; }
 .tabs { display: flex; gap: 5px; padding: 5px; border: 1px solid var(--line); border-radius: 13px; background: #0e1a2b; }
@@ -248,6 +263,7 @@ details { margin-top: 20px; padding: 17px; border: 1px solid var(--line); border
   .sentence { padding: 21px 17px; grid-template-columns: 25px minmax(0,1fr); gap: 12px; }
   .num { font-size: 12px; min-height: 27px; margin-top: 7px; }
   .sentence-buttons { grid-column: 2; flex-direction: row; flex-wrap: wrap; padding-top: 7px; }
+  .sentence-vocabulary { grid-column: 1/-1; margin-top: 5px; }
   .zh { font-size: 23px; line-height: 1.9; }
   .pinyin { font-size: 16px; line-height: 1.85; }
   .ja { font-size: 16px; line-height: 1.9; }
@@ -293,6 +309,15 @@ details { margin-top: 20px; padding: 17px; border: 1px solid var(--line); border
 'use strict';
 function uid(){return globalThis.crypto?.randomUUID?.() || 'l'+Date.now().toString(36)+Math.random().toString(36).slice(2)}
 function wordKey(text){return String(text).normalize('NFKC').replace(/\s+/gu,'').toLowerCase()}
+function sentenceVocabulary(text,vocabulary){
+ const sentence=wordKey(text),seen=new Set(),matches=[];
+ for(const word of vocabulary){
+  const key=wordKey(word.zh),position=key?sentence.indexOf(key):-1;
+  if(position<0||seen.has(key))continue;
+  seen.add(key);matches.push({word,position,length:key.length});
+ }
+ return matches.sort((a,b)=>a.position-b.position||b.length-a.length).map(match=>match.word);
+}
 function cleanText(value,name,max,required=false){
  if(value==null&&!required)return '';
  if(typeof value!=='string'||value.length>max||(required&&!value.trim()))throw Error(name+'の形式を確認してください。');
@@ -367,6 +392,7 @@ try{const saved=localStorage.getItem(KEY);if(saved)store=validate(JSON.parse(sav
 try{mergeDaily(store,JSON.parse($('initialDailyData').textContent))}catch{}
 selected=store.lessons.some(l=>l.id===store.settings.selected)?store.settings.selected:(store.lessons.find(l=>l.date===store.dailyUpdatedAt)?.id||store.lessons[0]?.id||'');
 const lesson=()=>store.lessons.find(l=>l.id===selected);
+const openSentenceNotes=new Set();
 function stop(message){generation++;clearTimeout(timer);timer=null;utterance=null;isPlaying=false;if(supported)synth.cancel();if(message)say(message)}
 function highlight(){document.querySelectorAll('.sentence').forEach((el,i)=>{el.classList.toggle('current',i===current);if(i===current)el.setAttribute('aria-current','true');else el.removeAttribute('aria-current')})}
 function runSpeech(plan,repetitions,label,onComplete){
@@ -401,6 +427,29 @@ function playText(s,label,translationOnly=false){stop();const plan=translationOn
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n}
 function textLines(s,container){for(const [field,cls,lang] of [['zh','zh','zh-CN'],['pinyin','pinyin','zh-Latn'],['ja','ja','ja']]){const p=el('p',cls,s[field]);p.lang=lang;p.hidden=field==='pinyin'?!store.settings.showPinyin:field==='ja'?!store.settings.showJa:false;container.append(p)}}
 function audioButton(text,label,action){const b=el('button','',text);b.setAttribute('aria-label',label);b.disabled=!supported;b.onclick=action;return b}
+function sentenceWordNotes(s,index){
+ const words=sentenceVocabulary(s.zh,store.vocabulary),key=selected+':'+index;
+ const notes=el('details','sentence-vocabulary'),summary=el('summary','',`単語の解説 · ${words.length}語`);
+ summary.setAttribute('aria-label',`${index+1}文目の単語の解説（${words.length}語）`);notes.append(summary);
+ let filled=false;
+ function fill(){
+  if(filled)return;filled=true;
+  if(!words.length){notes.append(el('p','vocabulary-note','この文に該当する単語は、まだ単語帳に登録されていません。'));return}
+  notes.append(el('p','vocabulary-note','単語帳に登録済みの単語を、文に出てくる順に表示しています。'));
+  const list=el('ul','sentence-word-list');
+  for(const word of words){
+   const item=el('li','sentence-word'),heading=el('div','sentence-word-heading'),title=el('h3','zh',word.zh);title.lang='zh-CN';
+   heading.append(title,audioButton('単語を再生',`${index+1}文目の単語「${word.zh}」を再生`,()=>playText(word,'単語「'+word.zh+'」')));item.append(heading);
+   const pinyin=el('p','pinyin',word.pinyin);pinyin.lang='zh-Latn';pinyin.hidden=!store.settings.showPinyin;
+   const meaning=el('p','ja sentence-word-meaning',word.ja);meaning.lang='ja';meaning.hidden=!store.settings.showJa;item.append(pinyin,meaning);
+   const example=el('div','word-example');example.append(el('span','tag','使い方の例文'));textLines(word.example,example);item.append(example);list.append(item);
+  }
+  notes.append(list);
+ }
+ notes.open=openSentenceNotes.has(key);if(notes.open)fill();
+ notes.ontoggle=()=>{if(!notes.isConnected)return;if(notes.open){openSentenceNotes.add(key);fill()}else openSentenceNotes.delete(key)};
+ return notes;
+}
 function render(){
  $('library').replaceChildren();$('lessonSelect').replaceChildren();const sorted=[...store.lessons].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||Number(b.id.startsWith('daily-chatgpt-'))-Number(a.id.startsWith('daily-chatgpt-')));
  for(const l of sorted){const b=el('button','lesson'+(l.id===selected?' active':''));b.setAttribute('aria-pressed',String(l.id===selected));b.append(el('strong','',l.title),el('small','',l.sentences.length+' 文'+(l.date?' · 毎日の例題':'')));b.onclick=()=>{stop('教材を切り替えました。');selected=l.id;current=-1;switchTab('listen');persist();render()};$('library').append(b);const option=el('option','',l.title);option.value=l.id;$('lessonSelect').append(option)}$('lessonSelect').value=selected;
@@ -415,7 +464,7 @@ function render(){
  else l.sentences.forEach((s,i)=>{
   const article=el('article','sentence'),n=el('span','num',String(i+1).padStart(2,'0')),body=el('div'),buttons=el('div','sentence-buttons');textLines(s,body);
   buttons.append(audioButton('▶ 再生',`${i+1}文目を再生`,()=>play(i)));if(s.ja)buttons.append(audioButton('和訳',`${i+1}文目の和訳を再生`,()=>playText(s,`${i+1}文目`,true)));
-  article.append(n,body,buttons);$('sentences').append(article);
+  article.append(n,body,buttons,sentenceWordNotes(s,i));$('sentences').append(article);
  });highlight();if(isWords)renderWords();
 }
 let wordPage=1;const WORD_PAGE_SIZE=40;
