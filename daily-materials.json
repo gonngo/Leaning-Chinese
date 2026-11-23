@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-23",
+  "batches": [
+    {
+      "date": "2026-11-23",
+      "title": "学習習慣と時間の使い方",
+      "sentences": [
+        {"zh":"为了提高学习效率，我每天都会提前安排复习的内容。","pinyin":"Wèile tígāo xuéxí xiàolǜ, wǒ měitiān dōu huì tíqián ānpái fùxí de nèiróng.","ja":"学習効率を高めるため、私は毎日、復習する内容を前もって決めています。"},
+        {"zh":"如果长期熬夜，即使学习时间增加了，记忆力也可能下降。","pinyin":"Rúguǒ chángqī áoyè, jíshǐ xuéxí shíjiān zēngjiā le, jìyìlì yě kěnéng xiàjiàng.","ja":"長期間夜更かしすると、勉強時間が増えても記憶力が低下する可能性があります。"},
+        {"zh":"面对紧张的日程，我们需要及时调整计划，而不是勉强完成所有任务。","pinyin":"Miànduì jǐnzhāng de rìchéng, wǒmen xūyào jíshí tiáozhěng jìhuà, ér bú shì miǎnqiǎng wánchéng suǒyǒu rènwu.","ja":"過密な日程に直面したときは、無理にすべての課題を終わらせるより、適宜計画を調整する必要があります。"},
+        {"zh":"养成做笔记的习惯，有助于我们掌握重点，并且及时发现自己的不足。","pinyin":"Yǎngchéng zuò bǐjì de xíguàn, yǒuzhùyú wǒmen zhǎngwò zhòngdiǎn, bìngqiě jíshí fāxiàn zìjǐ de bùzú.","ja":"メモを取る習慣を身につけると、要点をつかみ、自分の足りない点にも早く気づけるようになります。"},
+        {"zh":"与其追求短期的成绩，不如把精力集中在能够持续的学习方法上。","pinyin":"Yǔqí zhuīqiú duǎnqī de chéngjì, bùrú bǎ jīnglì jízhōng zài nénggòu chíxù de xuéxí fāngfǎ shàng.","ja":"短期的な成績を追い求めるより、続けられる学習方法に力を注いだほうがよいです。"}
+      ],
+      "vocabulary": [
+        {"zh":"效率","pinyin":"xiàolǜ","ja":"効率","example":{"zh":"合理安排时间可以提高工作效率。","pinyin":"Hélǐ ānpái shíjiān kěyǐ tígāo gōngzuò xiàolǜ.","ja":"時間を合理的に配分すると仕事の効率が上がります。"}},
+        {"zh":"提前","pinyin":"tíqián","ja":"前もって／予定より早く","example":{"zh":"我们提前十分钟到达了车站。","pinyin":"Wǒmen tíqián shí fēnzhōng dàodá le chēzhàn.","ja":"私たちは10分早く駅に着きました。"}},
+        {"zh":"熬夜","pinyin":"áoyè","ja":"夜更かしする","example":{"zh":"为了准备考试，他最近经常熬夜。","pinyin":"Wèile zhǔnbèi kǎoshì, tā zuìjìn jīngcháng áoyè.","ja":"試験の準備のため、彼は最近よく夜更かししています。"}},
+        {"zh":"记忆力","pinyin":"jìyìlì","ja":"記憶力","example":{"zh":"充足的睡眠有助于改善记忆力。","pinyin":"Chōngzú de shuìmián yǒuzhùyú gǎishàn jìyìlì.","ja":"十分な睡眠は記憶力の改善に役立ちます。"}},
+        {"zh":"调整","pinyin":"tiáozhěng","ja":"調整する","example":{"zh":"情况发生变化后，我们调整了计划。","pinyin":"Qíngkuàng fāshēng biànhuà hòu, wǒmen tiáozhěng le jìhuà.","ja":"状況が変わったあと、私たちは計画を調整しました。"}},
+        {"zh":"勉强","pinyin":"miǎnqiǎng","ja":"無理をする／やっとのことで","example":{"zh":"如果身体不舒服，就不要勉强自己。","pinyin":"Rúguǒ shēntǐ bù shūfu, jiù bú yào miǎnqiǎng zìjǐ.","ja":"体調がよくなければ、無理をしないでください。"}},
+        {"zh":"掌握","pinyin":"zhǎngwò","ja":"身につける／把握する","example":{"zh":"掌握一种语言需要不断练习。","pinyin":"Zhǎngwò yì zhǒng yǔyán xūyào búduàn liànxí.","ja":"一つの言語を身につけるには絶えず練習する必要があります。"}},
+        {"zh":"不足","pinyin":"bùzú","ja":"不足／不十分な点","example":{"zh":"通过这次练习，我发现了自己的不足。","pinyin":"Tōngguò zhè cì liànxí, wǒ fāxiàn le zìjǐ de bùzú.","ja":"今回の練習を通して、自分の足りない点に気づきました。"}},
+        {"zh":"精力","pinyin":"jīnglì","ja":"気力と体力／エネルギー","example":{"zh":"她把大部分精力都用在研究上。","pinyin":"Tā bǎ dà bùfen jīnglì dōu yòng zài yánjiū shàng.","ja":"彼女は大半のエネルギーを研究に注いでいます。"}},
+        {"zh":"持续","pinyin":"chíxù","ja":"持続する／続ける","example":{"zh":"这场讨论持续了两个小时。","pinyin":"Zhè chǎng tǎolùn chíxù le liǎng ge xiǎoshí.","ja":"この話し合いは2時間続きました。"}}
+      ]
+    }
+  ]
+}
