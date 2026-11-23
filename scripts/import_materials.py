@@ -27,6 +27,16 @@ def validate_sentence(sentence):
         require_text(sentence.get(field), limit)
 
 
+def validate_lesson_vocabulary(words):
+    if not isinstance(words, list) or len(words) > 1000:
+        raise ValueError('Invalid lesson vocabulary list')
+    for word in words:
+        if not isinstance(word, dict):
+            raise ValueError('Invalid lesson vocabulary entry')
+        for field, limit in [('zh', 100), ('pinyin', 300), ('ja', 1000)]:
+            require_text(word.get(field), limit)
+
+
 def batch_id(batch):
     return batch.get('id', 'daily-' + batch['date'])
 
@@ -48,6 +58,8 @@ def validate_data(data):
             raise ValueError('Invalid vocabulary count')
         for sentence in batch['sentences']:
             validate_sentence(sentence)
+        if 'lessonVocabulary' in batch:
+            validate_lesson_vocabulary(batch['lessonVocabulary'])
         for word in batch['vocabulary']:
             for field, limit in [('zh', 100), ('pinyin', 300), ('ja', 1000)]:
                 require_text(word.get(field), limit)
@@ -125,7 +137,8 @@ def parse_sources(texts, today=None):
         if len(vocabulary) != int(word_heading[1]):
             raise ValueError('Incomplete vocabulary section')
         batches.append({'id': f'daily-chatgpt-{SOURCE_ID}-{date.isoformat()}', 'date': date.isoformat(),
-                        'title': title, 'sourceUrl': SOURCE_URL, 'sentences': sentences, 'vocabulary': vocabulary})
+                        'title': title, 'sourceUrl': SOURCE_URL, 'sentences': sentences, 'vocabulary': vocabulary,
+                        'lessonVocabulary': [{field: word[field] for field in ['zh', 'pinyin', 'ja']} for word in vocabulary]})
     if not batches:
         raise ValueError('No complete source lessons found')
     return batches
@@ -135,10 +148,17 @@ def merge_materials(existing, incoming):
     validate_data(existing)
     result = copy.deepcopy(existing)
     ids = {batch_id(b) for b in result['batches']}
+    by_id = {batch_id(b): b for b in result['batches']}
     words = {word_key(w['zh']) for b in result['batches'] for w in b['vocabulary']}
-    stats = {'addedLessons': 0, 'addedSentences': 0, 'addedWords': 0}
+    stats = {'addedLessons': 0, 'addedSentences': 0, 'addedWords': 0, 'updatedLessons': 0}
     for original in sorted(incoming, key=lambda b: b['date']):
         if batch_id(original) in ids:
+            if 'lessonVocabulary' in original:
+                validate_lesson_vocabulary(original['lessonVocabulary'])
+                previous = by_id[batch_id(original)]
+                if previous.get('lessonVocabulary') != original['lessonVocabulary']:
+                    previous['lessonVocabulary'] = copy.deepcopy(original['lessonVocabulary'])
+                    stats['updatedLessons'] += 1
             continue
         batch = copy.deepcopy(original)
         unique = []
@@ -152,6 +172,7 @@ def merge_materials(existing, incoming):
             unique.append(word)
         batch['vocabulary'] = unique
         result['batches'].append(batch)
+        by_id[batch_id(batch)] = batch
         ids.add(batch_id(batch))
         stats['addedLessons'] += 1
         stats['addedSentences'] += len(batch['sentences'])
@@ -172,7 +193,8 @@ def main():
     existing = json.loads(target.read_text(encoding='utf-8-sig'))
     incoming = parse_sources(json.loads(Path(args.source).read_text(encoding='utf-8-sig')))
     result, stats = merge_materials(existing, incoming)
-    if stats['addedLessons']:
+    changed = bool(stats['addedLessons'] or stats['updatedLessons'])
+    if changed:
         temporary = target.with_suffix('.json.tmp')
         temporary.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         os.replace(temporary, target)
@@ -181,10 +203,10 @@ def main():
         with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as summary:
             summary.write(f"## HSK5 shared lesson import\n\nSource latest: {stats['sourceLatestDate']}\n\n"
                           f"Added {stats['addedLessons']} lessons, {stats['addedSentences']} sentences, "
-                          f"{stats['addedWords']} new words.\n\nOnly material visible in the shared chat is available.\n")
+                          f"{stats['addedWords']} new words.\n\nUpdated source vocabulary lists for {stats['updatedLessons']} existing lessons.\n\nOnly material visible in the shared chat is available.\n")
     if os.environ.get('GITHUB_OUTPUT'):
         with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
-            output.write(f"changed={'true' if stats['addedLessons'] else 'false'}\n")
+            output.write(f"changed={'true' if changed else 'false'}\n")
 
 
 if __name__ == '__main__':
