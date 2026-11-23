@@ -23,24 +23,24 @@ check('All inline JavaScript and JSON in the built HTML parse',()=>{const html=f
 function audioHarness(requireGesture=false){
  const browser=inlineScript;
  const section=browser.slice(browser.indexOf('function stop('),browser.indexOf('function el('));
- const c=vm.createContext({console,Date,Math,Set,crypto:require('node:crypto').webcrypto});
+ const testClock={now:1000};const c=vm.createContext({console,Date:class extends Date{static now(){return testClock.now}},Math,Set,crypto:require('node:crypto').webcrypto});
  vm.runInContext(core,c);
  vm.runInContext(`
-  let generation=0,timer=null,utterance=null,isPlaying=false,current=-1;
+  let generation=0,timer=null,utterance=null,playback=null,speechWait=null,isPlaying=false,current=-1;
   const voices=[{lang:'zh-CN',voiceURI:'zh'}],jaVoices=[{lang:'ja-JP',voiceURI:'ja'}],supported=true;
-  const queue=new Map(),spoken=[],messages=[];let nextTimer=1,completed=0;
-  function setTimeout(fn){const id=nextTimer++;queue.set(id,fn);return id}function clearTimeout(id){queue.delete(id)}
+  const queue=new Map(),spoken=[],messages=[];let nextTimer=1,completed=0,lastDelay=0,cancelled=0;
+  function setTimeout(fn,delay){lastDelay=delay;const id=nextTimer++;queue.set(id,fn);return id}function clearTimeout(id){queue.delete(id)}
   function say(s){messages.push(s)}
   const document={querySelectorAll:()=>[]};
   const store={settings:{rate:1,repeat:2,gap:1000,readJapanese:true}};
-  const lesson=()=>({sentences:[{zh:'你好',ja:'こんにちは'},{zh:'谢谢',ja:'ありがとう'}]});
+  const testLesson={sentences:[{zh:'你好',ja:'こんにちは'},{zh:'谢谢',ja:'ありがとう'}]};const lesson=()=>testLesson;
   class SpeechSynthesisUtterance{constructor(text){this.text=text}}
   let gestureActive=false,speechUnlocked=${!requireGesture};
   function tap(fn){gestureActive=true;try{fn()}finally{gestureActive=false}}
-  const synth={cancel(){},speak(u){if(gestureActive)speechUnlocked=true;if(speechUnlocked)spoken.push(u)}};
+  const synth={cancel(){cancelled++},speak(u){if(gestureActive)speechUnlocked=true;if(speechUnlocked)spoken.push(u)}};
   function tick(){const first=queue.entries().next().value;if(first){queue.delete(first[0]);first[1]()}}
  `+section,c);
- return {run:code=>vm.runInContext(code,c)};
+ return {run:code=>vm.runInContext(code,c),advance:ms=>{testClock.now+=ms}};
 }
 check('Safari starts sentence speech in the tap and continues after the gesture ends',()=>{const h=audioHarness(true);h.run('store.settings.repeat=1;tap(()=>play(0,true));tick()');assert.equal(h.run('spoken.length'),1);h.run('spoken[0].onend();tick()');assert.equal(h.run('spoken[1].lang'),'ja-JP');h.run('spoken[1].onend();tick()');assert.equal(h.run('current'),1);assert.equal(h.run('spoken[2].text'),'谢谢')});
 check('Safari starts standalone Japanese, vocabulary and example speech in the tap',()=>{for(const translationOnly of [false,true]){const h=audioHarness(true);h.run(`tap(()=>playText({zh:'你好',ja:'こんにちは'},'test',${translationOnly}));tick()`);assert.equal(h.run('spoken.length'),1);assert.equal(h.run('spoken[0].lang'),translationOnly?'ja-JP':'zh-CN')}});
@@ -50,4 +50,11 @@ check('Speech repeats Chinese/Japanese pairs in order using separate language vo
 check('Stop cancels pending translation and ignores stale speech callbacks',()=>{const h=audioHarness();h.run("runSpeech(audioPlan({zh:'你好',ja:'こんにちは'},true),1,'test',()=>completed++);tick();stop();spoken[0].onend();tick()");assert.equal(h.run('spoken.length'),1);assert.equal(h.run('completed'),0);assert.equal(h.run('queue.size'),0)});
 check('Stopping during a sentence gap prevents continuous playback advancing',()=>{const h=audioHarness();h.run('store.settings.repeat=1;store.settings.readJapanese=false;play(0,true);tick();spoken[0].onend();stop();tick()');assert.equal(h.run('spoken.length'),1);assert.equal(h.run('current'),0)});
 check('A speech error does not advance to Japanese or the next sentence',()=>{const h=audioHarness();h.run('store.settings.repeat=1;play(0,true);tick();spoken[0].onerror({error:"voice-unavailable"});tick()');assert.equal(h.run('spoken.length'),1);assert.equal(h.run('isPlaying'),false)});
+check('Speed changes resume at cumulative word offsets and ignore canceled utterance callbacks',()=>{const h=audioHarness(true);h.run("testLesson.sentences[0].zh='你好世界';tap(()=>playFullText());spoken[0].onstart();spoken[0].onboundary({charIndex:2});store.settings.rate=1.2;tap(()=>applySpeechSetting('rate'))");assert.equal(h.run('spoken[1].text'),'世界');assert.equal(h.run('spoken[1].rate'),1.2);h.run('spoken[0].onend();spoken[0].onerror({error:"canceled"})');assert.equal(h.run('spoken.length'),2);assert.equal(h.run('isPlaying'),true);h.run("spoken[1].onstart();spoken[1].onboundary({charIndex:1});store.settings.rate=.8;tap(()=>applySpeechSetting('rate'))");assert.equal(h.run('spoken[2].text'),'界');h.run('spoken[2].onend();tick()');assert.equal(h.run('spoken[3].text'),'谢谢');h.run('spoken[3].onend()');assert.equal(h.run('isPlaying'),false)});
+check('Voices without word positions finish the current sentence and use new settings on the next one',()=>{const h=audioHarness();h.run("playFullText();spoken[0].onstart();store.settings.rate=.7;applySpeechSetting('rate')");assert.equal(h.run('spoken.length'),1);assert.equal(h.run('cancelled'),1);assert.equal(h.run('isPlaying'),true);h.run('spoken[0].onend();tick()');assert.equal(h.run('spoken[1].text'),'谢谢');assert.equal(h.run('spoken[1].rate'),.7)});
+check('A replacement voice must report fresh progress before another in-sentence restart',()=>{const h=audioHarness();h.run("testLesson.sentences[0].zh='你好世界';playFullText();spoken[0].onboundary({charIndex:2});store.settings.rate=1.2;applySpeechSetting('rate');spoken[1].onstart();store.settings.rate=.9;applySpeechSetting('rate')");assert.equal(h.run('spoken.length'),2);h.run('spoken[1].onend();tick()');assert.equal(h.run('spoken[2].text'),'谢谢');assert.equal(h.run('spoken[2].rate'),.9)});
+check('Display settings never interrupt an active utterance',()=>{const h=audioHarness();h.run("play(0);spoken[0].onstart();store.settings.showPinyin=false;applySpeechSetting('showPinyin');store.settings.showJa=false;applySpeechSetting('showJa')");assert.equal(h.run('spoken.length'),1);assert.equal(h.run('cancelled'),1);assert.equal(h.run('isPlaying'),true)});
+check('Japanese narration and repeat changes apply at speech boundaries without losing the current sentence',()=>{const h=audioHarness();h.run("store.settings.readJapanese=false;play(0);spoken[0].onstart();store.settings.readJapanese=true;applySpeechSetting('readJapanese');store.settings.repeat=1;applySpeechSetting('repeat');spoken[0].onend();tick()");assert.equal(h.run('spoken[1].lang'),'ja-JP');h.run('spoken[1].onend();tick()');assert.equal(h.run('spoken.length'),2);assert.equal(h.run('isPlaying'),false);const off=audioHarness();off.run("store.settings.repeat=1;play(0);spoken[0].onend();store.settings.readJapanese=false;applySpeechSetting('readJapanese');tick()");assert.equal(off.run('spoken.length'),1);assert.equal(off.run('isPlaying'),false)});
+check('Japanese voice changes resume the Japanese text with the chosen voice',()=>{const h=audioHarness();h.run("store.settings.repeat=1;play(0);spoken[0].onend();tick();spoken[1].onboundary({charIndex:2});jaVoices.push({lang:'ja-JP',voiceURI:'ja2'});store.settings.jaVoice='ja2';applySpeechSetting('jaVoice')");assert.equal(h.run('spoken[2].text'),'にちは');assert.equal(h.run('spoken[2].voice.voiceURI'),'ja2');assert.equal(h.run('spoken[2].rate'),1)});
+check('Changing gaps repeatedly preserves elapsed waiting time and the next sentence',()=>{const h=audioHarness();h.run('store.settings.repeat=1;store.settings.readJapanese=false;play(0,true);spoken[0].onend()');h.advance(400);h.run("store.settings.gap=2000;applySpeechSetting('gap')");assert.equal(h.run('lastDelay'),1600);h.advance(300);h.run("store.settings.gap=1000;applySpeechSetting('gap')");assert.equal(h.run('lastDelay'),300);h.run('tick()');assert.equal(h.run('spoken[1].text'),'谢谢');assert.equal(h.run('current'),1)});
 console.log(`${checks} checks passed`);

@@ -143,6 +143,7 @@ input[type=checkbox] { width: 18px; height: 18px; flex-shrink: 0; margin: 0; acc
 .read-ja { flex-basis: 100%; }
 #jaVoiceField { margin-top: 20px; }
 #status { min-height: 1.75em; margin: 14px 0 0; font-size: 14px; color: var(--muted); }
+.playback-note { margin: 9px 0 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
 #voiceNotice { margin: 14px 0 0; padding: 11px 14px; border: 1px solid #75603a; border-radius: 9px; color: #ffdfa8; background: #332a1c; font-size: 14px; }
 #voiceNotice:empty { display: none; }
 .sentences { display: grid; gap: 16px; }
@@ -150,6 +151,10 @@ input[type=checkbox] { width: 18px; height: 18px; flex-shrink: 0; margin: 0; acc
 .full-text { margin-top: 18px; }
 .full-text .zh { margin: 0 0 1.4em; line-height: 2; white-space: pre-wrap; }
 .full-text .zh:last-child { margin-bottom: 0; }
+.full-translation-paper { margin-top: 24px; }
+.full-translation-paper h3 { margin: 0 0 20px; color: var(--teal); font-size: 18px; }
+.full-translation .ja { margin: 0 0 1.4em; color: var(--ink); font-size: 18px; line-height: 2; white-space: pre-wrap; }
+.full-translation .ja:last-child { margin-bottom: 0; }
 .sentence { display: grid; grid-template-columns: 32px minmax(0,1fr) auto; gap: 17px; align-items: start; padding: 25px 23px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
 .sentence.current { border-color: #80e6d4; background: #142f38; box-shadow: inset 3px 0 #80e6d4, 0 0 0 1px #80e6d440; }
 .num { display: grid; place-items: center; min-height: 30px; margin-top: 7px; padding: 1px 4px; border: 1px solid #3d5671; border-radius: 7px; background: #1b2c42; color: #c1d3e9; font-size: 13px; font-variant-numeric: tabular-nums; }
@@ -299,9 +304,9 @@ details { margin-top: 20px; padding: 17px; border: 1px solid var(--line); border
 <section class="content" aria-label="リスニング練習"><div class="heading"><div><div class="tag">CHINESE LISTENING PRACTICE</div><h2 id="lessonTitle"></h2><p id="lessonMeta"></p><a id="lessonSource" class="source-link" href="https://chatgpt.com/share/6b03eff6-6970-83ec-851b-4e539558a317" target="_blank" rel="noopener" hidden>元のChatGPT教材</a></div><button id="editLesson">教材を編集</button></div>
 <div class="panel controls"><div class="toolbar"><button class="primary" id="playAll">▶ 連続再生</button><button class="primary" id="playFullText" hidden>全文を再生</button><button id="stop">■ 停止</button><button id="prev">前の文</button><button id="next">次の文</button></div>
 <div class="control-grid"><label class="field"><span class="range-label"><span>再生速度</span><output id="rateValue" class="speed" for="rate">1.00倍</output></span><input id="rate" type="range" min="0.5" max="1.5" step="0.05" value="1"></label><label class="field">中国語の音声<select id="voice" aria-label="中国語の音声"></select></label><label class="field">一文の繰り返し<select id="repeat"><option value="1">1回</option><option value="2">2回</option><option value="3">3回</option><option value="5">5回</option></select></label><label class="field">文の間隔<select id="gap"><option value="400">0.4秒</option><option value="1000" selected>1秒</option><option value="2000">2秒</option><option value="3000">3秒</option></select></label></div>
-<label class="field" id="jaVoiceField" hidden>日本語の音声<select id="jaVoice" aria-label="日本語の音声"></select></label><div class="toggles"><label><input id="showPinyin" type="checkbox" checked>ピンインを表示</label><label><input id="showJa" type="checkbox" checked>和訳を表示</label><label class="read-ja"><input id="readJapanese" type="checkbox">中国語のあとに和訳を読み上げる</label></div><p id="status" role="status" aria-live="polite">文の「再生」を押すと、その一文を読み上げます。</p><p id="voiceNotice"></p></div>
+<label class="field" id="jaVoiceField" hidden>日本語の音声<select id="jaVoice" aria-label="日本語の音声"></select></label><div class="toggles"><label><input id="showPinyin" type="checkbox" checked>ピンインを表示</label><label><input id="showJa" type="checkbox" checked>和訳を表示</label><label class="read-ja"><input id="readJapanese" type="checkbox">中国語のあとに和訳を読み上げる</label></div><p id="status" role="status" aria-live="polite">文の「再生」を押すと、その一文を読み上げます。</p><p class="playback-note">再生中も設定を変更できます。音声によっては次の文から反映されます。</p><p id="voiceNotice"></p></div>
 <div id="listenPane" role="tabpanel" aria-labelledby="listenTab"><div id="sentences" class="sentences"></div></div>
-<div id="fullTextPane" role="tabpanel" aria-labelledby="fullTextTab" hidden><p class="import-note">中国語の全文を、最初から最後まで1回読み上げます。再生速度と中国語の音声は上の設定を使います。</p><article class="panel full-text-paper" aria-label="中国語全文"><div class="tag">CHINESE FULL TEXT</div><div id="fullText" class="full-text" lang="zh-CN"></div></article></div>
+<div id="fullTextPane" role="tabpanel" aria-labelledby="fullTextTab" hidden><p class="import-note">中国語の全文を、最初から最後まで1回読み上げます。再生速度と中国語の音声は上の設定を使います。</p><article class="panel full-text-paper" aria-label="中国語全文"><div class="tag">CHINESE FULL TEXT</div><div id="fullText" class="full-text" lang="zh-CN"></div></article><article class="panel full-text-paper full-translation-paper" aria-labelledby="fullTranslationTitle"><h3 id="fullTranslationTitle">日本語訳全文</h3><div id="fullTranslation" class="full-translation" lang="ja"></div></article></div>
 <div id="wordPane" role="tabpanel" aria-labelledby="wordsTab" hidden><div class="word-tools"><input id="wordSearch" type="text" aria-label="単語を検索" placeholder="中国語・ピンイン・日本語で検索"><p id="wordCount"></p><button id="addWord" class="primary">＋ 単語を追加</button><button id="importWords">JSONから追加</button></div><p class="import-note">単語は同じ中国語表記を重複登録しません。再生速度と和訳読み上げの設定は例文と共通です。</p><div id="wordList" class="word-list"></div><div id="wordPager" class="word-pager" hidden><button id="wordPrev">前のページ</button><span id="wordPageStatus"></span><button id="wordNext">次のページ</button></div></div></section>
 </main>
 <footer>サンプルはHSK5程度の学習向けに作成したオリジナル例文です。音声は端末・ブラウザーの読み上げ機能を使用します。中国語音声の追加やインターネット接続が必要になる場合があります。</footer>
@@ -390,7 +395,7 @@ function audioPlan(s,readJapanese){
 
 const $=id=>document.getElementById(id), KEY='hsk5-listener-v1';
 const synth=window.speechSynthesis, supported=!!(synth&&window.SpeechSynthesisUtterance);
-let store,selected='',current=-1,voices=[],jaVoices=[],generation=0,timer=null,utterance=null,editingId=null,editingWordId=null,activeTab='listen',isPlaying=false,syncing=false,lastSyncAttempt=0;
+let store,selected='',current=-1,voices=[],jaVoices=[],generation=0,timer=null,utterance=null,playback=null,speechWait=null,editingId=null,editingWordId=null,activeTab='listen',isPlaying=false,syncing=false,lastSyncAttempt=0;
 function persist(){store.settings.selected=selected;try{localStorage.setItem(KEY,JSON.stringify(store));$('storageAlert').hidden=true}catch{$('storageAlert').hidden=false}}
 function say(msg){$('status').textContent=msg}
 try{store=validate(JSON.parse($('initialData').textContent))}catch{store=validate({version:1,lessons:[]})}
@@ -399,37 +404,64 @@ try{mergeDaily(store,JSON.parse($('initialDailyData').textContent))}catch{}
 selected=store.lessons.some(l=>l.id===store.settings.selected)?store.settings.selected:(store.lessons.find(l=>l.date===store.dailyUpdatedAt)?.id||store.lessons[0]?.id||'');
 const lesson=()=>store.lessons.find(l=>l.id===selected);
 const openSentenceNotes=new Set();
-function stop(message){generation++;clearTimeout(timer);timer=null;utterance=null;isPlaying=false;if(supported)synth.cancel();if(message)say(message)}
+function stop(message){generation++;clearTimeout(timer);timer=null;speechWait=null;playback=null;utterance=null;isPlaying=false;if(supported)synth.cancel();if(message)say(message)}
+function speechDelay(fn,delay,kind='fixed',started=Date.now()){
+ clearTimeout(timer);const token=generation,task={fn,kind,started};speechWait=task;
+ timer=setTimeout(()=>{if(token!==generation||speechWait!==task)return;timer=null;speechWait=null;fn()},delay);
+}
+function applySpeechSetting(id){
+ if(id==='gap'&&speechWait?.kind==='gap'){const task=speechWait;speechDelay(task.fn,Math.max(0,store.settings.gap-(Date.now()-task.started)),'gap',task.started);return}
+ const session=playback;if(!session||session.finished||!utterance||!isPlaying)return;
+ const isJa=session.plan[session.pos].lang==='ja-JP';
+ if(!((id==='rate'&&!isJa)||(id==='voice'&&!isJa)||(id==='jaVoice'&&isJa)))return;
+ // Resume at the last reported word boundary. Without one, finish this utterance
+ // rather than guessing a position and skipping or restarting spoken text.
+ if(session.offset>session.startOffset||!session.started){utterance=null;synth.cancel();session.speak()}
+ else say('再生を継続中です。変更は次の文から反映されます。');
+}
 function highlight(){document.querySelectorAll('.sentence').forEach((el,i)=>{el.classList.toggle('current',i===current);if(i===current)el.setAttribute('aria-current','true');else el.removeAttribute('aria-current')})}
-function runSpeech(plan,repetitions,label,onComplete){
+function runSpeech(plan,repetitions,label,onComplete,options={}){
  if(!supported){say('このブラウザーは読み上げに対応していません。別のブラウザーで開いてください。');return}
- const token=generation;let round=0,pos=0;isPlaying=true;
+ const token=generation,session={plan,pos:0,round:0,offset:0,startOffset:0,started:false,finished:false,speak:null};playback=session;isPlaying=true;
+ const active=()=>token===generation&&playback===session;
+ const repeatCount=()=>options.followSettings?store.settings.repeat:repetitions;
+ function complete(){session.finished=true;isPlaying=false;onComplete(token)}
+ function nextRound(){
+  session.round++;session.pos=0;if(options.pair)session.plan=audioPlan(options.pair,store.settings.readJapanese);
+  if(session.round<repeatCount())speechDelay(speak,store.settings.gap,'gap');else complete();
+ }
  function speak(){
-  if(token!==generation)return;
-  const item=plan[pos],isJa=item.lang==='ja-JP',available=isJa?jaVoices:voices;
+  if(!active()||session.finished)return;
+  if(session.round>=repeatCount()){complete();return}
+  if(options.pair&&session.pos>0&&!store.settings.readJapanese){nextRound();return}
+  const item=session.plan[session.pos],isJa=item.lang==='ja-JP',available=isJa?jaVoices:voices;
   const chosen=available.find(v=>v.voiceURI===(isJa?store.settings.jaVoice:store.settings.voice))||available[0];
-  const u=new SpeechSynthesisUtterance(item.text);utterance=u;u.lang=chosen?.lang||item.lang;u.rate=isJa?1:store.settings.rate;if(chosen)u.voice=chosen;
-  say(`${label} · ${isJa?'和訳':'中国語'}を再生中 · ${round+1} / ${repetitions} 回`);
+  const offset=session.offset,u=new SpeechSynthesisUtterance(item.text.slice(offset));session.startOffset=offset;session.started=false;utterance=u;u.lang=chosen?.lang||item.lang;u.rate=isJa?1:store.settings.rate;if(chosen)u.voice=chosen;
+  const valid=()=>active()&&utterance===u;
+  say(`${label} · ${isJa?'和訳':'中国語'}を再生中 · ${session.round+1} / ${repeatCount()} 回`);
+  u.onstart=()=>{if(valid())session.started=true};
+  u.onboundary=e=>{if(valid()&&Number.isInteger(e.charIndex)&&e.charIndex>=0&&e.charIndex<u.text.length){session.started=true;session.offset=Math.max(session.offset,offset+e.charIndex)}};
   u.onend=()=>{
-   if(token!==generation)return;utterance=null;pos++;
-   if(pos<plan.length){timer=setTimeout(speak,300);return}
-   round++;pos=0;if(round<repetitions){timer=setTimeout(speak,store.settings.gap);return}
-   isPlaying=false;onComplete(token);
+   if(!valid())return;utterance=null;session.offset=0;session.started=false;
+   if(options.pair&&item.lang==='zh-CN')session.plan=audioPlan(options.pair,store.settings.readJapanese);
+   session.pos++;
+   if(session.pos<session.plan.length){speechDelay(speak,300);return}
+   nextRound();
   };
-  u.onerror=e=>{if(token!==generation)return;utterance=null;isPlaying=false;say(`${isJa?'日本語':'中国語'}の音声を再生できませんでした（${e.error}）。端末の読み上げ音声を確認し、もう一度再生してください。`)};
+  u.onerror=e=>{if(!valid())return;utterance=null;session.finished=true;isPlaying=false;say(`${isJa?'日本語':'中国語'}の音声を再生できませんでした（${e.error}）。端末の読み上げ音声を確認し、もう一度再生してください。`)};
   synth.speak(u);
  }
  // iOS Safari unlocks speech only when the first speak() runs inside the tap.
  // Keep delays between utterances, but never defer this initial call.
- speak();
+ session.speak=speak;speak();
 }
 function play(index,continuous=false){
  const l=lesson();if(!l||index<0||index>=l.sentences.length)return;
  stop();current=index;highlight();runSpeech(audioPlan(l.sentences[index],store.settings.readJapanese),store.settings.repeat,`${index+1} / ${l.sentences.length} 文目`,token=>{
-  if(continuous&&index+1<l.sentences.length){isPlaying=true;timer=setTimeout(()=>{if(token===generation)play(index+1,true)},store.settings.gap)}else say(continuous?'連続再生が終わりました。':'再生が終わりました。');
- });
+  if(continuous&&index+1<l.sentences.length){isPlaying=true;speechDelay(()=>{if(token===generation)play(index+1,true)},store.settings.gap,'gap')}else say(continuous?'連続再生が終わりました。':'再生が終わりました。');
+ },{pair:l.sentences[index],followSettings:true});
 }
-function playText(s,label,translationOnly=false){stop();const plan=translationOnly?[{text:s.ja,lang:'ja-JP'}]:audioPlan(s,store.settings.readJapanese);if(!plan[0].text.trim()){say('和訳が登録されていません。');return}runSpeech(plan,translationOnly?1:store.settings.repeat,label,()=>say('再生が終わりました。'))}
+function playText(s,label,translationOnly=false){stop();const plan=translationOnly?[{text:s.ja,lang:'ja-JP'}]:audioPlan(s,store.settings.readJapanese);if(!plan[0].text.trim()){say('和訳が登録されていません。');return}runSpeech(plan,translationOnly?1:store.settings.repeat,label,()=>say('再生が終わりました。'),translationOnly?{}:{pair:s,followSettings:true})}
 function playFullText(){
  const l=lesson();if(!l?.sentences.length)return;
  stop();current=-1;highlight();
@@ -477,6 +509,9 @@ function render(){
  $('fullText').replaceChildren();
  if(!l?.sentences.length)$('fullText').append(el('p','empty','この教材には文がありません。'));
  else for(let i=0;i<l.sentences.length;i+=5)$('fullText').append(el('p','zh',l.sentences.slice(i,i+5).map(s=>s.zh).join('')));
+ $('fullTranslation').replaceChildren();
+ if(!l?.sentences.length)$('fullTranslation').append(el('p','empty','この教材には和訳がありません。'));
+ else for(let i=0;i<l.sentences.length;i+=5)$('fullTranslation').append(el('p','ja',l.sentences.slice(i,i+5).map((s,j)=>s.ja.trim()||`（${i+j+1}文目の和訳は未登録です。）`).join('')));
  $('sentences').replaceChildren();
  if(!l?.sentences.length)$('sentences').append(el('p','panel empty',l?'この教材には文がありません。「教材を編集」から追加してください。':'教材を登録できます。'));
  else l.sentences.forEach((s,i)=>{
@@ -518,10 +553,10 @@ function loadVoices(){
 }
 for(const id of ['rate','repeat','gap','showPinyin','showJa','readJapanese']){
  const control=$(id);if(control.type==='checkbox')control.checked=store.settings[id];else control.value=store.settings[id];
- control.addEventListener(id==='rate'?'input':'change',()=>{stop('設定を変更しました。次の再生から反映されます。');store.settings[id]=control.type==='checkbox'?control.checked:Number(control.value);$('rateValue').textContent=Number(store.settings.rate).toFixed(2)+'倍';$('jaVoiceField').hidden=!store.settings.readJapanese;persist();loadVoices();render()});
+ control.addEventListener(id==='rate'?'input':'change',()=>{store.settings[id]=control.type==='checkbox'?control.checked:Number(control.value);$('rateValue').textContent=Number(store.settings.rate).toFixed(2)+'倍';$('jaVoiceField').hidden=!store.settings.readJapanese;persist();loadVoices();applySpeechSetting(id);render();if(!isPlaying)say('設定を変更しました。')});
 }
 $('rateValue').textContent=Number(store.settings.rate).toFixed(2)+'倍';$('jaVoiceField').hidden=!store.settings.readJapanese;
-for(const id of ['voice','jaVoice'])$(id).onchange=()=>{stop('音声を変更しました。');store.settings[id]=$(id).value;persist()};
+for(const id of ['voice','jaVoice'])$(id).onchange=()=>{store.settings[id]=$(id).value;persist();applySpeechSetting(id);if(!isPlaying)say('音声を変更しました。')};
 $('playAll').onclick=()=>play(current>=0?current:0,true);$('playFullText').onclick=playFullText;$('stop').onclick=()=>stop('停止しました。');$('prev').onclick=()=>play(current<=0?0:current-1);$('next').onclick=()=>play(current<0?0:Math.min(current+1,lesson().sentences.length-1));
 function addEditRow(s={zh:'',pinyin:'',ja:''}){
  const row=el('div','editrow'),head=el('div','row-head'),remove=el('button','danger','この文を削除');remove.type='button';remove.onclick=()=>row.remove();head.append(el('span','','練習する文'),remove);row.append(head);
@@ -570,7 +605,7 @@ $('importFile').onchange=async e=>{
 };
 $('downloadHtml').onclick=()=>{
  store.settings.selected=selected;const clone=document.documentElement.cloneNode(true);clone.querySelector('#initialData').textContent=JSON.stringify(store).replace(/</g,'\\u003c');
- for(const id of ['library','sentences','editRows','wordList','fullText'])clone.querySelector('#'+id).replaceChildren();for(const d of clone.querySelectorAll('dialog'))d.removeAttribute('open');clone.querySelector('#pasteText').textContent='';clone.querySelector('#wordSearch').setAttribute('value','');download('index.html','<!DOCTYPE html>\n'+clone.outerHTML,'text/html;charset=utf-8');say('教材・単語を含むHTMLを保存しました。同じブラウザーではブラウザー内の保存データが優先されます。');
+ for(const id of ['library','sentences','editRows','wordList','fullText','fullTranslation'])clone.querySelector('#'+id).replaceChildren();for(const d of clone.querySelectorAll('dialog'))d.removeAttribute('open');clone.querySelector('#pasteText').textContent='';clone.querySelector('#wordSearch').setAttribute('value','');download('index.html','<!DOCTYPE html>\n'+clone.outerHTML,'text/html;charset=utf-8');say('教材・単語を含むHTMLを保存しました。同じブラウザーではブラウザー内の保存データが優先されます。');
 };
 function showDailyStatus(message){$('dailyStatus').textContent=message||((store.dailyUpdatedAt?'最新の公開教材：'+store.dailyUpdatedAt+'。':'')+'起動時と5分ごとに最新教材を確認します。')}
 async function syncDaily(manual=false){
