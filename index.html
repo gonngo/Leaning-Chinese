@@ -156,6 +156,7 @@ input[type=checkbox] { width: 18px; height: 18px; flex-shrink: 0; margin: 0; acc
 #lessonVocabularyTable th:first-child { width: 28%; }
 #lessonVocabularyTable th:nth-child(2) { width: 34%; }
 #lessonVocabularyTable .source-word { color: var(--ink); font-size: 20px; }
+#lessonVocabularyTable .source-word button { display: block; min-height: 44px; max-width: 100%; margin-top: 8px; padding: 7px 10px; font-size: 14px; }
 #lessonVocabularyTable .source-pinyin { color: var(--teal); }
 #lessonVocabularyTable .source-meaning { color: var(--ink); }
 #lessonVocabularyTable tr:last-child td { border-bottom: 0; }
@@ -544,11 +545,13 @@ function render(){
 function renderLessonVocabulary(l){
  const words=l?.lessonVocabulary||[];
  $('lessonVocabularyTitle').textContent=`重要単語 · ${words.length}語`;
- $('lessonVocabularyNote').textContent=words.length?'この教材の元データの順に掲載しています。':'この教材には単語一覧が登録されていません。';
+ $('lessonVocabularyNote').textContent=words.length?'この教材の元データの順に掲載しています。「再生」で単語を読み上げます。':'この教材には単語一覧が登録されていません。';
  $('lessonVocabularyTable').hidden=!words.length;$('lessonVocabularyBody').replaceChildren();
  for(const word of words){
   const row=el('tr'),zh=el('td','source-word',word.zh),pinyin=el('td','source-pinyin',word.pinyin),ja=el('td','source-meaning',word.ja);
-  zh.lang='zh-CN';pinyin.lang='zh-Latn';ja.lang='ja';row.append(zh,pinyin,ja);$('lessonVocabularyBody').append(row);
+  zh.lang='zh-CN';pinyin.lang='zh-Latn';ja.lang='ja';
+  const playWord=audioButton('再生','重要単語「'+word.zh+'」を再生',()=>playText(word,'重要単語「'+word.zh+'」'));playWord.lang='ja';zh.append(playWord);
+  row.append(zh,pinyin,ja);$('lessonVocabularyBody').append(row);
  }
 }
 let wordPage=1;const WORD_PAGE_SIZE=40;
