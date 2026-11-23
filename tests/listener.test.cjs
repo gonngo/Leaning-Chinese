@@ -2,7 +2,8 @@ const fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
 const builtHtml=fs.readFileSync('index.html','utf8');const inlineScript=[...builtHtml.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)].find(s=>!s[1].includes('application/json'))[2];const core=inlineScript.split('// END CORE')[0];
 const context=vm.createContext({console,crypto:require('node:crypto').webcrypto,Date,Math,Set});vm.runInContext(core,context);
 const api=vm.runInContext('({validate,mergeDaily,parseDaily,audioPlan,wordKey})',context);
-const daily=JSON.parse(fs.readFileSync('daily-materials.json','utf8'));
+const publishedDaily=JSON.parse(fs.readFileSync('daily-materials.json','utf8'));
+const daily={version:1,batches:[publishedDaily.batches[0]]};
 const blank=()=>api.validate({version:1,lessons:[]});
 let checks=0;function check(name,fn){fn();console.log('PASS '+name);checks++}
 check('Fresh settings use 1x; Japanese speech is opt-in',()=>{const s=blank();assert.equal(s.settings.rate,1);assert.equal(s.settings.readJapanese,false)});
@@ -14,6 +15,8 @@ check('A malformed later batch causes no partial data mutation',()=>{const s=bla
 check('Deleted daily entries do not return on next sync',()=>{const s=blank();s.hiddenDaily=['daily-2026-11-23'];s.hiddenWords=['效率'];api.mergeDaily(s,daily);assert.equal(s.lessons.length,0);assert.equal(s.vocabulary.length,9)});
 check('Bilingual speech orders Chinese before Japanese and skips empty translations',()=>{const s={zh:'你好',ja:'こんにちは'};assert.equal(api.audioPlan(s,true).map(x=>x.lang).join(','),'zh-CN,ja-JP');assert.equal(api.audioPlan(s,false).length,1);assert.equal(api.audioPlan({...s,ja:'  '},true).length,1)});
 check('Old backups without vocabulary still load',()=>{const s=api.validate({version:1,lessons:[{id:'old',title:'既存教材',sentences:[{zh:'你好'}]}]});assert.equal(s.lessons[0].sentences[0].zh,'你好');assert.equal(s.vocabulary.length,0)});
+check('Different sources on the same date are imported independently',()=>{const s=blank(),extra=JSON.parse(JSON.stringify(daily));extra.batches[0].id='daily-chatgpt-2026-11-23';api.mergeDaily(s,daily);api.mergeDaily(s,extra);assert.equal(s.lessons.length,2);assert.equal(s.vocabulary.length,10);api.mergeDaily(s,extra);assert.equal(s.lessons.length,2)});
+check('Published history has complete, nonduplicated vocabulary and valid source links',()=>{const parsed=api.parseDaily(publishedDaily);const words=parsed.flatMap(b=>b.vocabulary);const keys=words.map(w=>api.wordKey(w.zh));assert.equal(new Set(keys).size,keys.length);for(const w of words)assert.ok(w.example.zh.includes(w.zh));for(const b of parsed)if(b.id.startsWith('daily-chatgpt-'))assert.ok(b.sourceUrl.startsWith('https://chatgpt.com/share/'));const s=blank();api.mergeDaily(s,publishedDaily);api.mergeDaily(s,publishedDaily);assert.equal(s.lessons.length,parsed.length);assert.equal(s.vocabulary.length,words.length)});
 check('All inline JavaScript and JSON in the built HTML parse',()=>{const html=fs.readFileSync('index.html','utf8');const scripts=[...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,3);for(const s of scripts){if(s[1].includes('application/json'))JSON.parse(s[2]);else new vm.Script(s[2])}assert.ok(html.includes('id="readJapanese"'));assert.ok(html.includes('id="wordsTab"'))});
 function audioHarness(){
  const browser=inlineScript;
