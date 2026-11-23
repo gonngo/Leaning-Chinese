@@ -18,7 +18,7 @@ check('Old backups without vocabulary still load',()=>{const s=api.validate({ver
 check('Different sources on the same date are imported independently',()=>{const s=blank(),extra=JSON.parse(JSON.stringify(daily));extra.batches[0].id='daily-chatgpt-2026-11-23';api.mergeDaily(s,daily);api.mergeDaily(s,extra);assert.equal(s.lessons.length,2);assert.equal(s.vocabulary.length,10);api.mergeDaily(s,extra);assert.equal(s.lessons.length,2)});
 check('Published history has complete, nonduplicated vocabulary and valid source links',()=>{const parsed=api.parseDaily(publishedDaily);const words=parsed.flatMap(b=>b.vocabulary);const keys=words.map(w=>api.wordKey(w.zh));assert.equal(new Set(keys).size,keys.length);for(const w of words)assert.ok(w.example.zh.includes(w.zh));for(const b of parsed)if(b.id.startsWith('daily-chatgpt-'))assert.ok(b.sourceUrl.startsWith('https://chatgpt.com/share/'));const s=blank();api.mergeDaily(s,publishedDaily);api.mergeDaily(s,publishedDaily);assert.equal(s.lessons.length,parsed.length);assert.equal(s.vocabulary.length,words.length)});
 check('All inline JavaScript and JSON in the built HTML parse',()=>{const html=fs.readFileSync('index.html','utf8');const scripts=[...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,3);for(const s of scripts){if(s[1].includes('application/json'))JSON.parse(s[2]);else new vm.Script(s[2])}assert.ok(html.includes('id="readJapanese"'));assert.ok(html.includes('id="wordsTab"'))});
-function audioHarness(){
+function audioHarness(requireGesture=false){
  const browser=inlineScript;
  const section=browser.slice(browser.indexOf('function stop('),browser.indexOf('function el('));
  const c=vm.createContext({console,Date,Math,Set,crypto:require('node:crypto').webcrypto});
@@ -33,11 +33,15 @@ function audioHarness(){
   const store={settings:{rate:1,repeat:2,gap:1000,readJapanese:true}};
   const lesson=()=>({sentences:[{zh:'你好',ja:'こんにちは'},{zh:'谢谢',ja:'ありがとう'}]});
   class SpeechSynthesisUtterance{constructor(text){this.text=text}}
-  const synth={cancel(){},speak(u){spoken.push(u)}};
+  let gestureActive=false,speechUnlocked=${!requireGesture};
+  function tap(fn){gestureActive=true;try{fn()}finally{gestureActive=false}}
+  const synth={cancel(){},speak(u){if(gestureActive)speechUnlocked=true;if(speechUnlocked)spoken.push(u)}};
   function tick(){const first=queue.entries().next().value;if(first){queue.delete(first[0]);first[1]()}}
  `+section,c);
  return {run:code=>vm.runInContext(code,c)};
 }
+check('Safari starts sentence speech in the tap and continues after the gesture ends',()=>{const h=audioHarness(true);h.run('store.settings.repeat=1;tap(()=>play(0,true));tick()');assert.equal(h.run('spoken.length'),1);h.run('spoken[0].onend();tick()');assert.equal(h.run('spoken[1].lang'),'ja-JP');h.run('spoken[1].onend();tick()');assert.equal(h.run('current'),1);assert.equal(h.run('spoken[2].text'),'谢谢')});
+check('Safari starts standalone Japanese, vocabulary and example speech in the tap',()=>{for(const translationOnly of [false,true]){const h=audioHarness(true);h.run(`tap(()=>playText({zh:'你好',ja:'こんにちは'},'test',${translationOnly}));tick()`);assert.equal(h.run('spoken.length'),1);assert.equal(h.run('spoken[0].lang'),translationOnly?'ja-JP':'zh-CN')}});
 check('Speech repeats Chinese/Japanese pairs in order using separate language voices',()=>{const h=audioHarness();h.run("runSpeech(audioPlan({zh:'你好',ja:'こんにちは'},true),2,'test',()=>completed++);tick()");assert.equal(h.run('spoken[0].lang'),'zh-CN');assert.equal(h.run('spoken[0].rate'),1);h.run('spoken[0].onend();tick()');assert.equal(h.run('spoken[1].lang'),'ja-JP');h.run('spoken[1].onend();tick();spoken[2].onend();tick();spoken[3].onend()');assert.equal(h.run('spoken.map(u=>u.lang).join(",")'),'zh-CN,ja-JP,zh-CN,ja-JP');assert.equal(h.run('completed'),1)});
 check('Stop cancels pending translation and ignores stale speech callbacks',()=>{const h=audioHarness();h.run("runSpeech(audioPlan({zh:'你好',ja:'こんにちは'},true),1,'test',()=>completed++);tick();stop();spoken[0].onend();tick()");assert.equal(h.run('spoken.length'),1);assert.equal(h.run('completed'),0);assert.equal(h.run('queue.size'),0)});
 check('Stopping during a sentence gap prevents continuous playback advancing',()=>{const h=audioHarness();h.run('store.settings.repeat=1;store.settings.readJapanese=false;play(0,true);tick();spoken[0].onend();stop();tick()');assert.equal(h.run('spoken.length'),1);assert.equal(h.run('current'),0)});

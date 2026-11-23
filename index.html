@@ -387,7 +387,9 @@ function runSpeech(plan,repetitions,label,onComplete){
   u.onerror=e=>{if(token!==generation)return;utterance=null;isPlaying=false;say(`${isJa?'日本語':'中国語'}の音声を再生できませんでした（${e.error}）。端末の読み上げ音声を確認し、もう一度再生してください。`)};
   synth.speak(u);
  }
- timer=setTimeout(speak,80);
+ // iOS Safari unlocks speech only when the first speak() runs inside the tap.
+ // Keep delays between utterances, but never defer this initial call.
+ speak();
 }
 function play(index,continuous=false){
  const l=lesson();if(!l||index<0||index>=l.sentences.length)return;
