@@ -1,0 +1,8 @@
+{
+  "name": "hsk5-cloud-import",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "playwright": "1.65.1"
+  }
+}

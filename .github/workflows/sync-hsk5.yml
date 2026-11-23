@@ -1,0 +1,43 @@
+name: Sync HSK5 materials
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-hsk5.yml'
+      - 'scripts/cloud-source.mjs'
+      - 'package.json'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hsk5-cloud-import
+  cancel-in-progress: false
+
+jobs:
+  check-source:
+    name: Check public ChatGPT source
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser dependency
+        run: npm install --ignore-scripts --no-package-lock
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Read shared lessons without a PC session
+        run: node scripts/cloud-source.mjs
+      - name: Keep source check result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hsk5-source-check
+          path: _cloud-import/
+          retention-days: 3
