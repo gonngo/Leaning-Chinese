@@ -152,14 +152,14 @@ def merge_materials(existing, incoming):
     words = {word_key(w['zh']) for b in result['batches'] for w in b['vocabulary']}
     stats = {'addedLessons': 0, 'addedSentences': 0, 'addedWords': 0, 'updatedLessons': 0}
     for original in sorted(incoming, key=lambda b: b['date']):
-        if batch_id(original) in ids:
+        known = batch_id(original) in ids
+        if known:
             if 'lessonVocabulary' in original:
                 validate_lesson_vocabulary(original['lessonVocabulary'])
                 previous = by_id[batch_id(original)]
                 if previous.get('lessonVocabulary') != original['lessonVocabulary']:
                     previous['lessonVocabulary'] = copy.deepcopy(original['lessonVocabulary'])
                     stats['updatedLessons'] += 1
-            continue
         batch = copy.deepcopy(original)
         unique = []
         for word in batch['vocabulary']:
@@ -171,12 +171,15 @@ def merge_materials(existing, incoming):
             words.add(key)
             unique.append(word)
         batch['vocabulary'] = unique
+        stats['addedWords'] += len(unique)
+        if known:
+            by_id[batch_id(original)]['vocabulary'].extend(unique)
+            continue
         result['batches'].append(batch)
         by_id[batch_id(batch)] = batch
         ids.add(batch_id(batch))
         stats['addedLessons'] += 1
         stats['addedSentences'] += len(batch['sentences'])
-        stats['addedWords'] += len(unique)
     result['updatedAt'] = max(b['date'] for b in result['batches'])
     validate_data(result)
     stats['latestDate'] = result['updatedAt']
@@ -193,7 +196,7 @@ def main():
     existing = json.loads(target.read_text(encoding='utf-8-sig'))
     incoming = parse_sources(json.loads(Path(args.source).read_text(encoding='utf-8-sig')))
     result, stats = merge_materials(existing, incoming)
-    changed = bool(stats['addedLessons'] or stats['updatedLessons'])
+    changed = bool(stats['addedLessons'] or stats['updatedLessons'] or stats['addedWords'])
     if changed:
         temporary = target.with_suffix('.json.tmp')
         temporary.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

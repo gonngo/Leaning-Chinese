@@ -134,6 +134,47 @@ class CloudImportTests(unittest.TestCase):
         result = module.parse_sources([source('2026年12月31日'), source('1月1日')], today=dt.date(2027, 1, 1))
         self.assertEqual([b['date'] for b in result], ['2026-12-31', '2027-01-01'])
 
+    def test_growth_past_five_hundred_keeps_only_new_words(self):
+        original = document()
+        original['batches'][0]['vocabulary'].extend([
+            {'zh': f'词{i}', 'pinyin': 'cí', 'ja': '単語', 'example': SENTENCE.copy()}
+            for i in range(499)
+        ])
+        incoming = module.parse_sources([source('2026年11月23日')])
+        result, stats = module.merge_materials(original, incoming)
+        self.assertEqual(stats['addedWords'], 1)
+        self.assertEqual(sum(len(b['vocabulary']) for b in result['batches']), 501)
+        again, stats = module.merge_materials(result, incoming)
+        self.assertEqual(again, result)
+        self.assertEqual(stats['addedWords'], 0)
+
+    def test_known_lesson_backfills_new_words_without_replacing_saved_sentences(self):
+        original = document()
+        incoming = batch('2026-11-22', '提高')
+        result, stats = module.merge_materials(original, [incoming])
+        self.assertEqual(stats['addedLessons'], 0)
+        self.assertEqual(stats['addedWords'], 1)
+        self.assertEqual(result['batches'][0]['sentences'], original['batches'][0]['sentences'])
+        self.assertEqual([w['zh'] for w in result['batches'][0]['vocabulary']], ['效率', '提高'])
+        again, stats = module.merge_materials(result, [incoming])
+        self.assertEqual(again, result)
+        self.assertEqual(stats['addedWords'], 0)
+
+    def test_word_only_backfill_is_saved_and_marks_deployment_changed(self):
+        incoming = module.parse_sources([source('2026年11月23日')])
+        original = document()
+        original['batches'][0].update({k: incoming[0][k] for k in ['id', 'date', 'lessonVocabulary']})
+        original['updatedAt'] = '2026-11-23'
+        with tempfile.TemporaryDirectory() as directory:
+            data, raw, output = [Path(directory) / name for name in ['data.json', 'source.json', 'output.txt']]
+            data.write_text(json.dumps(original), encoding='utf-8')
+            raw.write_text(json.dumps([source('2026年11月23日')]), encoding='utf-8')
+            with patch('sys.argv', ['import_materials.py', '--data', str(data), '--source', str(raw)]), patch.dict(os.environ, {'GITHUB_OUTPUT': str(output), 'GITHUB_STEP_SUMMARY': ''}):
+                module.main()
+            saved = json.loads(data.read_text(encoding='utf-8'))
+            self.assertEqual(len(saved['batches'][0]['vocabulary']), 2)
+            self.assertEqual(output.read_text(encoding='utf-8'), 'changed=true\n')
+
 
 if __name__ == '__main__':
     unittest.main()
