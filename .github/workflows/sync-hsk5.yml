@@ -2,12 +2,18 @@ name: Sync HSK5 materials
 
 on:
   workflow_dispatch:
+  schedule:
+    # 06:15 Asia/Tokyo (UTC+9). GitHub may start scheduled runs later.
+    - cron: '15 21 * * *'
   push:
     branches: [main]
     paths:
       - '.github/workflows/sync-hsk5.yml'
-      - 'scripts/cloud-source.mjs'
+      - 'scripts/**'
+      - 'tests/**'
       - 'package.json'
+      - 'index.html'
+      - 'daily-materials.json'
 
 permissions:
   contents: read
@@ -22,12 +28,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version: '22'
+      - name: Verify import and listener behavior
+        run: |
+          python3 -m unittest discover -s tests -p test_cloud_import.py
+          node tests/listener.test.cjs
       - name: Install browser dependency
         run: npm install --ignore-scripts --no-package-lock
       - name: Install Chromium
@@ -36,8 +46,65 @@ jobs:
         run: node scripts/cloud-source.mjs
       - name: Keep source check result
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: hsk5-source-check
           path: _cloud-import/
           retention-days: 3
+
+  publish:
+    name: Import new material and publish
+    needs: check-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          ref: main
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: hsk5-source-check
+          path: _cloud-import
+      - name: Validate and merge only unseen lessons and words
+        id: merge
+        run: python3 scripts/import_materials.py --source _cloud-import/source-lessons.json
+      - name: Verify merged materials work in the listener
+        run: node tests/listener.test.cjs
+      - name: Save new materials
+        if: steps.merge.outputs.changed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- daily-materials.json
+          git commit -m 'Import new HSK5 shared lessons'
+          git push origin HEAD:main
+      - name: Prepare public files
+        if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
+        run: |
+          mkdir -p _site
+          cp index.html daily-materials.json .nojekyll _site/
+      - name: Configure Pages
+        if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
+        uses: actions/configure-pages@v5
+      - name: Upload public site
+        if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Verify published materials
+        if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
+        run: python3 scripts/verify_deployment.py
