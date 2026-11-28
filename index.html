@@ -103,7 +103,7 @@ input[type=range] { width: 100%; min-height: 34px; margin: 0; accent-color: var(
 .screen-off-body { display: grid; gap: 12px; padding: 0 18px 16px; }
 .screen-off-body p { margin: 0; color: var(--muted); font-size: 14px; }
 .screen-off-body p:empty { display: none; }
-.screen-off-body audio { display: block; width: 100%; min-height: 44px; }
+.recorded-player { width: 100%; min-height: 44px; margin-top: 8px; }
 .now-reading { margin: 0 0 16px; padding: 14px 18px; background: #1c2029; border: 1px solid var(--line); border-left: 3px solid var(--teal); border-radius: 12px; }
 #nowReadingLabel { color: var(--teal); font-size: 13px; font-weight: 650; }
 #nowReadingText { color: var(--ink); font-size: 16px; line-height: 1.65; margin: 5px 0 0; overflow-wrap: anywhere; }
@@ -313,6 +313,7 @@ textarea { min-height: 86px; resize: vertical; line-height: 1.85; }
 <div class="panel controls" aria-label="再生コントロール"><div class="player-heading"><span class="tag">PLAYBACK</span><span class="player-caption">自分のペースで、聴き込む。</span></div>
 <div class="toolbar"><button class="primary" id="playAll">連続再生</button><button class="primary" id="playFullText" hidden>全文を再生</button><button class="primary" id="playWordBank" hidden>単語帳を再生</button><button id="pause" disabled aria-pressed="false">一時停止</button><button id="stop">停止</button><button id="prev">前の文</button><button id="next">次の文</button></div>
 <div class="speed-control"><label class="field"><span class="range-label"><span>再生速度</span><output id="rateValue" class="speed" for="rate">1.00倍</output></span><input id="rate" type="range" min="0.5" max="1.5" step="0.05" value="1"></label></div><p id="status" role="status" aria-live="polite">再生する文や単語を選んでください。</p>
+<audio id="screenOffAudio" class="recorded-player" controls preload="none" aria-label="音声プレーヤー" hidden></audio>
 <details class="playback-settings" id="playbackSettings"><summary><span>音声・表示の設定</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h7m4 0h5M4 17h3m4 0h9"/><circle cx="13" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></summary><div class="settings-body"><div class="control-grid"><label class="field">中国語の音声<select id="voice" aria-label="中国語の音声"></select></label><label class="field">繰り返し回数<select id="repeat"><option value="1">1回</option><option value="2">2回</option><option value="3">3回</option><option value="5">5回</option></select></label><label class="field">文・単語の間隔<select id="gap"><option value="400">0.4秒</option><option value="1000" selected>1秒</option><option value="2000">2秒</option><option value="3000">3秒</option></select></label><label class="field" id="jaVoiceField" hidden>日本語の音声<select id="jaVoice" aria-label="日本語の音声"></select></label></div><div class="toggles"><label><input id="showPinyin" type="checkbox" checked>ピンインを表示</label><label><input id="showJa" type="checkbox" checked>和訳を表示</label><label class="read-ja"><input id="readJapanese" type="checkbox">中国語のあとに和訳を読み上げる</label></div><p class="playback-note">再生中も設定を変更できます。音声によっては次の文から反映されます。</p><p id="voiceNotice"></p></div></details></div>
 <details id="screenOffPlayer" class="screen-off-player">
   <summary>画面オフで聴く</summary>
@@ -320,7 +321,6 @@ textarea { min-height: 86px; resize: vertical; line-height: 1.85; }
     <p>再生を始めてから画面をロックしてください。</p>
     <label id="screenOffField" class="field" hidden>音声の内容<select id="screenOffTrack" aria-label="画面オフで聴く音声"></select></label>
     <button id="screenOffStart" type="button" hidden>設定どおりに再生</button>
-    <audio id="screenOffAudio" controls playsinline preload="none" aria-label="画面オフ再生プレーヤー" hidden></audio>
     <p id="screenOffStatus" role="status"></p>
   </div>
 </details>
@@ -435,8 +435,13 @@ function showNowReading(text='', lang='', label='') {
  if(body.textContent!==value)body.textContent=value;
  body.lang=lang||'ja';
 }
-function configureAudioSession() {
- try { if (navigator.audioSession) navigator.audioSession.type='playback'; } catch {}
+function configureAudioSession(refresh=false) {
+ try {
+  const session=navigator.audioSession;
+  if(!session)return;
+  if(refresh&&session.type==='playback')session.type='auto';
+  session.type='playback';
+ } catch {}
 }
 try{store=validate(JSON.parse($('initialData').textContent))}catch{store=validate({version:1,lessons:[]})}
 try{const saved=localStorage.getItem(KEY);if(saved)store=validate(JSON.parse(saved))}catch{$('storageAlert').hidden=false}
@@ -449,7 +454,7 @@ function updatePlaybackButtons(){
  const paused=mediaPlayback?screenOffAudio.paused:isPaused;
  for(const id of ['pause','lessonVocabularyPause','wordAudioPause']){const b=$(id);b.textContent=paused?'再開':'一時停止';b.disabled=!mediaPlayback&&(!supported||!isPlaying);b.setAttribute('aria-pressed',String(paused))}
 }
-function stop(message, keepMedia = false){const wasPaused=isPaused;generation++;clearTimeout(timer);timer=null;speechWait=null;playback=null;utterance=null;isPlaying=false;isPaused=false;if(supported){synth.cancel();if(wasPaused||synth.paused)synth.resume()}if(!keepMedia){stopScreenOffAudio();showNowReading()}updatePlaybackButtons();if(message)say(message)}
+function stop(message, keepMedia = false){const wasPaused=isPaused,hadSpeech=!!utterance||isPlaying||isPaused;generation++;clearTimeout(timer);timer=null;speechWait=null;playback=null;utterance=null;isPlaying=false;isPaused=false;if(supported){if(hadSpeech||synth.speaking||synth.pending)synth.cancel();if(wasPaused||synth.paused)synth.resume()}if(!keepMedia){stopScreenOffAudio();showNowReading()}updatePlaybackButtons();if(message)say(message)}
 function speechDelay(fn,delay,kind='fixed',started=Date.now()){
  clearTimeout(timer);timer=null;const token=generation,task={fn,kind,started,remaining:delay,deadline:Date.now()+delay,pausedAt:isPaused?Date.now():null};speechWait=task;
  if(isPaused)return;
@@ -544,7 +549,7 @@ function playWordSequence(words,label,mode='word',repeat=false){
  next(0);
 }
 function playLessonVocabulary(){playWordSequence(lesson()?.lessonVocabulary||[],'重要単語')}
-function playWordBank(words=filteredWords(),mode=()=>store.settings.wordAudioMode){playWordSequence(words,'単語帳',mode,true)}
+function playWordBank(words=filteredWords(),mode=()=>store.settings.wordAudioMode,foreground=false){playWordSequence(words,foreground?'単語帳（画面オン用）':'単語帳',mode,true)}
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n}
 function textLines(s,container){for(const [field,cls,lang] of [['zh','zh','zh-CN'],['pinyin','pinyin','zh-Latn'],['ja','ja','ja']]){const p=el('p',cls,s[field]);p.lang=lang;p.hidden=field==='pinyin'?!store.settings.showPinyin:field==='ja'?!store.settings.showJa:false;container.append(p)}}
 function audioButton(text,label,action,recorded=false){const b=el('button','',text);b.setAttribute('aria-label',label);b.disabled=!supported&&!recorded;b.onclick=action;return b}
@@ -602,6 +607,7 @@ const screenOffPlayer = $('screenOffPlayer');
 const screenOffAudio = $('screenOffAudio');
 const screenOffTrack = $('screenOffTrack');
 const screenOffStatus = $('screenOffStatus');
+const systemMediaSession = navigator.mediaSession;
 const canPlayRecordedAudio = /^https?:$/.test(location.protocol)&&typeof screenOffAudio.play==='function';
 const prefersBackgroundAudio = /^https?:$/.test(location.protocol) &&
  (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
@@ -709,8 +715,10 @@ function startPublishedNetworkAudio(mode,choice,rows,tracks,index=0,fallbackSpee
 function stopScreenOffAudio() {
  const blobUrl = mediaPlayback?.blobUrl;
  mediaPlayback = null;
+ screenOffAudio.hidden = true;
+ if(systemMediaSession)systemMediaSession.playbackState='none';
+ if(!screenOffAudio.paused)screenOffAudio.pause();
  if (!screenOffAudio.hasAttribute('src')) return;
- screenOffAudio.pause();
  if (screenOffAudio.currentTime !== 0) screenOffAudio.currentTime = 0;
  if (blobUrl) {
   screenOffAudio.removeAttribute('src');
@@ -795,10 +803,8 @@ function playFromPack(mode, choice, rows, index=0, translationOnly=false, biling
  if (!useMedia) return false;
  const pack=packFor(choice),clips=packClips(choice,rows,translationOnly);
  if(!clips)return false;
- // Safari needs the first play call inside the tap. Use device speech when
- // the word-bank pack is still downloading, then keep the pack for later taps.
  const entry=audioPackRequest(pack);
- if (!entry||fallbackSpeech&&!entry.blob) return false;
+ if (!entry) return false;
 
  stop();
  const token=generation;
@@ -819,7 +825,14 @@ function playFromPack(mode, choice, rows, index=0, translationOnly=false, biling
  };
  if (entry.blob) start(entry.blob);
  else {
-  say('音声を準備しています…');
+  if(prefersBackgroundAudio&&(choice==='words'||choice==='examples')) {
+   // Give the same audio element the tap before its selected recording is ready.
+   screenOffAudio.removeAttribute('src');
+   screenOffAudio.load();
+   configureAudioSession(true);
+   screenOffAudio.play().catch(()=>{});
+  }
+  say('音声を準備しています。「再生中」と表示されたら画面をロックできます。');
   entry.ready.then(start);
  }
  return true;
@@ -837,9 +850,12 @@ function playSingleWord(word,example) {
  const choice=example?'examples':'words';
  const row=example?word.example:word;
  if(activeTab==='words'){
-  const fallback=()=>playWordBank([word],example?'example':'word');
-  if(prefersBackgroundAudio&&startPublishedNetworkAudio('single',choice,[row],screenOffManifest?.vocabulary,0,fallback))return;
-  if(!playFromPack('single',choice,[row],0,false,true,prefersBackgroundAudio,fallback))fallback();
+  const fallback=()=>playWordBank([word],example?'example':'word',prefersBackgroundAudio);
+  if(prefersBackgroundAudio){
+   if(startPublishedNetworkAudio('single',choice,[row],screenOffManifest?.vocabulary))return;
+   if(playFromPack('single',choice,[row],0,false,true))return;
+  }
+  fallback();
   return;
  }
  if(!playFromPack('single',choice,[row],0,false,store.settings.readJapanese))playText(row,'単語「'+word.zh+'」');
@@ -873,6 +889,19 @@ function wordBankRows(choice,words=filteredWords()) {
  return choice==='examples'?words.map(word=>word.example):words;
 }
 
+function publishedWordBankRows(choice) {
+ const batches=publishedDaily?.batches;
+ if(!batches?.length)return [];
+ return wordBankRows(choice,[...batches].sort((a,b)=>b.date.localeCompare(a.date)).flatMap(batch=>batch.vocabulary));
+}
+
+function sameRecordedRows(first,second) {
+ if(first.length!==second.length)return false;
+ const signatures=rows=>rows.map(row=>audioSignature([row])).sort();
+ const expected=signatures(second);
+ return signatures(first).every((key,index)=>key===expected[index]);
+}
+
 function playPublishedTrack(mode, fallback) {
  if (mediaPlayback && screenOffAudio.paused && mediaPlayback.mode === mode) {
   playPreparedAudio(mediaPlayback);
@@ -890,8 +919,12 @@ function playPublishedTrack(mode, fallback) {
  const rows = isWordBank ? wordBankRows(choice) : mode === 'important' ? material?.lessonVocabulary : material?.sentences;
  const index=mode==='listen'?Math.max(0,current):0;
  if(isWordBank){
-  if(startPublishedNetworkAudio(mode,choice,rows,tracks,index,fallback))return;
-  if(!playFromPack(mode,choice,rows,index,false,true,prefersBackgroundAudio,fallback))fallback();
+  const onMediaError=prefersBackgroundAudio?undefined:fallback;
+  if(startPublishedNetworkAudio(mode,choice,rows,tracks,index,onMediaError))return;
+  const publishedRows=publishedWordBankRows(choice);
+  if(prefersBackgroundAudio&&sameRecordedRows(rows,publishedRows)&&
+    startPublishedNetworkAudio(mode,choice,publishedRows,tracks,index))return;
+  if(!playFromPack(mode,choice,rows,index,false,true,prefersBackgroundAudio))fallback();
   return;
  }
  if (mode==='full'&&startPublishedNetworkAudio(mode,choice,rows,tracks,index))return;
@@ -929,7 +962,7 @@ function recoverMedia(session) {
 }
 
 function playPreparedAudio(session) {
- configureAudioSession();
+ configureAudioSession(prefersBackgroundAudio&&navigator.userActivation?.isActive);
  screenOffAudio.play().catch(error => {
   if (mediaPlayback !== session) return;
   if(error.name==='NotAllowedError') {say('音声の準備ができました。「再生」をもう一度押してください。');updatePlaybackButtons();return;}
@@ -940,6 +973,7 @@ function playPreparedAudio(session) {
 
 function setMediaSource(filename) {
  const src = filename.startsWith('blob:')?filename:'audio/'+filename;
+ screenOffAudio.hidden = false;
  if (screenOffAudio.getAttribute('src') !== src) screenOffAudio.src = src;
  screenOffAudio.defaultPlaybackRate = store.settings.rate;
  screenOffAudio.playbackRate = store.settings.rate;
@@ -1001,7 +1035,7 @@ function renderScreenOffPlayer() {
   screenOffTrack.append(option);
  }
  const available = screenOffTrack.options.length > 0;
- $('screenOffField').hidden = screenOffAudio.hidden = !available;
+ $('screenOffField').hidden = !available;
  $('screenOffStart').hidden = !available||!screenOffManifest.packs;
  if (!available) screenOffStatus.textContent = 'この教材の画面オフ用音声はありません。';
  if (mediaPlayback) {
@@ -1016,18 +1050,27 @@ $('screenOffStart').onclick=()=>{
  const choice=screenOffTrack.selectedOptions[0]?.dataset.choice;
  const material=lesson();
  const isWordBank=activeTab==='words';
- const publicWords=isWordBank&&publishedDaily?.batches?.slice().sort((a,b)=>b.date.localeCompare(a.date)).flatMap(batch=>batch.vocabulary);
- const rows=isWordBank?wordBankRows(choice,publicWords||undefined):choice==='important'?material?.lessonVocabulary:material?.sentences;
+ const rows=isWordBank?publishedWordBankRows(choice):choice==='important'?material?.lessonVocabulary:material?.sentences;
  const tracks=activeTab==='words'?screenOffManifest.vocabulary:screenOffManifest.lessons[selected];
  if((activeTab==='fulltext'||activeTab==='words')&&startPublishedNetworkAudio('manual',choice,rows,tracks))return;
  if(!playFromPack('manual',choice,rows,0,false,choice!=='chinese',true))say('この選択の画面オフ用音声はありません。');
 };
 screenOffTrack.onchange = selectScreenOffTrack;
+if(systemMediaSession?.setActionHandler){
+ const actions={
+  play:()=>{if(mediaPlayback)playPreparedAudio(mediaPlayback);else if(screenOffAudio.hasAttribute('src'))screenOffAudio.play().catch(()=>{})},
+  pause:()=>screenOffAudio.pause(),
+  stop:()=>stop('停止しました。')
+ };
+ for(const [action,handler] of Object.entries(actions)){
+  try{systemMediaSession.setActionHandler(action,handler)}catch{}
+ }
+}
 screenOffAudio.addEventListener('play', () => {
+ if(!screenOffAudio.hasAttribute('src'))return;
  if (!mediaPlayback) stop(undefined, true);
- configureAudioSession();
- if ('mediaSession' in navigator && typeof MediaMetadata === 'function') {
-  navigator.mediaSession.metadata = new MediaMetadata({
+ if (systemMediaSession && typeof MediaMetadata === 'function') {
+  systemMediaSession.metadata = new MediaMetadata({
    title: $('lessonTitle').textContent,
    artist: (mediaPlayback ? screenOffChoices[mediaPlayback.choice] : screenOffTrack.selectedOptions[0]?.textContent) || 'HSK5 Chinese Listener'
   });
@@ -1038,11 +1081,15 @@ screenOffAudio.addEventListener('play', () => {
  }
 });
 screenOffAudio.addEventListener('playing', () => {
+ if(!screenOffAudio.hasAttribute('src')||screenOffAudio.paused)return;
+ if(systemMediaSession)systemMediaSession.playbackState='playing';
  if(!mediaPlayback)return;
- say('再生中 · 画面をロックしても聴けます。');
+ say('再生中 · 画面オフ用音声');
 });
 screenOffAudio.addEventListener('pause', () => {
- if (!mediaPlayback || !screenOffAudio.paused || screenOffAudio.ended) return;
+ if (!screenOffAudio.hasAttribute('src') || !screenOffAudio.paused || screenOffAudio.ended) return;
+ if(systemMediaSession&&(mediaPlayback||!screenOffAudio.hidden))systemMediaSession.playbackState='paused';
+ if(!mediaPlayback)return;
  updatePlaybackButtons();
  say('一時停止中 · 「再開」で続きから聴けます。');
 });
@@ -1141,7 +1188,7 @@ $('rateValue').textContent=Number(store.settings.rate).toFixed(2)+'倍';
 for(const id of ['voice','jaVoice'])$(id).onchange=()=>{store.settings[id]=$(id).value;persist();applySpeechSetting(id);if(!isPlaying)say('音声を変更しました。')};
 $('playAll').onclick=()=>playPublishedTrack('listen',()=>play(current>=0?current:0,true));
 $('playFullText').onclick=()=>playPublishedTrack('full',playFullText);
-$('playWordBank').onclick=$('wordPlayAll').onclick=()=>playPublishedTrack('bank',()=>playWordBank());
+$('playWordBank').onclick=$('wordPlayAll').onclick=()=>playPublishedTrack('bank',()=>playWordBank(undefined,undefined,prefersBackgroundAudio));
 $('lessonVocabularyPlayAll').onclick=()=>playPublishedTrack('important',playLessonVocabulary);
 $('stop').onclick=()=>stop('停止しました。');$('prev').onclick=()=>stepSentence(-1);$('next').onclick=()=>stepSentence(1);
 for(const id of ['pause','lessonVocabularyPause','wordAudioPause'])$(id).onclick=togglePlaybackPause;
@@ -1172,7 +1219,7 @@ $('wordForm').onsubmit=e=>{
  }catch(err){$('wordError').textContent=err.message}
 };
 $('deleteWord').onclick=()=>{if(!confirm('この単語を削除しますか？ 書き出した教材から復元できます。'))return;const w=store.vocabulary.find(w=>w.id===editingWordId);if(w)store.hiddenWords.push(wordKey(w.zh));store.vocabulary=store.vocabulary.filter(w=>w.id!==editingWordId);persist();render();$('wordEditor').close();say('単語を削除しました。')};
-$('wordSearch').oninput=()=>{stop('検索条件を変更しました。');wordPage=1;renderWords()};
+$('wordSearch').oninput=()=>{stop('検索条件を変更しました。');wordPage=1;renderWords();prewarmAudioPack()};
 $('wordPrev').onclick=()=>{wordPage--;renderWords();$('wordSearch').scrollIntoView({block:'start'})};$('wordNext').onclick=()=>{wordPage++;renderWords();$('wordSearch').scrollIntoView({block:'start'})};
 $('lessonSelect').onchange=()=>{stop('教材を切り替えました。');selected=$('lessonSelect').value;current=-1;persist();render()};
 function download(name,content,type){const url=URL.createObjectURL(new Blob([content],{type}));const a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}
@@ -1194,7 +1241,7 @@ $('importFile').onchange=async e=>{
 };
 $('downloadHtml').onclick=()=>{
  store.settings.selected=selected;const clone=document.documentElement.cloneNode(true);clone.querySelector('#initialData').textContent=JSON.stringify(store).replace(/</g,'\\u003c');
- clone.querySelector('#initialAudioData').textContent='null';clone.querySelector('#screenOffPlayer').removeAttribute('open');clone.querySelector('#screenOffAudio').removeAttribute('src');
+ clone.querySelector('#initialAudioData').textContent='null';clone.querySelector('#screenOffPlayer').removeAttribute('open');const player=clone.querySelector('#screenOffAudio');player.removeAttribute('src');player.hidden=true;
  for(const id of ['library','sentences','editRows','wordList','fullText','fullTranslation'])clone.querySelector('#'+id).replaceChildren();for(const d of clone.querySelectorAll('dialog'))d.removeAttribute('open');clone.querySelector('#pasteText').textContent='';clone.querySelector('#wordSearch').setAttribute('value','');download('index.html','<!DOCTYPE html>\n'+clone.outerHTML,'text/html;charset=utf-8');say('教材・単語を含むHTMLを保存しました。同じブラウザーではブラウザー内の保存データが優先されます。');
 };
 function showDailyStatus(message){$('dailyStatus').textContent=message||((store.dailyUpdatedAt?'最新の公開教材：'+store.dailyUpdatedAt+'。':'')+'起動時と5分ごとに最新教材を確認します。')}

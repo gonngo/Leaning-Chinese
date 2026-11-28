@@ -60,9 +60,9 @@ check('Stop cancels pending translation and ignores stale speech callbacks',()=>
 check('Stopping during a sentence gap prevents continuous playback advancing',()=>{const h=audioHarness();h.run('store.settings.repeat=1;store.settings.readJapanese=false;play(0,true);tick();spoken[0].onend();stop();tick()');assert.equal(h.run('spoken.length'),1);assert.equal(h.run('current'),0)});
 check('A speech error does not advance to Japanese or the next sentence',()=>{const h=audioHarness();h.run('store.settings.repeat=1;play(0,true);tick();spoken[0].onerror({error:"voice-unavailable"});tick()');assert.equal(h.run('spoken.length'),1);assert.equal(h.run('isPlaying'),false)});
 check('Speed changes resume at cumulative word offsets and ignore canceled utterance callbacks',()=>{const h=audioHarness(true);h.run("testLesson.sentences[0].zh='你好世界';tap(()=>playFullText());spoken[0].onstart();spoken[0].onboundary({charIndex:2});store.settings.rate=1.2;tap(()=>applySpeechSetting('rate'))");assert.equal(h.run('spoken[1].text'),'世界');assert.equal(h.run('spoken[1].rate'),1.2);h.run('spoken[0].onend();spoken[0].onerror({error:"canceled"})');assert.equal(h.run('spoken.length'),2);assert.equal(h.run('isPlaying'),true);h.run("spoken[1].onstart();spoken[1].onboundary({charIndex:1});store.settings.rate=.8;tap(()=>applySpeechSetting('rate'))");assert.equal(h.run('spoken[2].text'),'界');h.run('spoken[2].onend();tick()');assert.equal(h.run('spoken[3].text'),'谢谢');h.run('spoken[3].onend()');assert.equal(h.run('isPlaying'),false)});
-check('Voices without word positions finish the current sentence and use new settings on the next one',()=>{const h=audioHarness();h.run("playFullText();spoken[0].onstart();store.settings.rate=.7;applySpeechSetting('rate')");assert.equal(h.run('spoken.length'),1);assert.equal(h.run('cancelled'),1);assert.equal(h.run('isPlaying'),true);h.run('spoken[0].onend();tick()');assert.equal(h.run('spoken[1].text'),'谢谢');assert.equal(h.run('spoken[1].rate'),.7)});
+check('Voices without word positions finish the current sentence and use new settings on the next one',()=>{const h=audioHarness();h.run("playFullText();spoken[0].onstart();store.settings.rate=.7;applySpeechSetting('rate')");assert.equal(h.run('spoken.length'),1);assert.equal(h.run('cancelled'),0);assert.equal(h.run('isPlaying'),true);h.run('spoken[0].onend();tick()');assert.equal(h.run('spoken[1].text'),'谢谢');assert.equal(h.run('spoken[1].rate'),.7)});
 check('A replacement voice must report fresh progress before another in-sentence restart',()=>{const h=audioHarness();h.run("testLesson.sentences[0].zh='你好世界';playFullText();spoken[0].onboundary({charIndex:2});store.settings.rate=1.2;applySpeechSetting('rate');spoken[1].onstart();store.settings.rate=.9;applySpeechSetting('rate')");assert.equal(h.run('spoken.length'),2);h.run('spoken[1].onend();tick()');assert.equal(h.run('spoken[2].text'),'谢谢');assert.equal(h.run('spoken[2].rate'),.9)});
-check('Display settings never interrupt an active utterance',()=>{const h=audioHarness();h.run("play(0);spoken[0].onstart();store.settings.showPinyin=false;applySpeechSetting('showPinyin');store.settings.showJa=false;applySpeechSetting('showJa')");assert.equal(h.run('spoken.length'),1);assert.equal(h.run('cancelled'),1);assert.equal(h.run('isPlaying'),true)});
+check('Display settings never interrupt an active utterance',()=>{const h=audioHarness();h.run("play(0);spoken[0].onstart();store.settings.showPinyin=false;applySpeechSetting('showPinyin');store.settings.showJa=false;applySpeechSetting('showJa')");assert.equal(h.run('spoken.length'),1);assert.equal(h.run('cancelled'),0);assert.equal(h.run('isPlaying'),true)});
 check('Japanese narration and repeat changes apply at speech boundaries without losing the current sentence',()=>{const h=audioHarness();h.run("store.settings.readJapanese=false;play(0);spoken[0].onstart();store.settings.readJapanese=true;applySpeechSetting('readJapanese');store.settings.repeat=1;applySpeechSetting('repeat');spoken[0].onend();tick()");assert.equal(h.run('spoken[1].lang'),'ja-JP');h.run('spoken[1].onend();tick()');assert.equal(h.run('spoken.length'),2);assert.equal(h.run('isPlaying'),false);const off=audioHarness();off.run("store.settings.repeat=1;play(0);spoken[0].onend();store.settings.readJapanese=false;applySpeechSetting('readJapanese');tick()");assert.equal(off.run('spoken.length'),1);assert.equal(off.run('isPlaying'),false)});
 check('Japanese voice changes resume the Japanese text with the chosen voice',()=>{const h=audioHarness();h.run("store.settings.repeat=1;play(0);spoken[0].onend();tick();spoken[1].onboundary({charIndex:2});jaVoices.push({lang:'ja-JP',voiceURI:'ja2'});store.settings.jaVoice='ja2';applySpeechSetting('jaVoice')");assert.equal(h.run('spoken[2].text'),'にちは');assert.equal(h.run('spoken[2].voice.voiceURI'),'ja2');assert.equal(h.run('spoken[2].rate'),1)});
 check('Changing gaps repeatedly preserves elapsed waiting time and the next sentence',()=>{const h=audioHarness();h.run('store.settings.repeat=1;store.settings.readJapanese=false;play(0,true);spoken[0].onend()');h.advance(400);h.run("store.settings.gap=2000;applySpeechSetting('gap')");assert.equal(h.run('lastDelay'),1600);h.advance(300);h.run("store.settings.gap=1000;applySpeechSetting('gap')");assert.equal(h.run('lastDelay'),300);h.run('tick()');assert.equal(h.run('spoken[1].text'),'谢谢');assert.equal(h.run('current'),1)});
@@ -78,25 +78,27 @@ check('Published source lists keep thirty words each when supplied by the import
 check('Pause and resume retain the same utterance and then continue Chinese/Japanese playback',()=>{const h=audioHarness(true);h.run('store.settings.repeat=1;tap(()=>play(0));spoken[0].onstart();pauseSpeech();tick()');assert.equal(h.run('isPaused'),true);assert.equal(h.run('isPlaying'),true);assert.equal(h.run('synth.paused'),true);assert.equal(h.run('spoken.length'),1);h.run('tap(resumeSpeech)');assert.equal(h.run('isPaused'),false);assert.equal(h.run('spoken.length'),1);assert.equal(h.run('pausedCalls'),1);assert.equal(h.run('resumedCalls'),1);h.run('spoken[0].onend();tick()');assert.equal(h.run('spoken[1].text'),'こんにちは')});
 check('Pause freezes the remaining delay between Chinese and Japanese, including a late end event',()=>{const h=audioHarness();h.run('store.settings.repeat=1;play(0);spoken[0].onend()');h.advance(100);h.run('pauseSpeech()');h.advance(10000);h.run('tick()');assert.equal(h.run('spoken.length'),1);h.run('resumeSpeech()');assert.equal(h.run('lastDelay'),200);h.run('tick()');assert.equal(h.run('spoken[1].lang'),'ja-JP');const late=audioHarness();late.run('store.settings.repeat=1;play(0);pauseSpeech();spoken[0].onend();tick()');assert.equal(late.run('spoken.length'),1);late.run('resumeSpeech();tick()');assert.equal(late.run('spoken[1].lang'),'ja-JP')});
 check('Paused word gaps exclude paused time when the interval setting changes repeatedly',()=>{const h=audioHarness();h.run('testLesson.lessonVocabulary=[{zh:"甲",ja:"一"},{zh:"乙",ja:"二"}];playLessonVocabulary();spoken[0].onend();tick();spoken[1].onend()');h.advance(400);h.run('pauseSpeech()');h.advance(9000);h.run('store.settings.gap=2000;applySpeechSetting("gap");tick()');assert.equal(h.run('spoken.length'),2);assert.equal(h.run('speechWait.remaining'),1600);h.advance(5000);h.run('store.settings.gap=1000;applySpeechSetting("gap");resumeSpeech()');assert.equal(h.run('lastDelay'),600);h.run('tick()');assert.equal(h.run('spoken[2].text'),'乙')});
-check('Speed changes while paused wait for resume and keep the word offset and translation',()=>{const h=audioHarness(true);h.run('testLesson.sentences[0].zh="你好世界";store.settings.repeat=1;tap(()=>play(0));spoken[0].onboundary({charIndex:2});pauseSpeech();store.settings.rate=.7;applySpeechSetting("rate")');assert.equal(h.run('spoken.length'),1);assert.equal(h.run('cancelled'),1);h.run('tap(resumeSpeech)');assert.equal(h.run('spoken[1].text'),'世界');assert.equal(h.run('spoken[1].rate'),.7);assert.equal(h.run('synth.paused'),false);h.run('spoken[0].onend();spoken[1].onend();tick()');assert.equal(h.run('spoken[2].lang'),'ja-JP')});
+check('Speed changes while paused wait for resume and keep the word offset and translation',()=>{const h=audioHarness(true);h.run('testLesson.sentences[0].zh="你好世界";store.settings.repeat=1;tap(()=>play(0));spoken[0].onboundary({charIndex:2});pauseSpeech();store.settings.rate=.7;applySpeechSetting("rate")');assert.equal(h.run('spoken.length'),1);assert.equal(h.run('cancelled'),0);h.run('tap(resumeSpeech)');assert.equal(h.run('spoken[1].text'),'世界');assert.equal(h.run('spoken[1].rate'),.7);assert.equal(h.run('synth.paused'),false);h.run('spoken[0].onend();spoken[1].onend();tick()');assert.equal(h.run('spoken[2].lang'),'ja-JP')});
 check('Stop while paused clears pause state, cancels pending work, and a new play starts normally',()=>{const h=audioHarness(true);h.run('tap(playFullText);pauseSpeech();stop();spoken[0].onend();tick()');assert.equal(h.run('isPaused'),false);assert.equal(h.run('isPlaying'),false);assert.equal(h.run('synth.paused'),false);assert.equal(h.run('spoken.length'),1);h.run('tap(playFullText)');assert.equal(h.run('spoken[1].text'),'你好');assert.equal(h.run('isPlaying'),true);const gap=audioHarness();gap.run('play(0);spoken[0].onend();pauseSpeech();stop();resumeSpeech();tick()');assert.equal(gap.run('spoken.length'),1)});
 check('The word bank grows beyond five hundred and later daily imports remain deduplicated',()=>{const s=blank(),seed=daily.batches[0].vocabulary[0];s.vocabulary=Array.from({length:500},(_,i)=>({...seed,id:String(i),zh:'词'+i}));const later=JSON.parse(JSON.stringify(daily));later.batches[0].date='2026-11-24';later.batches[0].id='future-growth';later.batches[0].vocabulary=[s.vocabulary[0],{zh:'新词',pinyin:'xīn cí',ja:'新しい単語',example:{zh:'这是新词。',pinyin:'Zhè shì xīn cí.',ja:'これは新しい単語です。'}}];const result=api.mergeDaily(s,later);assert.equal(result.addedWords,1);assert.equal(s.vocabulary.length,501);assert.equal(api.mergeDaily(s,later).addedWords,0);assert.equal(s.vocabulary.length,501)});
 function publishedAudioHarness(userAgent = 'iPhone') {
  const browser = inlineScript;
  const source = browser.slice(browser.indexOf('const screenOffPlayer ='), browser.indexOf('function renderLessonVocabulary('));
- const context = vm.createContext({TextEncoder,Blob,URL, navigator:{userAgent}, location:{protocol:'https:'}});
+ const handlers={};
+ const mediaSession={setActionHandler(action,fn){handlers[action]=fn}};
+ const context = vm.createContext({TextEncoder,Blob,URL, navigator:{userAgent,mediaSession}, handlers, location:{protocol:'https:'}});
  vm.runInContext(`
   const rows=[{zh:'你好',ja:'こんにちは'},{zh:'再见',ja:'さようなら'}];
   const chinese='111111111111111111111111.mp3', bilingual='222222222222222222222222.mp3';
   const settings={rate:.8,readJapanese:false,wordAudioMode:'word',repeat:1,gap:1000},store={settings};
   const events={},messages=[],calls=[];
-  const audio={paused:true,currentTime:0,src:'',addEventListener(name,fn){events[name]=fn},hasAttribute(){return Boolean(this.src)},getAttribute(){return this.src},play(){this.paused=false;calls.push([this.src,this.currentTime]);events.play();return Promise.resolve()},pause(){this.paused=true;events.pause?.()}};
+  const audio={paused:true,hidden:true,currentTime:0,src:'',addEventListener(name,fn){events[name]=fn},hasAttribute(){return Boolean(this.src)},getAttribute(){return this.src},removeAttribute(){this.src=''},load(){this.paused=true},play(){this.paused=false;calls.push([this.src,this.currentTime]);events.play();return Promise.resolve()},pause(){this.paused=true;events.pause?.()}};
   const track={querySelector:()=>null};
   const elements={initialAudioData:{textContent:'null'},screenOffAudio:audio,screenOffTrack:track};
   const $=id=>elements[id]??{};
   let current=1,isPaused=false;
   let generation=0;
-  let selected='test',activeTab='listen';
+  let selected='test',activeTab='listen',publishedDaily;
   function lesson(){return {id:'test',sentences:rows}}
   function stop(message,keepMedia){generation++;if(!keepMedia)stopScreenOffAudio()}
   function say(message){messages.push(message)}
@@ -201,18 +203,43 @@ check('Standard word-bank playback uses seekable AAC with an MP3 alternative',()
  assert.equal(run('fellBack'),false);
  assert.equal(run('mediaPlayback.mode'),'bank');
 });
-check('A cold word-bank pack starts device speech in the click and keeps the selection',()=>{
+check('A cold word-bank pack reserves the audio tap and starts one media track without device speech',()=>{
  const run=publishedAudioHarness();
  assert.equal(run(`
   function filteredWords(){return [rows[1]]}
-  function fetch(){return new Promise(()=>{})}
+  let finishPack;
   screenOffManifest.packs={vocabulary:{words:{file:chinese,silence:[0,1],tracks:{words:{[audioSignature(filteredWords())]:[[1,3,10],[3,6,11]]}}}}};
-  let spoken='';
-  playPublishedTrack('bank',()=>{spoken=filteredWords()[0].zh});
-  spoken
- `),'再见');
- assert.equal(run('calls.length'),0);
- assert.equal(run('audioPacks.size'),1);
+  audioPacks.set(chinese,{blob:null,ready:{then(fn){finishPack=fn}}});
+  playPublishedTrack('bank',()=>{throw Error('device speech cannot continue while locked')});
+  calls[0][0]
+ `),'');
+ assert.match(run(`finishPack(new Blob(['abcdef']));calls[1][0]`),/^blob:/);
+ assert.equal(run('mediaPlayback.rows[0].zh'),'再见');
+ assert.equal(run('audio.hidden'),false);
+});
+check('Screen and lock-screen controls pause, resume and stop the same recording',()=>{
+ const run=publishedAudioHarness();
+ assert.equal(run(`
+  function filteredWords(){return rows}
+  screenOffManifest.vocabulary={words:bilingual,wordsSignature:audioSignature(rows)};
+  playPublishedTrack('bank',()=>{throw Error('unexpected device speech')});
+  events.playing();audio.currentTime=2.5;handlers.pause();
+  navigator.mediaSession.playbackState
+ `),'paused');
+ assert.equal(run(`handlers.play();events.playing();navigator.mediaSession.playbackState`),'playing');
+ assert.equal(run('calls.at(-1)[1]'),2.5);
+ assert.equal(run(`handlers.stop();navigator.mediaSession.playbackState`),'none');
+});
+check('Reordered saved words still use the public recording when the spoken text matches',()=>{
+ const run=publishedAudioHarness();
+ assert.match(run(`
+  function filteredWords(){return [...rows].reverse()}
+  publishedDaily={batches:[{date:'2026-11-28',vocabulary:rows}]};
+  screenOffManifest.vocabulary={words:bilingual,wordsSignature:audioSignature(rows)};
+  playPublishedTrack('bank',()=>{throw Error('unexpected device speech')});
+  calls[0][0]
+ `),/^audio\/[0-9]+\.mp3$/);
+ assert.equal(run('mediaPlayback.rows.length'),2);
 });
 check('Device speech honors word-bank repeats, including the Japanese translation',()=>{
  const h=audioHarness(true);
