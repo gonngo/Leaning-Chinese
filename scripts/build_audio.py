@@ -7,6 +7,7 @@ import json
 import math
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 
@@ -166,6 +167,21 @@ class AudioBuilder:
             os.replace(temporary, cached)
         shutil.copyfile(cached, self.output / filename)
         return filename, offsets, translations
+
+    def progressive_audio(self, mp3):
+        """Make a seekable AAC alternative with its index at the start."""
+        from imageio_ffmpeg import get_ffmpeg_exe
+
+        filename = mp3.removesuffix('.mp3') + '.m4a'
+        cached = self.cache / filename
+        if not cached.is_file() or not cached.stat().st_size:
+            temporary = cached.with_suffix('.tmp.m4a')
+            subprocess.run([get_ffmpeg_exe(), '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
+                            '-i', str(self.output / mp3), '-c:a', 'aac', '-b:a', '48k',
+                            '-movflags', '+faststart', str(temporary)], check=True)
+            os.replace(temporary, cached)
+        shutil.copyfile(cached, self.output / filename)
+        return filename
 
     def pack(self, groups):
         """Encode all unique speech clips in one frame-aligned audio file."""
@@ -354,6 +370,9 @@ def build(materials, builder):
              for word in batch['vocabulary']]
     add_track(manifest['vocabulary'], 'words', words, bilingual=True)
     add_track(manifest['vocabulary'], 'examples', (word['example'] for word in words), bilingual=True)
+    for key in ('words', 'examples'):
+        tracks = manifest['vocabulary']
+        tracks[key + 'Progressive'] = builder.progressive_audio(tracks[key])
     manifest['packs']['vocabulary']['words'] = builder.pack({'words': words})
     manifest['packs']['vocabulary']['examples'] = builder.pack({'examples': [word['example'] for word in words]})
     manifest['streams'][manifest['vocabulary']['words']] = builder.stream(words, bilingual=True, singles=True)
@@ -385,6 +404,12 @@ def main():
         if placeholder not in html:
             raise ValueError('Audio manifest placeholder not found in ' + str(args.index))
         embedded = placeholder.replace('>null<', '>' + payload.replace('<', '\\u003c') + '<')
+        daily_payload = json.dumps(materials, ensure_ascii=False, separators=(',', ':')).replace('<', '\\u003c')
+        daily = '<script id="initialDailyData" type="application/json">' + daily_payload + '</script>'
+        html, matches = re.subn(r'<script id="initialDailyData" type="application/json">.*?</script>',
+                                lambda _: daily, html, count=1, flags=re.DOTALL)
+        if matches != 1:
+            raise ValueError('Daily materials placeholder not found in ' + str(args.index))
         args.index.write_text(html.replace(placeholder, embedded, 1), encoding='utf-8')
 
 
