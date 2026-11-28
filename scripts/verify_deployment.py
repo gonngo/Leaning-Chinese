@@ -44,6 +44,16 @@ def check_audio():
         with (audio_dir / filename).open('rb') as expected_audio:
             if fetch('audio/' + filename, 1024) != expected_audio.read(1024):
                 return False
+    for filename in [tracks['lessons'][lesson_id]['chinese'], *[tracks['vocabulary'][key] for key in ('words','examples')]]:
+        prefix = tracks['streams'][filename]['prefix']
+        path = f'audio/streams/{prefix}-3-2000.m3u8'
+        expected_playlist = (Path('_site') / path).read_bytes()
+        if fetch(path) != expected_playlist:
+            return False
+        segment = next(line for line in expected_playlist.decode().splitlines() if line.endswith('.ts'))
+        with (audio_dir / 'streams' / segment).open('rb') as expected_segment:
+            if fetch('audio/streams/' + segment, 188) != expected_segment.read(188):
+                return False
     print('Published screen-off manifest and representative MP3s verified')
     return True
 

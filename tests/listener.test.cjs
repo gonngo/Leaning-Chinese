@@ -150,4 +150,28 @@ check('A filtered word-book selection uses packed audio and the current text fol
  assert.equal(r.session,'playback');
  assert.deepEqual(r.reading,['さようなら','ja-JP','1/1']);
 });
+check('The full-text button starts the correctly configured Safari stream during the tap, without a pack download',()=>{
+ const run=publishedAudioHarness();
+ assert.match(run(`
+  audio.canPlayType=()=> 'maybe';settings.repeat=2;settings.gap=2000;
+  screenOffManifest.streams={[chinese]:{prefix:'345678901234567890123456',rows:[[2,null],[3,null]],gaps:{2000:2.04}}};
+  playPublishedTrack('full',()=>{throw Error('unexpected device speech')});calls[0][0]
+ `),/^audio\/streams\/[0-9]+-2-2000\.m3u8$/);
+ assert.equal(run('mediaPlayback.cues.length'),4);
+ assert.equal(run('mediaPlayback.offsets[1]'),8.08);
+ assert.equal(run('audioPacks.size'),0);
+});
+check('Word-book playback starts its own stream, preserves bilingual cues, and ignores a stale end event',()=>{
+ const run=publishedAudioHarness();
+ assert.match(run(`
+  function filteredWords(){return rows}
+  audio.canPlayType=()=> 'maybe';activeTab='words';
+  screenOffManifest.vocabulary={words:bilingual,wordsSignature:audioSignature(rows)};
+  screenOffManifest.streams={[bilingual]:{prefix:'234567890123456789012345',rows:[[2,1],[3,1.5]],gaps:{1000:1.02}}};
+  playPublishedTrack('bank',()=>{throw Error('unexpected device speech')});
+  events.ended();audio.currentTime=1.2;events.timeupdate();
+  if(mediaPlayback.mode!=='bank'||readings.at(-1)[0]!=='こんにちは')throw Error('stale end or wrong cue');
+  calls[0][0]
+ `),/^audio\/streams\/[0-9]+-1-1000\.m3u8$/);
+});
 console.log(`${checks} checks passed`);

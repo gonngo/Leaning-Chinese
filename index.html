@@ -630,6 +630,62 @@ function publishedTrack(tracks, choice, rows) {
  return {file, offsets};
 }
 
+function streamTimeline(rows, timing, repeat, gapDuration) {
+ const cues=[],offsets=[];
+ let time=0;
+ for(const [i,row] of rows.entries()) {
+  offsets.push(time);
+  const [duration,translation]=timing[i];
+  for(let round=1;round<=repeat;round++) {
+   cues.push({time,text:row.zh,lang:'zh-CN',row:i,round});
+   if(translation!=null)cues.push({time:time+translation,text:row.ja,lang:'ja-JP',row:i,round});
+   time+=duration+gapDuration;
+  }
+ }
+ return {offsets,cues};
+}
+
+function nativeStream(choice, tracks, rows) {
+ const stream=screenOffManifest?.streams?.[tracks?.[choice]];
+ const repeat=store.settings.repeat,gap=store.settings.gap;
+ if(!stream||!screenOffAudio.canPlayType?.('application/vnd.apple.mpegurl'))return null;
+ const track=publishedTrack(tracks,choice,rows);
+ if(track&&track.offsets.length===stream.rows.length&&/^[0-9a-f]{24}$/.test(stream.prefix)&&stream.gaps[gap]) {
+  return {file:`streams/${stream.prefix}-${repeat}-${gap}.m3u8`,repeat,...streamTimeline(rows,stream.rows,repeat,stream.gaps[gap])};
+ }
+ const item=rows.length===1&&repeat===1&&stream.items?.[audioSignature(rows)];
+ if(item&&/^[0-9a-f]{24}\.m3u8$/.test(item[0])) {
+  return {file:'streams/'+item[0],repeat,...streamTimeline(rows,[item.slice(1)],repeat,0)};
+ }
+ return null;
+}
+
+function startNetworkTrack(mode,choice,rows,track,index=0,cueData={}) {
+ stop();
+ const session={mode,choice,rows,index,offsets:track.offsets,...cueData};
+ mediaPlayback=session;
+ setMediaSource(track.file);
+ if(session.offsets[index]>0)screenOffAudio.currentTime=session.offsets[index];
+ if(mode==='listen'){current=index;highlight()}
+ updatePlaybackButtons();
+ playPreparedAudio(session);
+}
+
+function startPublishedNetworkAudio(mode,choice,rows,tracks,index=0) {
+ if(!rows?.length)return false;
+ const plain=publishedTrack(tracks,choice,rows);
+ const repeat=store.settings.repeat,gap=store.settings.gap;
+ const stream=nativeStream(choice,tracks,rows);
+ if(stream) {
+  startNetworkTrack(mode,choice,rows,stream,index,{cues:stream.cues,repeat,fallbackTrack:repeat===1&&gap===1000?plain:null,fallbackPack:true});
+  return true;
+ }
+ // The normal settings use a ready-to-stream file even if HLS is unavailable.
+ if(!plain||(repeat!==1||gap!==1000)&&screenOffManifest.packs)return false;
+ startNetworkTrack(mode,choice,rows,plain,index);
+ return true;
+}
+
 function stopScreenOffAudio() {
  const blobUrl = mediaPlayback?.blobUrl;
  mediaPlayback = null;
@@ -746,6 +802,7 @@ function playSingleSentence(index,translationOnly=false) {
 function playSingleWord(word,example) {
  const choice=example?'examples':'words';
  const row=example?word.example:word;
+ if(prefersBackgroundAudio&&activeTab==='words'&&startPublishedNetworkAudio('single',choice,[row],screenOffManifest?.vocabulary))return;
  if (!playFromPack('single',choice,[row],0,false,activeTab==='words'||store.settings.readJapanese)) {
   if(activeTab==='words')playWordBank([word]);
   else playText(row,'単語「'+word.zh+'」');
@@ -792,6 +849,7 @@ function playPublishedTrack(mode, fallback) {
  let rows = isWordBank ? filteredWords() : mode === 'important' ? material?.lessonVocabulary : material?.sentences;
  if (choice === 'examples') rows = rows.map(word => word.example);
  const index=mode==='listen'?Math.max(0,current):0;
+ if ((mode==='full'||isWordBank)&&startPublishedNetworkAudio(mode,choice,rows,tracks,index))return;
  if (playFromPack(mode,choice,rows,index)) return;
  if (screenOffManifest.packs) {fallback();return;}
  const track = rows?.length ? publishedTrack(tracks, choice, rows) : null;
@@ -808,10 +866,22 @@ function playPublishedTrack(mode, fallback) {
  playPreparedAudio(session);
 }
 
+function recoverMedia(session) {
+ const fallback=session?.fallbackTrack;
+ if(fallback) {
+  startNetworkTrack(session.mode,session.choice,session.rows,fallback,session.index);
+  return true;
+ }
+ if(!session?.fallbackPack)return false;
+ session.fallbackPack=false;
+ return playFromPack(session.mode,session.choice,session.rows,session.index,false,session.choice!=='chinese',true);
+}
+
 function playPreparedAudio(session) {
  configureAudioSession();
  screenOffAudio.play().catch(error => {
   if (mediaPlayback !== session) return;
+  if(recoverMedia(session))return;
   if(error.name==='NotAllowedError') {say('音声の準備ができました。「再生」をもう一度押してください。');updatePlaybackButtons();return;}
   stop('音声を再生できませんでした。通信を確認して「連続再生」を押してください。');
  });
@@ -896,6 +966,8 @@ $('screenOffStart').onclick=()=>{
  const material=lesson();
  let rows=choice==='words'||choice==='examples'?filteredWords():choice==='important'?material?.lessonVocabulary:material?.sentences;
  if(choice==='examples')rows=rows.map(word=>word.example);
+ const tracks=activeTab==='words'?screenOffManifest.vocabulary:screenOffManifest.lessons[selected];
+ if((activeTab==='fulltext'||activeTab==='words')&&startPublishedNetworkAudio('manual',choice,rows,tracks))return;
  if(!playFromPack('manual',choice,rows,0,false,choice!=='chinese',true))say('この選択の画面オフ用音声はありません。');
 };
 screenOffTrack.onchange = selectScreenOffTrack;
@@ -911,20 +983,24 @@ screenOffAudio.addEventListener('play', () => {
  if (mediaPlayback) {
   updatePlaybackButtons();
   updateMediaPosition(true);
-  say('再生中 · 画面をロックしても聴けます。');
  }
 });
+screenOffAudio.addEventListener('playing', () => {
+ if(!mediaPlayback)return;
+ say('再生中 · 画面をロックしても聴けます。');
+});
 screenOffAudio.addEventListener('pause', () => {
- if (!mediaPlayback || screenOffAudio.ended) return;
+ if (!mediaPlayback || !screenOffAudio.paused || screenOffAudio.ended) return;
  updatePlaybackButtons();
  say('一時停止中 · 「再開」で続きから聴けます。');
 });
 screenOffAudio.addEventListener('timeupdate', () => updateMediaPosition());
 screenOffAudio.addEventListener('ended', () => {
- if (!mediaPlayback) return;
+ if (!mediaPlayback || !screenOffAudio.ended) return;
  stop('再生が終わりました。');
 });
 screenOffAudio.addEventListener('error', () => {
+ if(!screenOffAudio.error||recoverMedia(mediaPlayback))return;
  if (mediaPlayback) stop('音声を読み込めませんでした。通信を確認してください。');
  if (screenOffAudio.hasAttribute('src')) screenOffStatus.textContent = '音声を読み込めませんでした。通信を確認してページを再読み込みしてください。';
 });

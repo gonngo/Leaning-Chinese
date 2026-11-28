@@ -1,8 +1,10 @@
 """Build one seekable MP3 per public listening mode for background playback."""
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from hashlib import sha256
 import json
+import math
 import os
 from pathlib import Path
 import shutil
@@ -12,6 +14,9 @@ import subprocess
 SAMPLE_RATE = 22050
 FRAME_SAMPLES = 576
 PACK_VERSION = 'mp3-pack-v1'
+STREAM_VERSION = 'aac-ts-v1'
+REPEATS = (1, 2, 3, 5)
+GAPS = (400, 1000, 2000, 3000)
 VOICES = {'zh': 'zh_CN-huayan-medium', 'ja': 'ja_JP-hi_fi_captain-medium'}
 RENDER_VERSION = 'piper-1.8.0-v1'
 
@@ -26,9 +31,9 @@ def reading(rows, bilingual=False):
         zh = row['zh'].strip()
         ja = row.get('ja', '').strip() if bilingual else ''
         if zh:
-            yield 'zh', zh, 270 if ja else 550, index
+            yield 'zh', zh, 270 if ja else 1000, index
         if ja:
-            yield 'ja', ja, 550, index
+            yield 'ja', ja, 1000, index
 
 
 def signature(rows):
@@ -183,9 +188,95 @@ class AudioBuilder:
         shutil.copyfile(cached, self.output / filename)
         return {'file': filename, 'silence': silence, 'tracks': tracks}
 
+    def stream_segment(self, segments):
+        """Package a row or a gap as a self-contained Safari audio segment."""
+        name = digest([RENDER_VERSION, STREAM_VERSION, segments])[:24] + '.ts'
+        cached = self.cache / name
+        duration_file = cached.with_suffix('.seconds')
+        if not cached.is_file() or not duration_file.is_file():
+            from imageio_ffmpeg import get_ffmpeg_exe
+
+            pcm = b''.join(self.clip(lang, text).read_bytes() if lang else bytes(2 * round(SAMPLE_RATE * gap / 1000))
+                           for lang, text, gap in segments)
+            aac_frames = math.ceil((len(pcm) // 2 + 1024) / 1024)
+            duration = aac_frames * 1024 / SAMPLE_RATE
+            temporary = cached.with_suffix('.tmp.ts')
+            subprocess.run([get_ffmpeg_exe(), '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
+                            '-f', 's16le', '-ar', str(SAMPLE_RATE), '-ac', '1', '-i', 'pipe:0',
+                            '-c:a', 'aac', '-b:a', '48k', '-threads', '1', '-f', 'mpegts', str(temporary)],
+                           input=pcm, check=True)
+            os.replace(temporary, cached)
+            duration_file.write_text(str(duration), encoding='ascii')
+        target = self.output / 'streams' / name
+        if not target.exists():
+            shutil.copyfile(cached, target)
+        return (name, float(duration_file.read_text(encoding='ascii')))
+
+    def stream(self, rows, bilingual, singles=False):
+        rows = list(rows)
+        if not rows:
+            return None
+        target = self.output / 'streams'
+        target.mkdir(exist_ok=True)
+        payloads = []
+        translations = []
+        for row in rows:
+            zh, ja = row['zh'].strip(), row.get('ja', '').strip() if bilingual else ''
+            segments = [('zh', zh, 0)]
+            translations.append(round(self.clip('zh', zh).stat().st_size / (2*SAMPLE_RATE) + .270, 4) if ja else None)
+            if ja:
+                segments += [('', '', 270), ('ja', ja, 0)]
+            payloads.append(segments)
+        # Previous track builds populate the PCM cache before parallel encoding.
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            payloads += [[('', '', gap)] for gap in GAPS]
+            unique = {tuple(item): item for item in payloads}
+            encoded = dict(zip(unique, pool.map(self.stream_segment, unique.values()), strict=True))
+        clips = [encoded[tuple(item)] for item in payloads[:-len(GAPS)]]
+        gaps = dict(zip(GAPS, (encoded[tuple(item)] for item in payloads[-len(GAPS):]), strict=True))
+        prefix = digest([STREAM_VERSION, clips, list(gaps.values())])[:24]
+        for repeat in REPEATS:
+            for gap, gap_clip in gaps.items():
+                playlist = []
+                for clip in clips:
+                    for _ in range(repeat):
+                        playlist.extend((clip, gap_clip))
+                write_playlist(target / f'{prefix}-{repeat}-{gap}.m3u8', playlist[:-1])
+        items = {}
+        if singles:
+            for row, clip, translation in zip(rows, clips, translations, strict=True):
+                name = clip[0].removesuffix('.ts') + '.m3u8'
+                write_playlist(target / name, [clip])
+                items[signature([row])] = [name, clip[1], translation]
+        return {'prefix': prefix, 'rows': [[clip[1], translation] for clip, translation in zip(clips, translations, strict=True)],
+                'gaps': {gap: item[1] for gap, item in gaps.items()}, 'items': items}
+
+
+def write_playlist(path, segments):
+    max_duration = math.ceil(max(duration for _, duration in segments))
+    lines = ['#EXTM3U', '#EXT-X-VERSION:3', f'#EXT-X-TARGETDURATION:{max_duration}',
+             '#EXT-X-MEDIA-SEQUENCE:0', '#EXT-X-PLAYLIST-TYPE:VOD']
+    for index, (filename, duration) in enumerate(segments):
+        if index:
+            lines.append('#EXT-X-DISCONTINUITY')
+        lines.extend((f'#EXTINF:{duration:.6f},', filename))
+    lines.append('#EXT-X-ENDLIST')
+    path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+
+def verify_stream(path):
+    from imageio_ffmpeg import get_ffmpeg_exe
+
+    audio = subprocess.run([get_ffmpeg_exe(), '-nostdin', '-hide_banner', '-loglevel', 'error',
+                            '-i', str(path), '-t', '10', '-ar', str(SAMPLE_RATE), '-ac', '1', '-f', 's16le', 'pipe:1'],
+                           capture_output=True, check=True).stdout
+    if len(audio) < SAMPLE_RATE * 2 * 9:
+        raise ValueError('Stream ended early during decoding: ' + str(path))
+
 
 def build(materials, builder):
-    manifest = {'version': 1, 'lessons': {}, 'vocabulary': {}, 'timings': {}, 'packs': {'lessons': {}, 'vocabulary': {}}}
+    manifest = {'version': 1, 'lessons': {}, 'vocabulary': {}, 'timings': {},
+                'packs': {'lessons': {}, 'vocabulary': {}}, 'streams': {}}
 
     def add_track(tracks, mode, rows, bilingual=False):
         rows = list(rows)
@@ -206,6 +297,7 @@ def build(materials, builder):
         add_track(tracks, 'bilingual', sentences, bilingual=True)
         add_track(tracks, 'important', terms, bilingual=True)
         manifest['packs']['lessons'][lesson_id] = builder.pack({'sentences': sentences, 'important': terms})
+        manifest['streams'][tracks['chinese']] = builder.stream(sentences, bilingual=False)
         print(f'Audio ready: {lesson_id}', flush=True)
 
     words = [word for batch in sorted(materials['batches'], key=lambda b: b['date'], reverse=True)
@@ -214,6 +306,8 @@ def build(materials, builder):
     add_track(manifest['vocabulary'], 'examples', (word['example'] for word in words), bilingual=True)
     manifest['packs']['vocabulary']['words'] = builder.pack({'words': words})
     manifest['packs']['vocabulary']['examples'] = builder.pack({'examples': [word['example'] for word in words]})
+    manifest['streams'][manifest['vocabulary']['words']] = builder.stream(words, bilingual=True, singles=True)
+    manifest['streams'][manifest['vocabulary']['examples']] = builder.stream([word['example'] for word in words], bilingual=True, singles=True)
     return manifest
 
 
@@ -228,6 +322,11 @@ def main():
     materials = json.loads(args.data.read_text(encoding='utf-8'))
     builder = AudioBuilder(args.models, args.cache, args.output)
     manifest = build(materials, builder)
+    latest = max(materials['batches'], key=lambda item: item['date'])
+    latest_id = latest.get('id', 'daily-' + latest['date'])
+    for name in [manifest['lessons'][latest_id]['chinese'], *[manifest['vocabulary'][key] for key in ('words', 'examples')]]:
+        prefix = manifest['streams'][name]['prefix']
+        verify_stream(args.output / 'streams' / f'{prefix}-3-2000.m3u8')
     payload = json.dumps(manifest, separators=(',', ':'))
     (args.output / 'manifest.json').write_text(payload + '\n', encoding='utf-8')
     if args.index:
