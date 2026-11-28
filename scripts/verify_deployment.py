@@ -29,6 +29,9 @@ def check_audio():
     manifest = manifest_path.read_bytes()
     if fetch('audio/manifest.json') != manifest:
         return False
+    embedded = b'<script id="initialAudioData" type="application/json">' + manifest.strip() + b'</script>'
+    if embedded not in fetch('index.html'):
+        return False
     tracks = json.loads(manifest)
     batch = max(json.loads(data)['batches'], key=lambda lesson: lesson['date'])
     lesson_id = batch.get('id', 'daily-' + batch['date'])

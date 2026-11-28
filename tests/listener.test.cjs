@@ -22,7 +22,7 @@ check('Sentence explanations normalize full-width text and whitespace, and handl
 check('Old backups without vocabulary still load',()=>{const s=api.validate({version:1,lessons:[{id:'old',title:'既存教材',sentences:[{zh:'你好'}]}]});assert.equal(s.lessons[0].sentences[0].zh,'你好');assert.equal(s.vocabulary.length,0)});
 check('Different sources on the same date are imported independently',()=>{const s=blank(),extra=JSON.parse(JSON.stringify(daily));extra.batches[0].id='daily-chatgpt-2026-11-23';api.mergeDaily(s,daily);api.mergeDaily(s,extra);assert.equal(s.lessons.length,2);assert.equal(s.vocabulary.length,10);api.mergeDaily(s,extra);assert.equal(s.lessons.length,2)});
 check('Published history has complete, nonduplicated vocabulary and valid source links',()=>{const parsed=api.parseDaily(publishedDaily);const words=parsed.flatMap(b=>b.vocabulary);const keys=words.map(w=>api.wordKey(w.zh));assert.equal(new Set(keys).size,keys.length);for(const w of words)assert.ok(w.example.zh.includes(w.zh));for(const b of parsed)if(b.id.startsWith('daily-chatgpt-'))assert.ok(b.sourceUrl.startsWith('https://chatgpt.com/share/'));const s=blank();api.mergeDaily(s,publishedDaily);api.mergeDaily(s,publishedDaily);assert.equal(s.lessons.length,parsed.length);assert.equal(s.vocabulary.length,words.length)});
-check('All inline JavaScript and JSON in the built HTML parse',()=>{const html=fs.readFileSync('index.html','utf8');const scripts=[...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,3);for(const s of scripts){if(s[1].includes('application/json'))JSON.parse(s[2]);else new vm.Script(s[2])}assert.ok(html.includes('id="readJapanese"'));assert.ok(html.includes('id="wordsTab"'))});
+check('All inline JavaScript and JSON in the built HTML parse',()=>{const html=fs.readFileSync('index.html','utf8');const scripts=[...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,4);for(const s of scripts){if(s[1].includes('application/json'))JSON.parse(s[2]);else new vm.Script(s[2])}assert.ok(html.includes('id="readJapanese"'));assert.ok(html.includes('id="wordsTab"'))});
 function audioHarness(requireGesture=false){
  const browser=inlineScript;
  const section=browser.slice(browser.indexOf('function stop('),browser.indexOf('function el('));
@@ -79,4 +79,42 @@ check('Paused word gaps exclude paused time when the interval setting changes re
 check('Speed changes while paused wait for resume and keep the word offset and translation',()=>{const h=audioHarness(true);h.run('testLesson.sentences[0].zh="你好世界";store.settings.repeat=1;tap(()=>play(0));spoken[0].onboundary({charIndex:2});pauseSpeech();store.settings.rate=.7;applySpeechSetting("rate")');assert.equal(h.run('spoken.length'),1);assert.equal(h.run('cancelled'),1);h.run('tap(resumeSpeech)');assert.equal(h.run('spoken[1].text'),'世界');assert.equal(h.run('spoken[1].rate'),.7);assert.equal(h.run('synth.paused'),false);h.run('spoken[0].onend();spoken[1].onend();tick()');assert.equal(h.run('spoken[2].lang'),'ja-JP')});
 check('Stop while paused clears pause state, cancels pending work, and a new play starts normally',()=>{const h=audioHarness(true);h.run('tap(playFullText);pauseSpeech();stop();spoken[0].onend();tick()');assert.equal(h.run('isPaused'),false);assert.equal(h.run('isPlaying'),false);assert.equal(h.run('synth.paused'),false);assert.equal(h.run('spoken.length'),1);h.run('tap(playFullText)');assert.equal(h.run('spoken[1].text'),'你好');assert.equal(h.run('isPlaying'),true);const gap=audioHarness();gap.run('play(0);spoken[0].onend();pauseSpeech();stop();resumeSpeech();tick()');assert.equal(gap.run('spoken.length'),1)});
 check('The word bank grows beyond five hundred and later daily imports remain deduplicated',()=>{const s=blank(),seed=daily.batches[0].vocabulary[0];s.vocabulary=Array.from({length:500},(_,i)=>({...seed,id:String(i),zh:'词'+i}));const later=JSON.parse(JSON.stringify(daily));later.batches[0].date='2026-11-24';later.batches[0].id='future-growth';later.batches[0].vocabulary=[s.vocabulary[0],{zh:'新词',pinyin:'xīn cí',ja:'新しい単語',example:{zh:'这是新词。',pinyin:'Zhè shì xīn cí.',ja:'これは新しい単語です。'}}];const result=api.mergeDaily(s,later);assert.equal(result.addedWords,1);assert.equal(s.vocabulary.length,501);assert.equal(api.mergeDaily(s,later).addedWords,0);assert.equal(s.vocabulary.length,501)});
+function publishedAudioHarness(userAgent = 'iPhone') {
+ const browser = inlineScript;
+ const source = browser.slice(browser.indexOf('const screenOffPlayer ='), browser.indexOf('function renderLessonVocabulary('));
+ const context = vm.createContext({TextEncoder, navigator:{userAgent}, location:{protocol:'https:'}});
+ vm.runInContext(`
+  const rows=[{zh:'你好',ja:'こんにちは'},{zh:'再见',ja:'さようなら'}];
+  const chinese='111111111111111111111111.mp3', bilingual='222222222222222222222222.mp3';
+  const settings={rate:.8,readJapanese:false,wordAudioMode:'word'},store={settings};
+  const events={},messages=[],calls=[];
+  const audio={paused:true,currentTime:0,src:'',addEventListener(name,fn){events[name]=fn},hasAttribute(){return Boolean(this.src)},getAttribute(){return this.src},play(){this.paused=false;calls.push([this.src,this.currentTime]);events.play();return Promise.resolve()},pause(){this.paused=true;events.pause?.()}};
+  const track={querySelector:()=>null};
+  const elements={initialAudioData:{textContent:'null'},screenOffAudio:audio,screenOffTrack:track};
+  const $=id=>elements[id]??{};
+  let current=1,isPaused=false;
+  function lesson(){return {id:'test',sentences:rows}}
+  function stop(message,keepMedia){if(!keepMedia)stopScreenOffAudio()}
+  function say(message){messages.push(message)}
+  function updatePlaybackButtons(){}
+  function highlight(){}
+  function resumeSpeech(){isPaused=false}
+ `+source+`
+  screenOffManifest={lessons:{test:{chinese,bilingual,chineseSignature:audioSignature(rows),bilingualSignature:audioSignature(rows)}},timings:{[chinese]:[0,2.5],[bilingual]:[0,4.8]}};
+ `,context);
+ return code=>vm.runInContext(code,context);
+}
+check('iPhone normal play starts the matching public track at the selected sentence, without opening the extra panel',()=>{
+ const run=publishedAudioHarness();
+ assert.equal(run(`playPublishedTrack('listen',()=>{throw Error('unexpected speech fallback')});calls[0].join(',')`),'audio/111111111111111111111111.mp3,2.5');
+ assert.equal(run('audio.playbackRate'),.8);
+ assert.equal(run(`stepSentence(-1);audio.currentTime`),0);
+ assert.equal(run(`audio.currentTime=1.2;togglePlaybackPause();togglePlaybackPause();calls[1][1]`),1.2);
+ assert.equal(run(`stopScreenOffAudio();settings.readJapanese=true;current=1;playPublishedTrack('listen',()=>{});calls.at(-1).join(',')`),'audio/222222222222222222222222.mp3,4.8');
+});
+check('Editable or desktop material keeps device speech instead of playing a mismatched recording',()=>{
+ const edited=publishedAudioHarness(),desktop=publishedAudioHarness('Windows Chrome');
+ assert.equal(edited(`rows[0].zh='編集済み';let fellBack=false;playPublishedTrack('listen',()=>{fellBack=true});fellBack&&!calls.length`),true);
+ assert.equal(desktop(`let fellBack=false;playPublishedTrack('listen',()=>{fellBack=true});fellBack&&!calls.length`),true);
+});
 console.log(`${checks} checks passed`);
