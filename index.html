@@ -675,13 +675,22 @@ function startPublishedNetworkAudio(mode,choice,rows,tracks,index=0) {
  if(!rows?.length)return false;
  const plain=publishedTrack(tracks,choice,rows);
  const repeat=store.settings.repeat,gap=store.settings.gap;
- const stream=nativeStream(choice,tracks,rows);
- if(stream) {
-  startNetworkTrack(mode,choice,rows,stream,index,{cues:stream.cues,repeat,fallbackTrack:repeat===1&&gap===1000?plain:null,fallbackPack:true});
+ if(plain&&repeat===1&&gap===1000) {
+  const translations=screenOffManifest.translations?.[plain.file];
+  const cues=translations?.length===rows.length?rows.flatMap((row,i)=>{
+   const rowCues=[{time:plain.offsets[i],text:row.zh,lang:'zh-CN',row:i,round:1}];
+   if(translations[i]!=null)rowCues.push({time:translations[i],text:row.ja,lang:'ja-JP',row:i,round:1});
+   return rowCues;
+  }):undefined;
+  startNetworkTrack(mode,choice,rows,plain,index,{cues,repeat,fallbackPack:true});
   return true;
  }
- // The normal settings use a ready-to-stream file even if HLS is unavailable.
- if(!plain||(repeat!==1||gap!==1000)&&screenOffManifest.packs)return false;
+ const stream=nativeStream(choice,tracks,rows);
+ if(stream) {
+  startNetworkTrack(mode,choice,rows,stream,index,{cues:stream.cues,repeat,fallbackPack:true});
+  return true;
+ }
+ if(!plain||screenOffManifest.packs)return false;
  startNetworkTrack(mode,choice,rows,plain,index);
  return true;
 }
@@ -867,11 +876,6 @@ function playPublishedTrack(mode, fallback) {
 }
 
 function recoverMedia(session) {
- const fallback=session?.fallbackTrack;
- if(fallback) {
-  startNetworkTrack(session.mode,session.choice,session.rows,fallback,session.index);
-  return true;
- }
  if(!session?.fallbackPack)return false;
  session.fallbackPack=false;
  return playFromPack(session.mode,session.choice,session.rows,session.index,false,session.choice!=='chinese',true);

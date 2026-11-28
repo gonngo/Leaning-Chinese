@@ -165,13 +165,27 @@ check('Word-book playback starts its own stream, preserves bilingual cues, and i
  const run=publishedAudioHarness();
  assert.match(run(`
   function filteredWords(){return rows}
-  audio.canPlayType=()=> 'maybe';activeTab='words';
+  audio.canPlayType=()=> 'maybe';activeTab='words';settings.gap=2000;
   screenOffManifest.vocabulary={words:bilingual,wordsSignature:audioSignature(rows)};
-  screenOffManifest.streams={[bilingual]:{prefix:'234567890123456789012345',rows:[[2,1],[3,1.5]],gaps:{1000:1.02}}};
+  screenOffManifest.streams={[bilingual]:{prefix:'234567890123456789012345',rows:[[2,1],[3,1.5]],gaps:{2000:2.02}}};
   playPublishedTrack('bank',()=>{throw Error('unexpected device speech')});
   events.ended();audio.currentTime=1.2;events.timeupdate();
   if(mediaPlayback.mode!=='bank'||readings.at(-1)[0]!=='こんにちは')throw Error('stale end or wrong cue');
   calls[0][0]
- `),/^audio\/streams\/[0-9]+-1-1000\.m3u8$/);
+ `),/^audio\/streams\/[0-9]+-1-2000\.m3u8$/);
+});
+check('Standard word-book playback streams the MP3 immediately and displays the Japanese translation at its timestamp',()=>{
+ const run=publishedAudioHarness();
+ assert.match(run(`
+  function filteredWords(){return rows}
+  audio.canPlayType=()=> 'maybe';activeTab='words';
+  screenOffManifest.vocabulary={words:bilingual,wordsSignature:audioSignature(rows)};
+  screenOffManifest.translations={[bilingual]:[1,6]};
+  screenOffManifest.streams={[bilingual]:{prefix:'234567890123456789012345',rows:[[2,1],[3,1.5]],gaps:{1000:1.02}}};
+  playPublishedTrack('bank',()=>{throw Error('unexpected device speech')});
+  audio.currentTime=1.2;events.timeupdate();
+  if(readings.at(-1)[0]!=='こんにちは')throw Error('wrong translation cue');
+  calls[0][0]
+ `),/^audio\/[0-9]+\.mp3$/);
 });
 console.log(`${checks} checks passed`);

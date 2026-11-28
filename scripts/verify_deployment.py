@@ -50,7 +50,7 @@ def check_audio():
         expected_playlist = (Path('_site') / path).read_bytes()
         if fetch(path) != expected_playlist:
             return False
-        segment = next(line for line in expected_playlist.decode().splitlines() if line.endswith('.ts'))
+        segment = next(line for line in expected_playlist.decode().splitlines() if line.endswith('.aac'))
         with (audio_dir / 'streams' / segment).open('rb') as expected_segment:
             if fetch('audio/streams/' + segment, 188) != expected_segment.read(188):
                 return False

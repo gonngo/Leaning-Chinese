@@ -14,9 +14,40 @@ import subprocess
 SAMPLE_RATE = 22050
 FRAME_SAMPLES = 576
 PACK_VERSION = 'mp3-pack-v1'
-STREAM_VERSION = 'aac-ts-v1'
+STREAM_VERSION = 'aac-id3-v1'
 REPEATS = (1, 2, 3, 5)
 GAPS = (400, 1000, 2000, 3000)
+
+
+def syncsafe(value):
+    return bytes((value >> shift) & 0x7f for shift in (21, 14, 7, 0))
+
+
+def packed_audio_timestamp():
+    # Each standalone AAC segment starts a new timestamp sequence. HLS packed
+    # audio requires the first sample's 90 kHz MPEG timestamp in this ID3 frame.
+    body = b'com.apple.streaming.transportStreamTimestamp\0' + bytes(8)
+    frame = b'PRIV' + syncsafe(len(body)) + bytes(2) + body
+    return b'ID3\x04\x00\x00' + syncsafe(len(frame)) + frame
+
+
+PACKED_AUDIO_ID3 = packed_audio_timestamp()
+
+
+def aac_duration(audio):
+    cursor = samples = 0
+    while cursor < len(audio):
+        header = audio[cursor:cursor+7]
+        if len(header) != 7 or header[0] != 0xff or header[1] & 0xf6 != 0xf0:
+            raise ValueError('Invalid ADTS frame in a streaming audio segment')
+        length = ((header[3] & 3) << 11) | (header[4] << 3) | (header[5] >> 5)
+        if length < 7 or cursor + length > len(audio):
+            raise ValueError('Invalid ADTS frame length')
+        samples += 1024 * ((header[6] & 3) + 1)
+        cursor += length
+    if not samples:
+        raise ValueError('Empty audio segment')
+    return samples / SAMPLE_RATE
 VOICES = {'zh': 'zh_CN-huayan-medium', 'ja': 'ja_JP-hi_fi_captain-medium'}
 RENDER_VERSION = 'piper-1.8.0-v1'
 
@@ -100,13 +131,17 @@ class AudioBuilder:
         cached = self.cache / filename
         elapsed = 0
         offsets = []
+        translations = []
         clips = []
         previous = None
         for lang, text, gap_ms, index in segments:
             clip = self.clip(lang, text)
             if index != previous:
                 offsets.append(round(elapsed / SAMPLE_RATE, 3))
+                translations.append(None)
                 previous = index
+            if lang == 'ja':
+                translations[-1] = round(elapsed / SAMPLE_RATE, 3)
             gap = round(SAMPLE_RATE * gap_ms / 1000)
             elapsed += clip.stat().st_size // 2 + gap
             clips.append((clip, gap))
@@ -130,7 +165,7 @@ class AudioBuilder:
                     raise RuntimeError('FFmpeg failed to encode ' + filename)
             os.replace(temporary, cached)
         shutil.copyfile(cached, self.output / filename)
-        return filename, offsets
+        return filename, offsets, translations
 
     def pack(self, groups):
         """Encode all unique speech clips in one frame-aligned audio file."""
@@ -190,7 +225,7 @@ class AudioBuilder:
 
     def stream_segment(self, segments):
         """Package a row or a gap as a self-contained Safari audio segment."""
-        name = digest([RENDER_VERSION, STREAM_VERSION, segments])[:24] + '.ts'
+        name = digest([RENDER_VERSION, STREAM_VERSION, segments])[:24] + '.aac'
         cached = self.cache / name
         duration_file = cached.with_suffix('.seconds')
         if not cached.is_file() or not duration_file.is_file():
@@ -198,13 +233,13 @@ class AudioBuilder:
 
             pcm = b''.join(self.clip(lang, text).read_bytes() if lang else bytes(2 * round(SAMPLE_RATE * gap / 1000))
                            for lang, text, gap in segments)
-            aac_frames = math.ceil((len(pcm) // 2 + 1024) / 1024)
-            duration = aac_frames * 1024 / SAMPLE_RATE
-            temporary = cached.with_suffix('.tmp.ts')
-            subprocess.run([get_ffmpeg_exe(), '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
+            temporary = cached.with_suffix('.tmp.aac')
+            aac = subprocess.run([get_ffmpeg_exe(), '-nostdin', '-hide_banner', '-loglevel', 'error',
                             '-f', 's16le', '-ar', str(SAMPLE_RATE), '-ac', '1', '-i', 'pipe:0',
-                            '-c:a', 'aac', '-b:a', '48k', '-threads', '1', '-f', 'mpegts', str(temporary)],
-                           input=pcm, check=True)
+                            '-c:a', 'aac', '-b:a', '48k', '-threads', '1', '-f', 'adts', 'pipe:1'],
+                           input=pcm, capture_output=True, check=True).stdout
+            duration = aac_duration(aac)
+            temporary.write_bytes(PACKED_AUDIO_ID3 + aac)
             os.replace(temporary, cached)
             duration_file.write_text(str(duration), encoding='ascii')
         target = self.output / 'streams' / name
@@ -245,7 +280,7 @@ class AudioBuilder:
         items = {}
         if singles:
             for row, clip, translation in zip(rows, clips, translations, strict=True):
-                name = clip[0].removesuffix('.ts') + '.m3u8'
+                name = clip[0].removesuffix('.aac') + '.m3u8'
                 write_playlist(target / name, [clip])
                 items[signature([row])] = [name, clip[1], translation]
         return {'prefix': prefix, 'rows': [[clip[1], translation] for clip, translation in zip(clips, translations, strict=True)],
@@ -267,15 +302,28 @@ def write_playlist(path, segments):
 def verify_stream(path):
     from imageio_ffmpeg import get_ffmpeg_exe
 
+    clips = []
+    duration = 0
+    for line in path.read_text(encoding='utf-8').splitlines():
+        if not line.endswith('.aac'):
+            continue
+        clip = (path.parent / line).read_bytes()
+        if not clip.startswith(PACKED_AUDIO_ID3):
+            raise ValueError('Missing HLS timestamp in ' + line)
+        clip = clip[len(PACKED_AUDIO_ID3):]
+        clips.append(clip)
+        duration += aac_duration(clip)
+        if duration >= 10:
+            break
     audio = subprocess.run([get_ffmpeg_exe(), '-nostdin', '-hide_banner', '-loglevel', 'error',
-                            '-i', str(path), '-t', '10', '-ar', str(SAMPLE_RATE), '-ac', '1', '-f', 's16le', 'pipe:1'],
-                           capture_output=True, check=True).stdout
+                            '-f', 'aac', '-i', 'pipe:0', '-t', '10', '-ar', str(SAMPLE_RATE), '-ac', '1', '-f', 's16le', 'pipe:1'],
+                           input=b''.join(clips), capture_output=True, check=True).stdout
     if len(audio) < SAMPLE_RATE * 2 * 9:
         raise ValueError('Stream ended early during decoding: ' + str(path))
 
 
 def build(materials, builder):
-    manifest = {'version': 1, 'lessons': {}, 'vocabulary': {}, 'timings': {},
+    manifest = {'version': 1, 'lessons': {}, 'vocabulary': {}, 'timings': {}, 'translations': {},
                 'packs': {'lessons': {}, 'vocabulary': {}}, 'streams': {}}
 
     def add_track(tracks, mode, rows, bilingual=False):
@@ -283,10 +331,12 @@ def build(materials, builder):
         track = builder.track(reading(rows, bilingual=bilingual))
         if track is None:
             return
-        filename, offsets = track
+        filename, offsets, translations = track
         tracks[mode] = filename
         tracks[mode + 'Signature'] = signature(rows)
         manifest['timings'][filename] = offsets
+        if bilingual:
+            manifest['translations'][filename] = translations
 
     for batch in materials['batches']:
         lesson_id = batch.get('id', 'daily-' + batch['date'])
