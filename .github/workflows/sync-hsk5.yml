@@ -93,7 +93,7 @@ jobs:
         run: |
           python3 -m venv "$RUNNER_TEMP/hsk5-tts"
           source "$RUNNER_TEMP/hsk5-tts/bin/activate"
-          python -m pip install --disable-pip-version-check 'piper-tts[zh,ja]==1.8.0'
+          python -m pip install --disable-pip-version-check 'piper-tts[zh,ja]==1.8.0' 'imageio-ffmpeg==0.6.0'
           python -m piper.download_voices --download-dir .hsk5-audio-cache/models zh_CN-huayan-medium ja_JP-hi_fi_captain-medium
           python scripts/build_audio.py --models .hsk5-audio-cache/models --cache .hsk5-audio-cache --output _site/audio
       - name: Save new materials

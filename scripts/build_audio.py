@@ -68,8 +68,10 @@ class AudioBuilder:
         filename = f'{digest([RENDER_VERSION, segments])[:24]}.mp3'
         cached = self.cache / filename
         if not cached.is_file() or not cached.stat().st_size:
+            from imageio_ffmpeg import get_ffmpeg_exe
+
             temporary = cached.with_suffix('.tmp.mp3')
-            command = ['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
+            command = [get_ffmpeg_exe(), '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
                        '-f', 's16le', '-ar', str(SAMPLE_RATE), '-ac', '1', '-i', 'pipe:0',
                        '-c:a', 'libmp3lame', '-b:a', '48k', str(temporary)]
             with subprocess.Popen(command, stdin=subprocess.PIPE) as encoder:
