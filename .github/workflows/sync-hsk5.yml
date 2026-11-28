@@ -64,7 +64,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -118,9 +118,17 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+      - name: Allow Pages to index the audio artifact
+        if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
+        run: sleep 15
       - name: Deploy to GitHub Pages
         if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
         id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: Retry deployment if Pages has not indexed the artifact
+        if: steps.deployment.outcome == 'failure'
+        id: deployment_retry
         uses: actions/deploy-pages@v4
       - name: Verify published materials
         if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
