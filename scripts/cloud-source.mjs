@@ -2,6 +2,12 @@ import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 
 const sourceUrl = 'https://chatgpt.com/share/6b03eff6-6970-83ec-851b-4e539558a317';
+const sentenceHeading = '② 一文ずつ：ピンイン・日本語訳';
+const wordHeading = '③ 重要単語';
+function hasSentenceRows(text) {
+  const section = text.split(sentenceHeading)[1]?.split(wordHeading)[0];
+  return /(?:^|\n)\s*0*1\s*\/\s*\d+\s*(?:\n|$)/.test(section ?? '');
+}
 const output = process.env.IMPORT_OUTPUT || '_cloud-import';
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch();
@@ -17,12 +23,15 @@ try {
   }, null, { timeout: 60000 });
   let texts = [];
   let previous = '';
+  let skipped = 0;
   for (let attempt = 0; attempt < 15; attempt++) {
     const regions = page.getByRole('region', { name: 'DIL content', exact: true });
     texts = await regions.count() ? await regions.allInnerTexts() : await page.locator('article').allInnerTexts();
-    const complete = texts.filter(t => t.includes('② 一文ずつ：ピンイン・日本語訳') && t.includes('③ 重要単語') && t.includes('⑥ 復習：日本語全文'));
+    const lessons = texts.filter(t => t.includes(sentenceHeading) && t.includes(wordHeading));
+    const complete = lessons.filter(t => hasSentenceRows(t) && t.includes('復習：日本語全文'));
     const signature = JSON.stringify(texts.map(t => t.length));
     if (signature === previous && complete.length && texts.every(t => t.trim())) {
+      skipped = lessons.length - complete.length;
       texts = complete;
       break;
     }
@@ -32,7 +41,8 @@ try {
   }
   if (!texts.length) throw new Error('No complete lessons were readable in the public shared chat.');
   await writeFile(`${output}/source-lessons.json`, JSON.stringify(texts, null, 2));
-  report = { ...report, status: 'readable', lessonCount: texts.length, title: await page.title(), finalUrl: page.url() };
+  if (skipped) console.warn(`Skipped ${skipped} lesson(s) without sentence rows or Japanese review; published entries were preserved.`);
+  report = { ...report, status: 'readable', lessonCount: texts.length, skipped, title: await page.title(), finalUrl: page.url() };
   console.log(JSON.stringify(report));
 } catch (error) {
   report = { ...report, title: await page.title(), finalUrl: page.url(), error: String(error.message), visibleText: (await page.locator('body').innerText()).slice(0,500) };
