@@ -37,6 +37,8 @@ function audioHarness(requireGesture=false){
   function say(s){messages.push(s)}
   function updatePlaybackButtons(){}
   function stopScreenOffAudio(){}
+  function showNowReading(){}
+  function configureAudioSession(){}
   const document={querySelectorAll:()=>[]};
   const store={vocabulary:[],settings:{rate:1,repeat:2,gap:1000,readJapanese:true,wordAudioMode:'word'}};let testQuery='';const $=()=>({value:testQuery});
   const testLesson={sentences:[{zh:'你好',ja:'こんにちは'},{zh:'谢谢',ja:'ありがとう'}]};const lesson=()=>testLesson;
@@ -82,21 +84,26 @@ check('The word bank grows beyond five hundred and later daily imports remain de
 function publishedAudioHarness(userAgent = 'iPhone') {
  const browser = inlineScript;
  const source = browser.slice(browser.indexOf('const screenOffPlayer ='), browser.indexOf('function renderLessonVocabulary('));
- const context = vm.createContext({TextEncoder, navigator:{userAgent}, location:{protocol:'https:'}});
+ const context = vm.createContext({TextEncoder,Blob,URL, navigator:{userAgent}, location:{protocol:'https:'}});
  vm.runInContext(`
   const rows=[{zh:'你好',ja:'こんにちは'},{zh:'再见',ja:'さようなら'}];
   const chinese='111111111111111111111111.mp3', bilingual='222222222222222222222222.mp3';
-  const settings={rate:.8,readJapanese:false,wordAudioMode:'word'},store={settings};
+  const settings={rate:.8,readJapanese:false,wordAudioMode:'word',repeat:1,gap:1000},store={settings};
   const events={},messages=[],calls=[];
   const audio={paused:true,currentTime:0,src:'',addEventListener(name,fn){events[name]=fn},hasAttribute(){return Boolean(this.src)},getAttribute(){return this.src},play(){this.paused=false;calls.push([this.src,this.currentTime]);events.play();return Promise.resolve()},pause(){this.paused=true;events.pause?.()}};
   const track={querySelector:()=>null};
   const elements={initialAudioData:{textContent:'null'},screenOffAudio:audio,screenOffTrack:track};
   const $=id=>elements[id]??{};
   let current=1,isPaused=false;
+  let generation=0;
+  let selected='test',activeTab='listen';
   function lesson(){return {id:'test',sentences:rows}}
-  function stop(message,keepMedia){if(!keepMedia)stopScreenOffAudio()}
+  function stop(message,keepMedia){generation++;if(!keepMedia)stopScreenOffAudio()}
   function say(message){messages.push(message)}
   function updatePlaybackButtons(){}
+  function showNowReading(...args){readings.push(args)}
+  function configureAudioSession(){sessionType='playback'}
+  const readings=[];let sessionType='';
   function highlight(){}
   function resumeSpeech(){isPaused=false}
  `+source+`
@@ -116,5 +123,31 @@ check('Editable or desktop material keeps device speech instead of playing a mis
  const edited=publishedAudioHarness(),desktop=publishedAudioHarness('Windows Chrome');
  assert.equal(edited(`rows[0].zh='編集済み';let fellBack=false;playPublishedTrack('listen',()=>{fellBack=true});fellBack&&!calls.length`),true);
  assert.equal(desktop(`let fellBack=false;playPublishedTrack('listen',()=>{fellBack=true});fellBack&&!calls.length`),true);
+});
+check('Screen-off audio repeats each Chinese and Japanese pair and adds the configured gap in one file',()=>{
+ const run=publishedAudioHarness();
+ const plan=JSON.parse(run(`
+  const clip=[[1,3,15],[3,6,18]],pack={silence:[0,1]};
+  const composed=composePublishedAudio(new Blob(['abcdef']),pack,[clip,clip],rows,{bilingual:true,repeat:3,gap:2000,rate:1});
+  JSON.stringify({cues:composed.cues,offsets:composed.offsets,type:composed.blob.type,frame:mp3FrameSeconds})
+ `));
+ assert.deepEqual(plan.cues.map(v=>v.text),['你好','こんにちは','你好','こんにちは','你好','こんにちは','再见','さようなら','再见','さようなら','再见','さようなら']);
+ assert.equal(plan.offsets[1],plan.cues[6].time);
+ assert.ok(Math.abs(plan.cues[2].time-plan.cues[1].time-18*plan.frame+8*plan.frame-2)<plan.frame);
+ assert.equal(plan.type,'audio/mpeg');
+});
+check('A filtered word-book selection uses packed audio and the current text follows the Japanese cue',()=>{
+ const run=publishedAudioHarness();
+ const r=JSON.parse(run(`
+  const testPack={file:chinese,silence:[0,1],tracks:{words:{[audioSignature([rows[1]])]:[[1,3,10],[3,6,11]]}}};
+  screenOffManifest.packs={vocabulary:{words:testPack}};activeTab='words';
+  audioPacks.set(chinese,{blob:new Blob(['abcdef'])});
+  playFromPack('bank','words',[rows[1]]);
+  audio.currentTime=.45;updateMediaPosition();
+  JSON.stringify({source:audio.src,reading:readings.at(-1),session:sessionType})
+ `));
+ assert.match(r.source,/^blob:/);
+ assert.equal(r.session,'playback');
+ assert.deepEqual(r.reading,['さようなら','ja-JP','1/1']);
 });
 console.log(`${checks} checks passed`);

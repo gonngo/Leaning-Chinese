@@ -39,6 +39,11 @@ def check_audio():
         with (audio_dir / filename).open('rb') as expected_audio:
             if fetch('audio/' + filename, 16) != expected_audio.read(16):
                 return False
+    for pack in [tracks['packs']['lessons'][lesson_id], *tracks['packs']['vocabulary'].values()]:
+        filename = pack['file']
+        with (audio_dir / filename).open('rb') as expected_audio:
+            if fetch('audio/' + filename, 1024) != expected_audio.read(1024):
+                return False
     print('Published screen-off manifest and representative MP3s verified')
     return True
 

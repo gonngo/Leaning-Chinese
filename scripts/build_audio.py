@@ -10,6 +10,8 @@ import subprocess
 
 
 SAMPLE_RATE = 22050
+FRAME_SAMPLES = 576
+PACK_VERSION = 'mp3-pack-v1'
 VOICES = {'zh': 'zh_CN-huayan-medium', 'ja': 'ja_JP-hi_fi_captain-medium'}
 RENDER_VERSION = 'piper-1.8.0-v1'
 
@@ -36,6 +38,21 @@ def signature(rows):
     for byte in payload.encode('utf-8'):
         value = ((value ^ byte) * 16777619) & 0xffffffff
     return format(value, '08x')
+
+
+def mp3_frames(audio):
+    """Get byte boundaries for the MPEG-2, mono, 48 kbps output of LAME."""
+    offsets = [0]
+    while offsets[-1] < len(audio):
+        position = offsets[-1]
+        header = int.from_bytes(audio[position:position + 4], 'big')
+        if header & 0xfffe0000 != 0xfff20000 or (header >> 10) & 0x3f != 24:
+            raise ValueError(f'Unexpected MP3 frame at byte {position}')
+        size = 72000 * 48 // SAMPLE_RATE + ((header >> 9) & 1)
+        offsets.append(position + size)
+    if offsets[-1] != len(audio):
+        raise ValueError('Incomplete MP3 frame at end of pack')
+    return offsets
 
 
 class AudioBuilder:
@@ -110,9 +127,65 @@ class AudioBuilder:
         shutil.copyfile(cached, self.output / filename)
         return filename, offsets
 
+    def pack(self, groups):
+        """Encode all unique speech clips in one frame-aligned audio file."""
+        clips = dict.fromkeys((language, row[language].strip())
+                              for rows in groups.values() for row in rows
+                              for language in ('zh', 'ja') if row.get(language, '').strip())
+        filename = digest([RENDER_VERSION, PACK_VERSION, list(clips)])[:24] + '.mp3'
+        cached = self.cache / filename
+        index_file = cached.with_suffix('.json')
+        if cached.is_file() and index_file.is_file():
+            spans, silence = json.loads(index_file.read_text(encoding='utf-8'))
+        else:
+            from imageio_ffmpeg import get_ffmpeg_exe
+
+            # Silence around each clip absorbs codec delay and filter overlap.
+            # With the bit reservoir disabled, later frames do not need bytes
+            # from a preceding clip when the browser moves or repeats them.
+            frame = bytes(2 * FRAME_SAMPLES)
+            pad = frame * 4
+            ranges = []
+            cursor = 12
+            temporary = cached.with_suffix('.tmp.mp3')
+            command = [get_ffmpeg_exe(), '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
+                       '-f', 's16le', '-ar', str(SAMPLE_RATE), '-ac', '1', '-i', 'pipe:0',
+                       '-c:a', 'libmp3lame', '-b:a', '48k', '-reservoir', '0', '-write_xing', '0',
+                       '-id3v2_version', '0', '-map_metadata', '-1', str(temporary)]
+            with subprocess.Popen(command, stdin=subprocess.PIPE) as encoder:
+                try:
+                    with encoder.stdin as stream:
+                        stream.write(frame * cursor)
+                        for language, text in clips:
+                            pcm = self.clip(language, text).read_bytes()
+                            remainder = (-len(pcm)) % len(frame)
+                            length = 8 + (len(pcm) + remainder) // len(frame)
+                            stream.write(pad + pcm + bytes(remainder) + pad)
+                            ranges.append((cursor, cursor + length))
+                            cursor += length
+                except BaseException:
+                    encoder.kill()
+                    raise
+                if encoder.wait():
+                    raise RuntimeError('FFmpeg failed to build ' + filename)
+            boundaries = mp3_frames(temporary.read_bytes())
+            spans = [[boundaries[start], boundaries[end], end-start] for start, end in ranges]
+            # Use a middle frame from the initial silent region for gaps.
+            silence = [boundaries[5], boundaries[6]]
+            os.replace(temporary, cached)
+            index_file.write_text(json.dumps([spans, silence]), encoding='utf-8')
+        clips = dict(zip(clips, spans, strict=True))
+        tracks = {}
+        for key, rows in groups.items():
+            tracks[key] = {signature([row]): [clips.get(('zh', row['zh'].strip())),
+                                              clips.get(('ja', row.get('ja', '').strip()))]
+                           for row in rows}
+        shutil.copyfile(cached, self.output / filename)
+        return {'file': filename, 'silence': silence, 'tracks': tracks}
+
 
 def build(materials, builder):
-    manifest = {'version': 1, 'lessons': {}, 'vocabulary': {}, 'timings': {}}
+    manifest = {'version': 1, 'lessons': {}, 'vocabulary': {}, 'timings': {}, 'packs': {'lessons': {}, 'vocabulary': {}}}
 
     def add_track(tracks, mode, rows, bilingual=False):
         rows = list(rows)
@@ -132,12 +205,15 @@ def build(materials, builder):
         add_track(tracks, 'chinese', sentences)
         add_track(tracks, 'bilingual', sentences, bilingual=True)
         add_track(tracks, 'important', terms, bilingual=True)
+        manifest['packs']['lessons'][lesson_id] = builder.pack({'sentences': sentences, 'important': terms})
         print(f'Audio ready: {lesson_id}', flush=True)
 
     words = [word for batch in sorted(materials['batches'], key=lambda b: b['date'], reverse=True)
              for word in batch['vocabulary']]
     add_track(manifest['vocabulary'], 'words', words, bilingual=True)
     add_track(manifest['vocabulary'], 'examples', (word['example'] for word in words), bilingual=True)
+    manifest['packs']['vocabulary']['words'] = builder.pack({'words': words})
+    manifest['packs']['vocabulary']['examples'] = builder.pack({'examples': [word['example'] for word in words]})
     return manifest
 
 
