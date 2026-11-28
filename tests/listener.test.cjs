@@ -32,12 +32,12 @@ function audioHarness(requireGesture=false){
  vm.runInContext(`
   let generation=0,timer=null,utterance=null,playback=null,speechWait=null,isPlaying=false,isPaused=false,current=-1;
   const voices=[{lang:'zh-CN',voiceURI:'zh'}],jaVoices=[{lang:'ja-JP',voiceURI:'ja'}],supported=true;
-  const queue=new Map(),spoken=[],messages=[];let nextTimer=1,completed=0,lastDelay=0,cancelled=0;
+  const queue=new Map(),spoken=[],messages=[],readings=[];let nextTimer=1,completed=0,lastDelay=0,cancelled=0;
   function setTimeout(fn,delay){lastDelay=delay;const id=nextTimer++;queue.set(id,fn);return id}function clearTimeout(id){queue.delete(id)}
   function say(s){messages.push(s)}
   function updatePlaybackButtons(){}
   function stopScreenOffAudio(){}
-  function showNowReading(){}
+  function showNowReading(...args){readings.push(args)}
   function configureAudioSession(){}
   const document={querySelectorAll:()=>[]};
   const store={vocabulary:[],settings:{rate:1,repeat:2,gap:1000,readJapanese:true,wordAudioMode:'word'}};let testQuery='';const $=()=>({value:testQuery});
@@ -150,7 +150,7 @@ check('A filtered word-book selection uses packed audio and the current text fol
  `));
  assert.match(r.source,/^blob:/);
  assert.equal(r.session,'playback');
- assert.deepEqual(r.reading,['さようなら','ja-JP','1/1']);
+ assert.deepEqual(r.reading.slice(0,3),['さようなら','ja-JP','1/1']);
 });
 check('The full-text button starts the correctly configured Safari stream during the tap, without a pack download',()=>{
  const run=publishedAudioHarness();
@@ -240,6 +240,36 @@ check('Reordered saved words still use the public recording when the spoken text
   calls[0][0]
  `),/^audio\/[0-9]+\.mp3$/);
  assert.equal(run('mediaPlayback.rows.length'),2);
+});
+check('Speech captions carry the example pinyin and keep its headword through Japanese',()=>{
+ const h=audioHarness(true);
+ h.run(`store.settings.wordAudioMode='example';store.vocabulary=[{zh:'学习',example:{zh:'我在学习。',ja:'勉強中です。',pinyin:'Wǒ zài xuéxí.'}}];tap(()=>playWordBank())`);
+ assert.equal(h.run('readings.at(-1)[3].pinyin'),'Wǒ zài xuéxí.');
+ assert.equal(h.run('readings.at(-1)[3].headword'),'学习');
+ h.run('spoken[0].onend();tick()');
+ assert.equal(h.run('readings.at(-1)[1]'),'ja-JP');
+ assert.equal(h.run('readings.at(-1)[3].headword'),'学习');
+});
+check('Random playback uses every selected word once, keeps matching example captions, and leaves the list undisturbed',()=>{
+ const run=publishedAudioHarness();
+ const data=JSON.parse(run(`
+  const words=['甲','乙','丙','除外'].map(zh=>({zh,example:{zh:zh+'例',ja:zh+'訳',pinyin:zh+'拼音'}}));
+  function filteredWords(){return words.slice(0,3)}
+  settings.wordAudioMode='example';
+  const candidates=wordBankRows('examples',filteredWords());
+  const clips=Object.fromEntries(candidates.map(row=>[audioSignature([row]),[[1,3,10],[3,6,11]]]));
+  screenOffManifest.packs={vocabulary:{examples:{file:chinese,silence:[0,1],tracks:{examples:clips}}}};
+  audioPacks.set(chinese,{blob:new Blob(['abcdef'])});
+  Math.random=()=>0;
+  playShuffledWordBank();events.playing();
+  JSON.stringify({source:audio.src,original:words.map(w=>w.zh),order:mediaPlayback.rows.map(w=>w.headword),reading:readings.at(-1),status:messages.at(-1)})
+ `));
+ assert.match(data.source,/^blob:/);
+ assert.deepEqual(data.original,['甲','乙','丙','除外']);
+ assert.deepEqual(data.order,['乙','丙','甲']);
+ assert.equal(data.reading[0],'乙例');
+ assert.equal(data.reading[3].pinyin,'乙拼音');
+ assert.match(data.status,/ランダム再生中/);
 });
 check('Device speech honors word-bank repeats, including the Japanese translation',()=>{
  const h=audioHarness(true);

@@ -108,6 +108,9 @@ input[type=range] { width: 100%; min-height: 34px; margin: 0; accent-color: var(
 #nowReadingLabel { color: var(--teal); font-size: 13px; font-weight: 650; }
 #nowReadingText { color: var(--ink); font-size: 16px; line-height: 1.65; margin: 5px 0 0; overflow-wrap: anywhere; }
 #nowReadingText:lang(zh-CN) { font-size: 21px; }
+#nowReadingPinyin { margin: 4px 0 0; color: var(--pinyin); font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; }
+#nowReadingWord { margin: 7px 0 0; color: var(--muted); font-size: 13px; }
+#nowReadingHeadword { margin-inline-start: 6px; color: var(--teal); font-size: 17px; overflow-wrap: anywhere; }
 .settings-body { padding: 22px 25px 24px; }
 .control-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
 select, input[type=text], textarea { width: 100%; min-width: 0; min-height: 48px; padding: 11px 13px; color: var(--ink); background: var(--field); border: 1px solid var(--control-line); border-radius: 11px; font-size: 16px; }
@@ -255,6 +258,7 @@ textarea { min-height: 86px; resize: vertical; line-height: 1.85; }
   .controls > .toolbar { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 9px; }
   .controls > .toolbar > .primary { min-width: 0; min-height: 50px; }
   .controls > .toolbar > .primary { grid-column: 1/-1; }
+  #shuffleWordBank { grid-column: 1/-1; }
   .vocabulary-controls .primary { flex-basis: 100%; }
   .vocabulary-controls button:not(.primary) { flex: 1; }
   #prev, #next { flex: 1 0 calc(50% - 9px); }
@@ -309,9 +313,9 @@ textarea { min-height: 86px; resize: vertical; line-height: 1.85; }
 <div class="workspace-nav"><div class="tabs" role="tablist" aria-label="学習モード"><button id="listenTab" aria-label="例文リスニング" role="tab" aria-selected="true" aria-controls="listenPane">例文</button><button id="fullTextTab" aria-label="中国語全文" role="tab" aria-selected="false" aria-controls="fullTextPane" tabindex="-1">全文</button><button id="wordsTab" role="tab" aria-selected="false" aria-controls="wordPane" tabindex="-1">単語帳</button></div><details class="sync-status"><summary aria-label="教材の更新状況" title="教材の更新状況"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 8a8 8 0 0 0-13-2M4 16a8 8 0 0 0 13 2M20 3v5h-5M4 21v-5h5"/></svg></summary><div class="sync-popover"><h3>教材の更新</h3><p id="dailyStatus" class="daily-info" role="status"></p><button id="syncDaily">最新教材を確認</button></div></details></div>
 <aside class="panel" id="lessonSidebar"><h2>教材ライブラリ</h2><label class="field mobile-lesson-select">教材を選択<select id="lessonSelect"></select></label><nav id="library" class="library" aria-label="教材を選択"></nav><details class="library-tools"><summary>教材・データの管理</summary><div class="library-tools-body"><div class="aside-actions"><button id="newLesson" class="primary">＋ 教材を追加</button><button id="importBtn">教材を読み込む</button><button id="exportBtn">教材を書き出す</button></div><input id="importFile" class="fileinput" type="file" accept="application/json,.json"><p class="note">毎日の公開教材は自動で追加されます。手動で追加した教材・単語と学習設定は、このブラウザーに保存されます。端末間の移動にはJSON形式の書き出しをご利用ください。</p></div></details></aside>
 <section class="content" aria-label="リスニング練習"><div class="heading"><div><div class="tag">YOUR DAILY PRACTICE</div><h2 id="lessonTitle"></h2><p id="lessonMeta"></p><a id="lessonSource" class="source-link" href="https://chatgpt.com/share/6b03eff6-6970-83ec-851b-4e539558a317" target="_blank" rel="noopener" hidden>元のChatGPT教材</a></div><button id="editLesson" class="quiet-button" aria-label="教材を編集" title="教材を編集"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 5 4 4M4 20l5-1L20 8a2.8 2.8 0 0 0-4-4L5 15l-1 5Z"/></svg></button></div>
-<aside class="now-reading" aria-label="いま読んでいる内容"><div id="nowReadingLabel">いま読んでいる内容</div><p id="nowReadingText">再生するとここに表示されます。</p></aside>
+<aside class="now-reading" aria-label="いま読んでいる内容"><div id="nowReadingLabel">いま読んでいる内容</div><p id="nowReadingWord" hidden>対象単語 <strong id="nowReadingHeadword" lang="zh-CN"></strong></p><p id="nowReadingText">再生するとここに表示されます。</p><p id="nowReadingPinyin" lang="zh-Latn" hidden></p></aside>
 <div class="panel controls" aria-label="再生コントロール"><div class="player-heading"><span class="tag">PLAYBACK</span><span class="player-caption">自分のペースで、聴き込む。</span></div>
-<div class="toolbar"><button class="primary" id="playAll">連続再生</button><button class="primary" id="playFullText" hidden>全文を再生</button><button class="primary" id="playWordBank" hidden>単語帳を再生</button><button id="pause" disabled aria-pressed="false">一時停止</button><button id="stop">停止</button><button id="prev">前の文</button><button id="next">次の文</button></div>
+<div class="toolbar"><button class="primary" id="playAll">連続再生</button><button class="primary" id="playFullText" hidden>全文を再生</button><button class="primary" id="playWordBank" hidden>単語帳を再生</button><button id="shuffleWordBank" hidden>ランダム再生</button><button id="pause" disabled aria-pressed="false">一時停止</button><button id="stop">停止</button><button id="prev">前の文</button><button id="next">次の文</button></div>
 <div class="speed-control"><label class="field"><span class="range-label"><span>再生速度</span><output id="rateValue" class="speed" for="rate">1.00倍</output></span><input id="rate" type="range" min="0.5" max="1.5" step="0.05" value="1"></label></div><p id="status" role="status" aria-live="polite">再生する文や単語を選んでください。</p>
 <audio id="screenOffAudio" class="recorded-player" controls preload="none" aria-label="音声プレーヤー" hidden></audio>
 <details class="playback-settings" id="playbackSettings"><summary><span>音声・表示の設定</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h7m4 0h5M4 17h3m4 0h9"/><circle cx="13" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></summary><div class="settings-body"><div class="control-grid"><label class="field">中国語の音声<select id="voice" aria-label="中国語の音声"></select></label><label class="field">繰り返し回数<select id="repeat"><option value="1">1回</option><option value="2">2回</option><option value="3">3回</option><option value="5">5回</option></select></label><label class="field">文・単語の間隔<select id="gap"><option value="400">0.4秒</option><option value="1000" selected>1秒</option><option value="2000">2秒</option><option value="3000">3秒</option></select></label><label class="field" id="jaVoiceField" hidden>日本語の音声<select id="jaVoice" aria-label="日本語の音声"></select></label></div><div class="toggles"><label><input id="showPinyin" type="checkbox" checked>ピンインを表示</label><label><input id="showJa" type="checkbox" checked>和訳を表示</label><label class="read-ja"><input id="readJapanese" type="checkbox">中国語のあとに和訳を読み上げる</label></div><p class="playback-note">再生中も設定を変更できます。音声によっては次の文から反映されます。</p><p id="voiceNotice"></p></div></details></div>
@@ -326,7 +330,7 @@ textarea { min-height: 86px; resize: vertical; line-height: 1.85; }
 </details>
 <div id="listenPane" role="tabpanel" aria-labelledby="listenTab"><div id="sentences" class="sentences"></div><section class="panel lesson-vocabulary" aria-labelledby="lessonVocabularyTitle"><h3 id="lessonVocabularyTitle">重要単語</h3><p class="lesson-vocabulary-note" id="lessonVocabularyNote"></p><p class="import-note">連続再生は中国語、次に日本語訳の順で、各単語を1回ずつ読み上げます。</p><div class="toolbar vocabulary-controls"><button id="lessonVocabularyPlayAll" class="primary">30語を連続再生</button><button id="lessonVocabularyPause" disabled aria-pressed="false">一時停止</button><button id="lessonVocabularyStop">停止</button></div><p id="lessonVocabularyStatus" class="vocabulary-status"></p><table id="lessonVocabularyTable"><thead><tr><th scope="col">単語</th><th scope="col">ピンイン</th><th scope="col">日本語訳</th></tr></thead><tbody id="lessonVocabularyBody"></tbody></table></section></div>
 <div id="fullTextPane" role="tabpanel" aria-labelledby="fullTextTab" hidden><p class="import-note">中国語の全文を、最初から最後まで1回読み上げます。再生速度と中国語の音声は上の設定を使います。</p><article class="panel full-text-paper" aria-label="中国語全文"><div class="tag">CHINESE FULL TEXT</div><div id="fullText" class="full-text" lang="zh-CN"></div></article><article class="panel full-text-paper full-translation-paper" aria-labelledby="fullTranslationTitle"><h3 id="fullTranslationTitle">日本語訳全文</h3><div id="fullTranslation" class="full-translation" lang="ja"></div></article></div>
-<div id="wordPane" role="tabpanel" aria-labelledby="wordsTab" hidden><div class="word-tools"><input id="wordSearch" type="text" aria-label="単語を検索" placeholder="中国語・ピンイン・日本語で検索"><p id="wordCount"></p><button id="addWord" class="primary">＋ 単語を追加</button><button id="importWords">JSONから追加</button></div><section class="panel word-playback" aria-labelledby="wordPlaybackTitle"><h3 id="wordPlaybackTitle">単語帳の読み上げ</h3><label class="field">読み上げる内容<select id="wordAudioMode" aria-label="読み上げる内容"><option value="word">単語 → 日本語訳</option><option value="example">例文 → 日本語訳</option></select></label><div class="toolbar vocabulary-controls"><button id="wordPlayAll" class="primary">連続再生</button><button id="wordAudioPause" disabled aria-pressed="false">一時停止</button><button id="wordAudioStop">停止</button></div><p class="import-note">中国語、次に日本語訳の順で、検索結果すべてをページをまたいで再生します。速度・繰り返し回数・間隔は上の設定を使います。</p><p id="wordAudioStatus" class="vocabulary-status"></p></section><p class="import-note">新しい公開教材から、重複しない重要単語が自動で増えていきます。</p><div id="wordList" class="word-list"></div><div id="wordPager" class="word-pager" hidden><button id="wordPrev">前のページ</button><span id="wordPageStatus"></span><button id="wordNext">次のページ</button></div></div></section>
+<div id="wordPane" role="tabpanel" aria-labelledby="wordsTab" hidden><div class="word-tools"><input id="wordSearch" type="text" aria-label="単語を検索" placeholder="中国語・ピンイン・日本語で検索"><p id="wordCount"></p><button id="addWord" class="primary">＋ 単語を追加</button><button id="importWords">JSONから追加</button></div><section class="panel word-playback" aria-labelledby="wordPlaybackTitle"><h3 id="wordPlaybackTitle">単語帳の読み上げ</h3><label class="field">読み上げる内容<select id="wordAudioMode" aria-label="読み上げる内容"><option value="word">単語 → 日本語訳</option><option value="example">例文 → 日本語訳</option></select></label><div class="toolbar vocabulary-controls"><button id="wordPlayAll" class="primary">連続再生</button><button id="wordAudioPause" disabled aria-pressed="false">一時停止</button><button id="wordAudioStop">停止</button></div><p class="import-note">中国語、次に日本語訳の順で、通常再生とランダム再生の両方で、すべての検索結果が対象になります。速度・繰り返し回数・間隔は上の設定を使います。</p><p id="wordAudioStatus" class="vocabulary-status"></p></section><p class="import-note">新しい公開教材から、重複しない重要単語が自動で増えていきます。</p><div id="wordList" class="word-list"></div><div id="wordPager" class="word-pager" hidden><button id="wordPrev">前のページ</button><span id="wordPageStatus"></span><button id="wordNext">次のページ</button></div></div></section>
 </main>
 <footer>サンプルはHSK5程度の学習向けに作成したオリジナル例文です。音声は端末・ブラウザーの読み上げ機能を使用します。中国語音声の追加やインターネット接続が必要になる場合があります。</footer>
 <dialog id="editor" aria-labelledby="editorTitle"><div class="dialog-head"><h2 id="editorTitle">教材を編集</h2><button id="closeEditor" aria-label="編集を閉じる">閉じる</button></div><form id="editForm"><label class="field">教材名<input id="editTitle" type="text" required maxlength="100" placeholder="例：仕事とコミュニケーション"></label><div id="editRows"></div><button type="button" id="addRow">＋ 文を追加</button><details><summary>テキストから一括入力</summary><p class="note">1行につき「中国語｜ピンイン｜和訳」の順に入力してください。区切りには全角の「｜」またはタブを使えます。中国語だけでも登録できます。ピンイン・和訳は手入力です。</p><textarea id="pasteText" aria-label="一括入力テキスト" placeholder="只要坚持练习，就一定会有进步。｜Zhǐyào jiānchí liànxí, jiù yídìng huì yǒu jìnbù.｜練習を続ければ、必ず上達します。"></textarea><button type="button" id="appendPaste">入力した文を追加</button></details><p id="editError" class="message" role="alert"></p><div class="dialog-actions"><button type="button" class="danger" id="deleteLesson">教材を削除</button><button type="button" id="cancelEditor">キャンセル</button><button type="submit" class="primary">保存する</button></div></form></dialog>
@@ -418,7 +422,7 @@ function mergeDaily(store,data){
  return {addedLessons,addedWords,updatedLessons};
 }
 function audioPlan(s,readJapanese){
- const plan=[{text:s.zh,lang:'zh-CN'}];if(readJapanese&&s.ja.trim())plan.push({text:s.ja,lang:'ja-JP'});return plan;
+ const plan=[{text:s.zh,lang:'zh-CN',pinyin:s.pinyin}];if(readJapanese&&s.ja.trim())plan.push({text:s.ja,lang:'ja-JP'});return plan;
 }
 // END CORE
 
@@ -427,13 +431,19 @@ const synth=window.speechSynthesis, supported=!!(synth&&window.SpeechSynthesisUt
 let store,selected='',current=-1,voices=[],jaVoices=[],generation=0,timer=null,utterance=null,playback=null,speechWait=null,editingId=null,editingWordId=null,activeTab='listen',isPlaying=false,isPaused=false,syncing=false,lastSyncAttempt=0;
 function persist(){store.settings.selected=selected;try{localStorage.setItem(KEY,JSON.stringify(store));$('storageAlert').hidden=true}catch{$('storageAlert').hidden=false}}
 function say(msg){$('status').textContent=msg;for(const id of ['lessonVocabularyStatus','wordAudioStatus'])$(id).textContent=msg}
-function showNowReading(text='', lang='', label='') {
+function showNowReading(text='', lang='', label='', row={}) {
  const body=$('nowReadingText');
  const heading=label ? 'いま読んでいる内容 · '+label : 'いま読んでいる内容';
  if($('nowReadingLabel').textContent!==heading)$('nowReadingLabel').textContent=heading;
  const value=text||'再生するとここに表示されます。';
  if(body.textContent!==value)body.textContent=value;
  body.lang=lang||'ja';
+ const pinyin=$('nowReadingPinyin'),pronunciation=lang==='zh-CN'?row.pinyin||'':'';
+ if(pinyin.textContent!==pronunciation)pinyin.textContent=pronunciation;
+ pinyin.hidden=!pronunciation||!store.settings.showPinyin;
+ const headword=$('nowReadingHeadword'),word=row.headword||'';
+ if(headword.textContent!==word)headword.textContent=word;
+ $('nowReadingWord').hidden=!word;
 }
 function configureAudioSession(refresh=false) {
  try {
@@ -487,7 +497,7 @@ function applySpeechSetting(id){
 function highlight(){document.querySelectorAll('.sentence').forEach((el,i)=>{el.classList.toggle('current',i===current);if(i===current)el.setAttribute('aria-current','true');else el.removeAttribute('aria-current')})}
 function runSpeech(plan,repetitions,label,onComplete,options={}){
  if(!supported){say('このブラウザーは読み上げに対応していません。別のブラウザーで開いてください。');return}
- const token=generation,session={plan,pos:0,round:0,offset:0,startOffset:0,started:false,finished:false,speak:null,message:''};playback=session;isPlaying=true;updatePlaybackButtons();
+ const token=generation,session={plan,pos:0,round:0,offset:0,startOffset:0,started:false,finished:false,speak:null,message:'',shuffled:options.shuffled};playback=session;isPlaying=true;updatePlaybackButtons();
  const active=()=>token===generation&&playback===session;
  const repeatCount=()=>options.followSettings?store.settings.repeat:repetitions;
  function complete(){session.finished=true;isPlaying=false;onComplete(token);if(!isPlaying){isPaused=false;showNowReading()}updatePlaybackButtons()}
@@ -503,7 +513,7 @@ function runSpeech(plan,repetitions,label,onComplete,options={}){
   const chosen=available.find(v=>v.voiceURI===(isJa?store.settings.jaVoice:store.settings.voice))||available[0];
   const offset=session.offset,u=new SpeechSynthesisUtterance(item.text.slice(offset));session.startOffset=offset;session.started=false;utterance=u;u.lang=chosen?.lang||item.lang;u.rate=isJa?1:store.settings.rate;if(chosen)u.voice=chosen;
   const valid=()=>active()&&utterance===u;
-  showNowReading(item.text, item.lang, label);
+  showNowReading(item.text,item.lang,label,{pinyin:item.pinyin,headword:options.headword});
   session.message=`${label} · ${isJa?'和訳':'中国語'}を再生中${options.sequence?'':` · ${session.round+1} / ${repeatCount()} 回`}`;say(session.message);
   u.onstart=()=>{if(valid())session.started=true};
   u.onboundary=e=>{if(valid()&&Number.isInteger(e.charIndex)&&e.charIndex>=0&&e.charIndex<u.text.length){session.started=true;session.offset=Math.max(session.offset,offset+e.charIndex)}};
@@ -532,10 +542,10 @@ function playText(s,label,translationOnly=false){stop();const plan=translationOn
 function playFullText(){
  const l=lesson();if(!l?.sentences.length)return;
  stop();current=-1;highlight();
- const plan=l.sentences.map(s=>({text:s.zh,lang:'zh-CN'}));
+ const plan=l.sentences.map(s=>({text:s.zh,lang:'zh-CN',pinyin:s.pinyin}));
  runSpeech(plan,1,'中国語全文',()=>say('中国語全文の再生が終わりました。'));
 }
-function playWordSequence(words,label,mode='word',repeat=false){
+function playWordSequence(words,label,mode='word',repeat=false,shuffled=false){
  stop();if(!words.length){say('読み上げる単語がありません。');return}
  current=-1;highlight();
  function next(index){
@@ -543,13 +553,16 @@ function playWordSequence(words,label,mode='word',repeat=false){
   runSpeech(audioPlan(pair,true),1,`${label}${example?'の例文':''}「${word.zh}」 · ${index+1} / ${words.length}語`,()=>{
    if(index+1<words.length){isPlaying=true;speechDelay(()=>next(index+1),store.settings.gap,'gap')}
    else say(label+'の連続再生が終わりました。');
-  },{sequence:true,followSettings:repeat});
+  },{sequence:true,followSettings:repeat,headword:word.zh,shuffled});
  }
  // Start the first Chinese utterance directly in the tap, including on Safari.
  next(0);
 }
 function playLessonVocabulary(){playWordSequence(lesson()?.lessonVocabulary||[],'重要単語')}
-function playWordBank(words=filteredWords(),mode=()=>store.settings.wordAudioMode,foreground=false){playWordSequence(words,foreground?'単語帳（画面オン用）':'単語帳',mode,true)}
+function playWordBank(words=filteredWords(),mode=()=>store.settings.wordAudioMode,foreground=false,random=false){
+ const label=random?'単語帳ランダム':'単語帳';
+ playWordSequence(words,foreground?label+'（画面オン用）':label,mode,true,random);
+}
 function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n}
 function textLines(s,container){for(const [field,cls,lang] of [['zh','zh','zh-CN'],['pinyin','pinyin','zh-Latn'],['ja','ja','ja']]){const p=el('p',cls,s[field]);p.lang=lang;p.hidden=field==='pinyin'?!store.settings.showPinyin:field==='ja'?!store.settings.showJa:false;container.append(p)}}
 function audioButton(text,label,action,recorded=false){const b=el('button','',text);b.setAttribute('aria-label',label);b.disabled=!supported&&!recorded;b.onclick=action;return b}
@@ -577,6 +590,7 @@ function sentenceWordNotes(s,index){
  return notes;
 }
 function render(){
+ const pronunciation=$('nowReadingPinyin');pronunciation.hidden=!pronunciation.textContent||!store.settings.showPinyin;
  $('library').replaceChildren();$('lessonSelect').replaceChildren();const sorted=[...store.lessons].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||Number(b.id.startsWith('daily-chatgpt-'))-Number(a.id.startsWith('daily-chatgpt-')));
  for(const l of sorted){const b=el('button','lesson'+(l.id===selected?' active':''));b.setAttribute('aria-pressed',String(l.id===selected));b.append(el('strong','',l.title),el('small','',l.sentences.length+' 文'+(l.date?' · 毎日の例題':'')));b.onclick=()=>{stop('教材を切り替えました。');selected=l.id;current=-1;switchTab(activeTab==='fulltext'?'fulltext':'listen');persist();render()};$('library').append(b);const option=el('option','',l.title);option.value=l.id;$('lessonSelect').append(option)}$('lessonSelect').value=selected;
  const l=lesson(),isWords=activeTab==='words',isFullText=activeTab==='fulltext';
@@ -587,6 +601,7 @@ function render(){
  for(const id of ['playAll','prev','next']){$(id).hidden=activeTab!=='listen';$(id).disabled=!l?.sentences.length||!supported}
  $('playFullText').hidden=!isFullText;$('playFullText').disabled=!l?.sentences.length||!supported;
  $('playWordBank').hidden=!isWords;
+ $('shuffleWordBank').hidden=!isWords;
  $('repeat').closest('label').hidden=!prefersBackgroundAudio&&(isFullText||isWords);$('gap').closest('label').hidden=!prefersBackgroundAudio&&isFullText;
  $('showPinyin').closest('.toggles').hidden=isFullText;$('readJapanese').closest('label').hidden=isWords;$('jaVoiceField').hidden=isFullText;
  $('fullText').replaceChildren();
@@ -848,8 +863,8 @@ function playSingleSentence(index,translationOnly=false) {
 
 function playSingleWord(word,example) {
  const choice=example?'examples':'words';
- const row=example?word.example:word;
  if(activeTab==='words'){
+  const [row]=wordBankRows(choice,[word]);
   const fallback=()=>playWordBank([word],example?'example':'word',prefersBackgroundAudio);
   if(prefersBackgroundAudio){
    if(startPublishedNetworkAudio('single',choice,[row],screenOffManifest?.vocabulary))return;
@@ -858,6 +873,7 @@ function playSingleWord(word,example) {
   fallback();
   return;
  }
+ const row=example?word.example:word;
  if(!playFromPack('single',choice,[row],0,false,store.settings.readJapanese))playText(row,'単語「'+word.zh+'」');
 }
 
@@ -873,20 +889,38 @@ function updateMediaPosition(force=false) {
   session.cueIndex=low;
   session.index=cue.row;
   const rounds=session.repeat>1?` · ${cue.round}/${session.repeat} 回`:'';
-  showNowReading(cue.text,cue.lang,`${cue.row+1}/${session.rows.length}${rounds}`);
+  showNowReading(cue.text,cue.lang,`${cue.row+1}/${session.rows.length}${rounds}`,session.rows[cue.row]);
  } else {
   let index=session.offsets.length-1;
   while(index>0&&session.offsets[index]>position)index--;
   if (!force&&index===session.index)return;
   session.index=index;
   const row=session.rows[index];
-  if(row)showNowReading(row.zh,'zh-CN',`${index+1}/${session.rows.length}`);
+  if(row)showNowReading(row.zh,'zh-CN',`${index+1}/${session.rows.length}`,row);
  }
  if (session.mode==='listen'&&session.index!==current){current=session.index;highlight();}
 }
 
 function wordBankRows(choice,words=filteredWords()) {
- return choice==='examples'?words.map(word=>word.example):words;
+ return words.map(word=>({...(choice==='examples'?word.example:word),headword:word.zh}));
+}
+
+function shuffleWords(words) {
+ const shuffled=[...words];
+ for(let index=shuffled.length-1;index>0;index--){
+  const other=Math.floor(Math.random()*(index+1));
+  [shuffled[index],shuffled[other]]=[shuffled[other],shuffled[index]];
+ }
+ return shuffled;
+}
+
+function playShuffledWordBank() {
+ const words=shuffleWords(filteredWords());
+ const choice=store.settings.wordAudioMode==='example'?'examples':'words';
+ const rows=wordBankRows(choice,words);
+ const canUsePack=canPlayRecordedAudio&&(prefersBackgroundAudio||!store.settings.voice&&!store.settings.jaVoice);
+ if(canUsePack&&playFromPack('bank-shuffle',choice,rows,0,false,true,true))return;
+ playWordBank(words,undefined,prefersBackgroundAudio,true);
 }
 
 function publishedWordBankRows(choice) {
@@ -897,7 +931,7 @@ function publishedWordBankRows(choice) {
 
 function sameRecordedRows(first,second) {
  if(first.length!==second.length)return false;
- const signatures=rows=>rows.map(row=>audioSignature([row])).sort();
+ const signatures=rows=>rows.map(row=>JSON.stringify([row.zh,row.ja,row.headword])).sort();
  const expected=signatures(second);
  return signatures(first).every((key,index)=>key===expected[index]);
 }
@@ -907,7 +941,7 @@ function playPublishedTrack(mode, fallback) {
   playPreparedAudio(mediaPlayback);
   return;
  }
- if (isPaused) { resumeSpeech(); return; }
+ if (isPaused && !(mode==='bank'&&playback?.shuffled)) { resumeSpeech(); return; }
  const isWordBank = mode === 'bank';
  const useMedia=prefersBackgroundAudio||(isWordBank&&canPlayRecordedAudio&&!store.settings.voice&&!store.settings.jaVoice);
  if (!useMedia || !screenOffManifest) { fallback(); return; }
@@ -1084,7 +1118,7 @@ screenOffAudio.addEventListener('playing', () => {
  if(!screenOffAudio.hasAttribute('src')||screenOffAudio.paused)return;
  if(systemMediaSession)systemMediaSession.playbackState='playing';
  if(!mediaPlayback)return;
- say('再生中 · 画面オフ用音声');
+ say(mediaPlayback.mode==='bank-shuffle'?'ランダム再生中 · 画面オフ用音声':'再生中 · 画面オフ用音声');
 });
 screenOffAudio.addEventListener('pause', () => {
  if (!screenOffAudio.hasAttribute('src') || !screenOffAudio.paused || screenOffAudio.ended) return;
@@ -1151,7 +1185,7 @@ function renderWords(){
  const query=wordKey($('wordSearch').value),items=filteredWords(),example=store.settings.wordAudioMode==='example';
  const canPlay=supported||(canPlayRecordedAudio&&!!screenOffManifest?.vocabulary);
  $('wordAudioMode').value=store.settings.wordAudioMode;$('wordPlayAll').textContent=`対象${items.length}語を連続再生`;$('wordPlayAll').disabled=!canPlay||!items.length;$('wordAudioStop').disabled=!canPlay;
- $('playWordBank').disabled=!canPlay||!items.length;
+ $('playWordBank').disabled=$('shuffleWordBank').disabled=!canPlay||!items.length;
  $('wordCount').textContent=items.length+' / '+store.vocabulary.length+' 語';$('wordList').replaceChildren();
  const pageCount=Math.max(1,Math.ceil(items.length/WORD_PAGE_SIZE));wordPage=Math.min(Math.max(1,wordPage),pageCount);$('wordPageStatus').textContent=wordPage+' / '+pageCount+' ページ';$('wordPrev').disabled=wordPage===1;$('wordNext').disabled=wordPage===pageCount;$('wordPager').hidden=pageCount===1;
  if(!items.length){$('wordList').append(el('p','panel empty',query?'一致する単語がありません。':'まだ単語がありません。毎日の教材を確認するか、単語を追加してください。'));return}
@@ -1189,6 +1223,7 @@ for(const id of ['voice','jaVoice'])$(id).onchange=()=>{store.settings[id]=$(id)
 $('playAll').onclick=()=>playPublishedTrack('listen',()=>play(current>=0?current:0,true));
 $('playFullText').onclick=()=>playPublishedTrack('full',playFullText);
 $('playWordBank').onclick=$('wordPlayAll').onclick=()=>playPublishedTrack('bank',()=>playWordBank(undefined,undefined,prefersBackgroundAudio));
+$('shuffleWordBank').onclick=playShuffledWordBank;
 $('lessonVocabularyPlayAll').onclick=()=>playPublishedTrack('important',playLessonVocabulary);
 $('stop').onclick=()=>stop('停止しました。');$('prev').onclick=()=>stepSentence(-1);$('next').onclick=()=>stepSentence(1);
 for(const id of ['pause','lessonVocabularyPause','wordAudioPause'])$(id).onclick=togglePlaybackPause;
