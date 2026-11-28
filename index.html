@@ -98,6 +98,12 @@ input[type=range] { width: 100%; min-height: 34px; margin: 0; accent-color: var(
 .playback-settings > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 54px; padding: 16px 25px; color: #c7d1c0; list-style: none; }
 .playback-settings > summary::-webkit-details-marker { display: none; }
 .playback-settings[open] > summary { border-bottom: 1px solid var(--line); color: var(--teal); }
+.screen-off-player { margin: -10px 0 24px; padding: 0; border-color: #594f70; background: #191722; }
+.screen-off-player > summary { min-height: 48px; padding: 12px 18px; color: var(--pinyin); }
+.screen-off-body { display: grid; gap: 12px; padding: 0 18px 16px; }
+.screen-off-body p { margin: 0; color: var(--muted); font-size: 14px; }
+.screen-off-body p:empty { display: none; }
+.screen-off-body audio { display: block; width: 100%; min-height: 44px; }
 .settings-body { padding: 22px 25px 24px; }
 .control-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
 select, input[type=text], textarea { width: 100%; min-width: 0; min-height: 48px; padding: 11px 13px; color: var(--ink); background: var(--field); border: 1px solid var(--control-line); border-radius: 11px; font-size: 16px; }
@@ -303,6 +309,15 @@ textarea { min-height: 86px; resize: vertical; line-height: 1.85; }
 <div class="toolbar"><button class="primary" id="playAll">連続再生</button><button class="primary" id="playFullText" hidden>全文を再生</button><button class="primary" id="playWordBank" hidden>単語帳を再生</button><button id="pause" disabled aria-pressed="false">一時停止</button><button id="stop">停止</button><button id="prev">前の文</button><button id="next">次の文</button></div>
 <div class="speed-control"><label class="field"><span class="range-label"><span>再生速度</span><output id="rateValue" class="speed" for="rate">1.00倍</output></span><input id="rate" type="range" min="0.5" max="1.5" step="0.05" value="1"></label></div><p id="status" role="status" aria-live="polite">再生する文や単語を選んでください。</p>
 <details class="playback-settings" id="playbackSettings"><summary><span>音声・表示の設定</span><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h7m4 0h5M4 17h3m4 0h9"/><circle cx="13" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></summary><div class="settings-body"><div class="control-grid"><label class="field">中国語の音声<select id="voice" aria-label="中国語の音声"></select></label><label class="field">一文の繰り返し<select id="repeat"><option value="1">1回</option><option value="2">2回</option><option value="3">3回</option><option value="5">5回</option></select></label><label class="field">文・単語の間隔<select id="gap"><option value="400">0.4秒</option><option value="1000" selected>1秒</option><option value="2000">2秒</option><option value="3000">3秒</option></select></label><label class="field" id="jaVoiceField" hidden>日本語の音声<select id="jaVoice" aria-label="日本語の音声"></select></label></div><div class="toggles"><label><input id="showPinyin" type="checkbox" checked>ピンインを表示</label><label><input id="showJa" type="checkbox" checked>和訳を表示</label><label class="read-ja"><input id="readJapanese" type="checkbox">中国語のあとに和訳を読み上げる</label></div><p class="playback-note">再生中も設定を変更できます。音声によっては次の文から反映されます。</p><p id="voiceNotice"></p></div></details></div>
+<details id="screenOffPlayer" class="screen-off-player">
+  <summary>画面オフで聴く</summary>
+  <div class="screen-off-body">
+    <p>再生を始めてから画面をロックしてください。</p>
+    <label id="screenOffField" class="field" hidden>音声の内容<select id="screenOffTrack" aria-label="画面オフで聴く音声"></select></label>
+    <audio id="screenOffAudio" controls playsinline preload="none" aria-label="画面オフ再生プレーヤー" hidden></audio>
+    <p id="screenOffStatus" role="status"></p>
+  </div>
+</details>
 <div id="listenPane" role="tabpanel" aria-labelledby="listenTab"><div id="sentences" class="sentences"></div><section class="panel lesson-vocabulary" aria-labelledby="lessonVocabularyTitle"><h3 id="lessonVocabularyTitle">重要単語</h3><p class="lesson-vocabulary-note" id="lessonVocabularyNote"></p><p class="import-note">連続再生は中国語、次に日本語訳の順で、各単語を1回ずつ読み上げます。</p><div class="toolbar vocabulary-controls"><button id="lessonVocabularyPlayAll" class="primary">30語を連続再生</button><button id="lessonVocabularyPause" disabled aria-pressed="false">一時停止</button><button id="lessonVocabularyStop">停止</button></div><p id="lessonVocabularyStatus" class="vocabulary-status"></p><table id="lessonVocabularyTable"><thead><tr><th scope="col">単語</th><th scope="col">ピンイン</th><th scope="col">日本語訳</th></tr></thead><tbody id="lessonVocabularyBody"></tbody></table></section></div>
 <div id="fullTextPane" role="tabpanel" aria-labelledby="fullTextTab" hidden><p class="import-note">中国語の全文を、最初から最後まで1回読み上げます。再生速度と中国語の音声は上の設定を使います。</p><article class="panel full-text-paper" aria-label="中国語全文"><div class="tag">CHINESE FULL TEXT</div><div id="fullText" class="full-text" lang="zh-CN"></div></article><article class="panel full-text-paper full-translation-paper" aria-labelledby="fullTranslationTitle"><h3 id="fullTranslationTitle">日本語訳全文</h3><div id="fullTranslation" class="full-translation" lang="ja"></div></article></div>
 <div id="wordPane" role="tabpanel" aria-labelledby="wordsTab" hidden><div class="word-tools"><input id="wordSearch" type="text" aria-label="単語を検索" placeholder="中国語・ピンイン・日本語で検索"><p id="wordCount"></p><button id="addWord" class="primary">＋ 単語を追加</button><button id="importWords">JSONから追加</button></div><section class="panel word-playback" aria-labelledby="wordPlaybackTitle"><h3 id="wordPlaybackTitle">単語帳の読み上げ</h3><label class="field">読み上げる内容<select id="wordAudioMode" aria-label="読み上げる内容"><option value="word">単語 → 日本語訳</option><option value="example">例文 → 日本語訳</option></select></label><div class="toolbar vocabulary-controls"><button id="wordPlayAll" class="primary">連続再生</button><button id="wordAudioPause" disabled aria-pressed="false">一時停止</button><button id="wordAudioStop">停止</button></div><p class="import-note">中国語、次に日本語訳の順で、検索結果すべてをページをまたいで1回ずつ再生します。再生中の内容切替は次の単語から反映されます。速度・音声・間隔は上の設定を使います。</p><p id="wordAudioStatus" class="vocabulary-status"></p></section><p class="import-note">新しい公開教材から、重複しない重要単語が自動で増えていきます。</p><div id="wordList" class="word-list"></div><div id="wordPager" class="word-pager" hidden><button id="wordPrev">前のページ</button><span id="wordPageStatus"></span><button id="wordNext">次のページ</button></div></div></section>
@@ -412,7 +427,7 @@ selected=store.lessons.some(l=>l.id===store.settings.selected)?store.settings.se
 const lesson=()=>store.lessons.find(l=>l.id===selected);
 const openSentenceNotes=new Set();
 function updatePlaybackButtons(){for(const id of ['pause','lessonVocabularyPause','wordAudioPause']){const b=$(id);b.textContent=isPaused?'再開':'一時停止';b.disabled=!supported||!isPlaying;b.setAttribute('aria-pressed',String(isPaused))}}
-function stop(message){const wasPaused=isPaused;generation++;clearTimeout(timer);timer=null;speechWait=null;playback=null;utterance=null;isPlaying=false;isPaused=false;if(supported){synth.cancel();if(wasPaused||synth.paused)synth.resume()}updatePlaybackButtons();if(message)say(message)}
+function stop(message, keepMedia = false){const wasPaused=isPaused;generation++;clearTimeout(timer);timer=null;speechWait=null;playback=null;utterance=null;isPlaying=false;isPaused=false;if(supported){synth.cancel();if(wasPaused||synth.paused)synth.resume()}if(!keepMedia)stopScreenOffAudio();updatePlaybackButtons();if(message)say(message)}
 function speechDelay(fn,delay,kind='fixed',started=Date.now()){
  clearTimeout(timer);timer=null;const token=generation,task={fn,kind,started,remaining:delay,deadline:Date.now()+delay,pausedAt:isPaused?Date.now():null};speechWait=task;
  if(isPaused)return;
@@ -558,8 +573,98 @@ function render(){
   const article=el('article','sentence'),n=el('span','num',String(i+1).padStart(2,'0')),body=el('div'),buttons=el('div','sentence-buttons');textLines(s,body);
   buttons.append(audioButton('▶ 再生',`${i+1}文目を再生`,()=>play(i)));if(s.ja)buttons.append(audioButton('和訳',`${i+1}文目の和訳を再生`,()=>playText(s,`${i+1}文目`,true)));
   article.append(n,body,buttons,sentenceWordNotes(s,i));$('sentences').append(article);
- });highlight();renderLessonVocabulary(l);if(isWords)renderWords();updatePlaybackButtons();
+ });highlight();renderLessonVocabulary(l);if(isWords)renderWords();updatePlaybackButtons();renderScreenOffPlayer();
 }
+const screenOffPlayer = $('screenOffPlayer');
+const screenOffAudio = $('screenOffAudio');
+const screenOffTrack = $('screenOffTrack');
+const screenOffStatus = $('screenOffStatus');
+const screenOffChoices = {
+ chinese: '中国語全文', bilingual: '例文（中国語 → 日本語訳）', important: '重要単語（中国語 → 日本語訳）',
+ words: '公開単語帳の単語（中国語 → 日本語訳）', examples: '公開単語帳の例文（中国語 → 日本語訳）'
+};
+let screenOffManifest = null;
+let screenOffLoading = false;
+let screenOffKey = '';
+
+function stopScreenOffAudio() {
+ if (!screenOffAudio.hasAttribute('src')) return;
+ screenOffAudio.pause();
+ if (screenOffAudio.currentTime !== 0) screenOffAudio.currentTime = 0;
+}
+
+function selectScreenOffTrack() {
+ const filename = screenOffTrack.value;
+ if (!filename) {
+  screenOffAudio.removeAttribute('src');
+  screenOffAudio.load();
+  return;
+ }
+ const src = 'audio/' + filename;
+ if (screenOffAudio.getAttribute('src') === src) return;
+ screenOffAudio.src = src;
+ screenOffAudio.defaultPlaybackRate = store.settings.rate;
+ screenOffAudio.playbackRate = store.settings.rate;
+ screenOffStatus.textContent = activeTab === 'words' ? '公開単語帳をまとめて再生します。' : '';
+}
+
+function renderScreenOffPlayer() {
+ if (!screenOffPlayer.open || !screenOffManifest) return;
+ const isWords = activeTab === 'words';
+ const key = `${activeTab}:${isWords ? '' : selected}`;
+ if (key === screenOffKey) return;
+ screenOffKey = key;
+ const tracks = isWords ? screenOffManifest.vocabulary : screenOffManifest.lessons[selected];
+ const choices = isWords ? ['words', 'examples'] : activeTab === 'fulltext' ? ['chinese', 'bilingual'] : ['bilingual', 'chinese', 'important'];
+ if (isWords && store.settings.wordAudioMode === 'example') choices.reverse();
+ screenOffTrack.replaceChildren();
+ for (const choice of choices) {
+  const file = tracks?.[choice];
+  if (typeof file !== 'string' || !/^[0-9a-f]{24}\.mp3$/.test(file)) continue;
+  const option = el('option', '', screenOffChoices[choice]);
+  option.value = file;
+  screenOffTrack.append(option);
+ }
+ const available = screenOffTrack.options.length > 0;
+ $('screenOffField').hidden = screenOffAudio.hidden = !available;
+ if (!available) screenOffStatus.textContent = 'この教材の画面オフ用音声はありません。';
+ selectScreenOffTrack();
+}
+
+screenOffTrack.onchange = selectScreenOffTrack;
+screenOffAudio.addEventListener('play', () => {
+ stop(undefined, true);
+ try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
+ if ('mediaSession' in navigator && typeof MediaMetadata === 'function') {
+  navigator.mediaSession.metadata = new MediaMetadata({
+   title: $('lessonTitle').textContent,
+   artist: screenOffTrack.selectedOptions[0]?.textContent || 'HSK5 Chinese Listener'
+  });
+ }
+});
+screenOffAudio.addEventListener('error', () => {
+ if (screenOffAudio.hasAttribute('src')) screenOffStatus.textContent = '音声を読み込めませんでした。通信を確認してページを再読み込みしてください。';
+});
+screenOffPlayer.ontoggle = async () => {
+ if (!screenOffPlayer.open || screenOffLoading) return;
+ if (screenOffManifest) { renderScreenOffPlayer(); return; }
+ if (!/^https?:$/.test(location.protocol)) {
+  screenOffStatus.textContent = '画面オフ用音声は公開サイトで再生できます。';
+  return;
+ }
+ screenOffLoading = true;
+ screenOffStatus.textContent = '音声を確認しています…';
+ try {
+  const response = await fetch('audio/manifest.json', {cache:'no-cache'});
+  if (!response.ok) throw Error('Audio manifest is unavailable');
+  const manifest = await response.json();
+  if (manifest.version !== 1 || !manifest.lessons || !manifest.vocabulary) throw Error('Audio manifest is invalid');
+  screenOffManifest = manifest;
+  renderScreenOffPlayer();
+ } catch {
+  screenOffStatus.textContent = '画面オフ用音声を確認できませんでした。閉じてから開き直すと再試行できます。';
+ } finally { screenOffLoading = false; }
+};
 function renderLessonVocabulary(l){
  const words=l?.lessonVocabulary||[];
  $('lessonVocabularyTitle').textContent=`重要単語 · ${words.length}語`;
@@ -609,7 +714,7 @@ function loadVoices(){
 }
 for(const id of ['rate','repeat','gap','showPinyin','showJa','readJapanese']){
  const control=$(id);if(control.type==='checkbox')control.checked=store.settings[id];else control.value=store.settings[id];
- control.addEventListener(id==='rate'?'input':'change',()=>{store.settings[id]=control.type==='checkbox'?control.checked:Number(control.value);$('rateValue').textContent=Number(store.settings.rate).toFixed(2)+'倍';persist();loadVoices();applySpeechSetting(id);render();if(!isPlaying)say('設定を変更しました。')});
+ control.addEventListener(id==='rate'?'input':'change',()=>{store.settings[id]=control.type==='checkbox'?control.checked:Number(control.value);$('rateValue').textContent=Number(store.settings.rate).toFixed(2)+'倍';if(id==='rate'){screenOffAudio.defaultPlaybackRate=store.settings.rate;screenOffAudio.playbackRate=store.settings.rate}persist();loadVoices();applySpeechSetting(id);render();if(!isPlaying)say('設定を変更しました。')});
 }
 $('rateValue').textContent=Number(store.settings.rate).toFixed(2)+'倍';
 for(const id of ['voice','jaVoice'])$(id).onchange=()=>{store.settings[id]=$(id).value;persist();applySpeechSetting(id);if(!isPlaying)say('音声を変更しました。')};
@@ -680,7 +785,7 @@ async function syncDaily(manual=false){
  finally{clearTimeout(timeout);syncing=false;$('syncDaily').disabled=false}
 }
 $('syncDaily').onclick=()=>syncDaily(true);
-window.addEventListener('pagehide',()=>stop());document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncDaily()});window.addEventListener('online',()=>syncDaily(true));setInterval(()=>{if(!document.hidden)syncDaily()},300000);
+window.addEventListener('pagehide',()=>stop(undefined,true));document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncDaily()});window.addEventListener('online',()=>syncDaily(true));setInterval(()=>{if(!document.hidden)syncDaily()},300000);
 if(supported)synth.addEventListener('voiceschanged',loadVoices);loadVoices();switchTab('listen');persist();showDailyStatus();syncDaily();
 
 </script>

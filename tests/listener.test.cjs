@@ -36,6 +36,7 @@ function audioHarness(requireGesture=false){
   function setTimeout(fn,delay){lastDelay=delay;const id=nextTimer++;queue.set(id,fn);return id}function clearTimeout(id){queue.delete(id)}
   function say(s){messages.push(s)}
   function updatePlaybackButtons(){}
+  function stopScreenOffAudio(){}
   const document={querySelectorAll:()=>[]};
   const store={vocabulary:[],settings:{rate:1,repeat:2,gap:1000,readJapanese:true,wordAudioMode:'word'}};let testQuery='';const $=()=>({value:testQuery});
   const testLesson={sentences:[{zh:'你好',ja:'こんにちは'},{zh:'谢谢',ja:'ありがとう'}]};const lesson=()=>testLesson;

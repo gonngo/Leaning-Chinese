@@ -57,7 +57,7 @@ jobs:
     name: Import new material and publish
     needs: check-source
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 35
     permissions:
       contents: write
       pages: write
@@ -81,6 +81,21 @@ jobs:
         run: python3 scripts/import_materials.py --source _cloud-import/source-lessons.json
       - name: Verify merged materials work in the listener
         run: node tests/listener.test.cjs
+      - name: Restore synthesized audio
+        if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
+        uses: actions/cache@v4
+        with:
+          path: .hsk5-audio-cache
+          key: hsk5-audio-v1-${{ runner.os }}-${{ hashFiles('scripts/build_audio.py', 'daily-materials.json') }}
+          restore-keys: hsk5-audio-v1-${{ runner.os }}-
+      - name: Build continuous audio for iPhone playback
+        if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
+        run: |
+          python3 -m venv "$RUNNER_TEMP/hsk5-tts"
+          source "$RUNNER_TEMP/hsk5-tts/bin/activate"
+          python -m pip install --disable-pip-version-check 'piper-tts[zh,ja]==1.8.0'
+          python -m piper.download_voices --download-dir .hsk5-audio-cache/models zh_CN-huayan-medium ja_JP-hi_fi_captain-medium
+          python scripts/build_audio.py --models .hsk5-audio-cache/models --cache .hsk5-audio-cache --output _site/audio
       - name: Save new materials
         if: steps.merge.outputs.changed == 'true'
         run: |
@@ -92,7 +107,6 @@ jobs:
       - name: Prepare public files
         if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
         run: |
-          mkdir -p _site
           cp index.html daily-materials.json .nojekyll _site/
       - name: Configure Pages
         if: steps.merge.outputs.changed == 'true' || github.event_name != 'schedule'
